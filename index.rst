@@ -1,4 +1,4 @@
-Energy Logserver 7.x User Guide
+CyberX User Guide
 ------------------------------
 
 .. toctree::
