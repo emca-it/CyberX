@@ -45,6 +45,25 @@ yum update ./cyberx-data-node-7.0.2-1.el7.x86_64.rpm
 systemctl start elasticsearch alert kibana
 ```
 
+**Extra note**
+
+If the Elasticsearch service has been started on the client-node, then it is necessary to update the **client.rpm** and **data.rpm** packages on the client node. 
+
+After update, you need to edit:
+
+```bash
+/etc/elasticsearch/elasticsearch.yml
+```
+and change:
+```bash
+node.data: false
+```
+Additionally, check the file:
+```bash
+elasticsearch.yml.rpmnew
+```
+and complete the configuration in `elasticsearch.yml` with additional lines.
+
 ## Changing OpenJDK version
 
 ### Logstash

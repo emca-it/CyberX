@@ -200,6 +200,58 @@ It is recommended to run the Agent as a service in a given operating system.
        agents.exe status
      ```
 
+## TLS configuration
+
+The default agent uses TLS 1.2 for communication. In addition, you can disable the agent's ability to use weak protocols and change other cryptographic options, such as the length of the Diffie-Hellman key.
+
+- Create a configuration file `agent.security`:
+
+  ```bash
+  vi /opt/agent/agent.security
+  ```
+
+- Add the necessary configuration, for example:
+
+  ```bash
+  jdk.tls.disabledAlgorithms=SSLv2Hello, SSLv3, TLSv1, TLSv1.1, RC4, DES, MD5withRSA, DH keySize < 2048, \
+      EC keySize < 224, 3DES_EDE_CBC, anon, NULL
+  ```
+
+- Add a new configuration to the service unit:
+
+  ```bash
+  systemctl edit --full masteragent.service
+  ```
+
+- Add the following line:
+
+  ```bash
+  [Unit]
+  Description=Manage MasterAgent service
+  Wants=network-online.target
+  After=network-online.target
+  
+  [Service]
+  WorkingDirectory=/opt/agent
+  - ExecStart=/bin/java -jar MasterBeatAgent.jar
+  + ExecStart=/bin/java -Djava.security.properties=/opt/agent/agent.security -jar MasterBeatAgent.jar
+  User=root
+  Type=simple
+  Restart=on-failure
+  RestartSec=10
+  
+  [Install]
+  WantedBy=multi-user.target
+  
+  ```
+
+- Reload daemon and restart service 
+
+  ```bash
+  systemctl daemon-reload
+  systemctl restart masteragent.service
+  ```
+
 ## The agent management ##
 
 The GUI console is used to manage agents. In the **Agetns** tab, you can find a list of connected agents. There are typical information about agents such as:
