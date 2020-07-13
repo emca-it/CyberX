@@ -33,6 +33,16 @@ systemctl stop elasticsearch alert kibana
 yum update ./cyberx-client-node-7.0.2-1.el7.x86_64.rpm
 ```
 
+- Login in the GUI CyberX and go to the `Alert List`  on the `Alerts` tab and click `SAVE` button
+
+![](/media/media/image2_js.png)
+
+- Start  `alert` and `kibana` service
+
+```bash
+systemctl start alert kibana
+```
+
 - Upgrade data-node
 
 ```bash
@@ -42,7 +52,7 @@ yum update ./cyberx-data-node-7.0.2-1.el7.x86_64.rpm
 - Start services
 
 ```bash
-systemctl start elasticsearch alert kibana
+systemctl start elasticsearch alert
 ```
 
 **Extra note**
