@@ -1050,3 +1050,153 @@ Press `Next` button.
 5. After the import process is completed, a summary will be displayed. Now you can create a new index pattern to view your data in the Discovery module.
 
 ![](/media/media/image140.png)
+
+## Logtrail
+
+LogTrail module allow to view, analyze, search and tail log events from multiple indices in realtime. Main features of this module are:
+
+- View, analyze and search log events from a centralized interface
+- Clean & simple devops friendly interface
+- Live tail
+- Filter aggregated logs by hosts and program
+- Quickly seek to logs based on time
+- Supports highlighting of search matches
+- Supports multiple Elasticsearch index patterns each with different  schemas
+- Can be extended by adding additional fields to log event
+- Color coding of messages based on field values
+
+Default Logtrail configuration, keeps track of event logs for Elasticsearch, Logstash, Kibana and Alert processes.
+The module allows you to track events from any index stored in Elasticsearch.
+
+### Configuration
+
+The LogTrail module uses the Logstash pipeline to retrieve data from any of the event log files and save its contents to the Elasticsearch index.
+
+### Logstash configuration
+
+Example for the file `/var/log/messages`
+
+1. Add the Logstash configuration file in the correct pipline (default is "logtrail"):
+
+    ```bash
+    vi /etc/logstash/conf.d/logtrail/messages.conf
+    ```
+
+    ```bash
+    input {
+        file {
+            path => "/var/log/messages"
+            start_position => beginning
+            tags => "logtrail_messages"
+        }
+    }
+    filter {
+            if "logtrail_messages" in [tags] {
+                    grok {
+                            match => {
+                                    #"message" => "%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:hostname} %{DATA:program}(?:\[%{POSINT:pid}\])?: %{GREEDYDATA:syslog_message}"
+    # If syslog is format is "<%PRI%><%syslogfacility%>%TIMESTAMP% %HOSTNAME% %syslogtag%%msg:::sp-if-no-1st-sp%%msg:::drop-last-lf%\n"
+                                    "message" => "<?%{NONNEGINT:priority}><%{NONNEGINT:facility}>%{SYSLOGTIMESTAMP:syslog_timestamp} %{SYSLOGHOST:hostname} %{DATA:program}(?:\[%{POSINT:pid}\])?: %{GREEDYDATA:syslog_message}"
+                                    }
+                            }
+                    date {
+                            match => [ "syslog_timestamp", "MMM  d HH:mm:ss", "MMM dd HH:mm:ss" ]
+                    }
+                    ruby {
+                            code =>  "event.set('level',event.get('priority').to_i - ( event.get('facility').to_i * 8 ))"
+                    }
+            }
+    }
+    output {
+        if "logtrail_messages" in [tags] {
+            elasticsearch {
+                hosts => "http://localhost:9200"
+                index => "logtrail-messages-%{+YYYY.MM}"
+                user => "logstash"
+                password => "logstash"
+            }
+        }
+    }
+    ```
+
+2. Restart the Logstash service
+
+   ```bahs
+   systemctl restart logstash
+   ```
+
+
+### Kibana configuration
+
+1. Set up a new pattern index `logtrail-messages*`  in the CyberX configuration. The procedure is described in the chapter [First login](/02-00-00-Data_source_and_application_management/02-00-00-Data_source_and_application_management.md).
+
+2. Add a new configuration section in the LogTrail configuration file:
+
+   ```bash
+   vi /usr/share/kibana/plugins/logtrail/logtrail.json
+   ```
+
+   ```bash
+   {
+     "index_patterns" : [
+       {
+         "es": {
+           "default_index": "logstash-message-*",
+           "allow_url_parameter": false
+         },
+         "tail_interval_in_seconds": 10,
+         "es_index_time_offset_in_seconds": 0,
+         "display_timezone": "Etc/UTC",
+         "display_timestamp_format": "MMM DD HH:mm:ss",
+         "max_buckets": 500,
+         "default_time_range_in_days" : 0,
+         "max_hosts": 100,
+         "max_events_to_keep_in_viewer": 5000,
+         "fields" : {
+           "mapping" : {
+               "timestamp" : "@timestamp",
+               "display_timestamp" : "@timestamp",
+               "hostname" : "hostname",
+               "program": "program",
+               "message": "syslog_message"
+           },
+           "message_format": "{{{syslog_message}}}"
+         },
+         "color_mapping" : {
+           "field": "level",
+           "mapping" : {
+             "0": "#ff0000",
+             "1": "#ff3232",
+             "2": "#ff4c4c",
+             "3": "#ff7f24",
+             "4": "#ffb90f",
+             "5": "#a2cd5a"
+           }
+         }
+       }
+     ]
+   }
+   
+   ```
+
+3. Restate the Kibana service
+
+   ```bash
+   systemctl restart kibana
+   ```
+
+### Using Logtrail
+
+To access of the LogTrail module, click the tile icon from the main menu bar and then go to the „LogTrail” icon.
+
+![](/media/media/image144.png)
+
+The main module window contains the content of messages that are automatically updated.
+
+![](/media/media/image145.png)
+
+Below is the search and options bar.
+
+![](/media/media/image146.png)
+
+It allows you to search for event logs, define the systems from which events will be displayed, define the time range for events and define the index pattern.
