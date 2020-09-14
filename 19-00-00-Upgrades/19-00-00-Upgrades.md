@@ -11,9 +11,9 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
 
 - Update the `kibana` role to include index-pattern `.kibana*`
 - Update the `alert` role to include index-pattern `.alertrules*` and `alert_status*`
-- Install `python36` which is required for the Alerting engine
+- Install `python36` which is required for the Alerting engine on client-node:
 ```bash 
-yum install python3 on client-node
+yum install python3
 ```
 - AD users should move their saved objects  from the `adrole`.
 - Indicators of compromise (IOCs auto-update) require access to the software provider's servers.

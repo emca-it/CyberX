@@ -1,18 +1,23 @@
 # Configuring Single Sign On (SSO) #
+
 In order to configure SSO, the system should be accessible by domain name URL, not IP address nor localhost.
 
 **Ok :**`https://loggui.com:5601/login`. **Wrong :** `https://localhost:5601/login`, `https://10.0.10.120:5601/login`
 
 In order to enable SSO on your system follow below steps. The configuration is made for AD: `dev.example.com`, GUI URL: `loggui.com`
+
 ## Configuration steps ##
-### Create an **User** Account for Elasticsearch auth plugin ###
+
+1. Create an **User** Account for Elasticsearch auth plugin
+
 In this step, a Kerberos Principal representing Elasticsearch auth plugin is created on the Active Directory. The principal name would be `name@DEV.EXAMPLE.COM`, while the `DEV.EXAMPLE.COM` is the administrative name of the realm. In our case, the principal name will be `esauth@DEV.EXAMPLE.COM`.
 
 Create User in AD. Set "Password never expires" and "Other encryption options" as shown below:
 
 ![](/media/media/image107_js.png)
 
-### Define Service Principal Name (SPN) and Create a Keytab file for it ###
+2. Define Service Principal Name (SPN) and Create a Keytab file for it
+
 Use the following command to create the keytab file and SPN:
 > C:> ktpass -out c:\Users\Administrator\\**esauth.keytab** -princ **HTTP/loggui.com@DEV.EXAMPLE.COM** -mapUser **esauth** -mapOp set -pass '**Sprint$123**' -crypto ALL -pType KRB5_NT_PRINCIPAL
 
@@ -20,7 +25,8 @@ Values highlighted in bold should be adjusted for your system. The `esauth.keyta
 `chmod 640 /etc/elasticsearch/esauth.keytab` \
 `chown elasticsearch: /etc/elasticsearch/esauth.keytab`
 
-### Create a file named *krb5Login.conf*:
+3.  Create a file named *krb5Login.conf*:
+
 ```
 com.sun.security.jgss.initiate{
     com.sun.security.auth.module.Krb5LoginModule required
@@ -39,13 +45,14 @@ The `krb5Login.conf` file should be placed on your elasticsearch node, for insta
 sudo chmod 640 /etc/elasticsearch/krb5Login.conf
 sudo chown elasticsearch: /etc/elasticsearch/krb5Login.conf
 ```
-### Append the following JVM arguments (on Elasticsearch node in */etc/sysconfig/elasticsearch*):
+4. Append the following JVM arguments (on Elasticsearch node in */etc/sysconfig/elasticsearch*)
 
 > -Dsun.security.krb5.debug=true -Djava.security.krb5.realm=**DEV.EXAMPLE.COM** -Djava.security.krb5.kdc=**AD_HOST_IP_ADDRESS** -Djava.security.auth.login.config=**/etc/elasticsearch/krb5Login.conf** -Djavax.security.auth.useSubjectCredsOnly=false
 
 Change the appropriate values in the bold. This JVM arguments has to be set for Elasticsearch server.
 
-### Add the following additional (sso.domain, service_principal_name, service_principal_name_password) settings for ldap in elasticsearch.yml or properties.yml file wherever the ldap settings are configured:
+5. Add the following additional (sso.domain, service_principal_name, service_principal_name_password) settings for ldap in elasticsearch.yml or properties.yml file wherever the ldap settings are configured:
+
 ```
 sso.domain: "dev.example.com"
 ldaps:
@@ -65,15 +72,24 @@ ldaps:
 ```
 Note: At this moment, SSO works for only single domain. So you have to mention for what domain SSO should work in the above property `sso.domain`
 
-### To apply the changes restart Elasticsearch service
-`sudo systemctl restart elasticsearch.service`
+6. To apply the changes restart Elasticsearch service 
 
-### Enable SSO feature  in `kibana.yml` file:
+   ```bash
+   sudo systemctl restart elasticsearch.service
+   ```
 
-`kibana.sso_enabled: true` \
-After that Kibana has to be restarted: \
-`sudo systemctl restart kibana.service`
+7. Enable SSO feature  in `kibana.yml` file:
 
+   ```bash
+   kibana.sso_enabled: true
+   ```
+   
+8. After that Kibana has to be restarted: \
+   
+   ```bash
+   sudo systemctl restart kibana.service
+   ```
+   
 ## Client (Browser) Configuration##
 
 ### Internet Explorer configuration

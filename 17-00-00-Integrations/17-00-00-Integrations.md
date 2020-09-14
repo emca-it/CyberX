@@ -290,7 +290,7 @@ cp -rf var/* /var/
 1. To install the Grafana application you should:
 	- add necessary repository to operating system:
 
-			[root@logserver-6 ~]# cat /etc/yum.repos.d/grafan.repo
+			[root@localhost ~]# cat /etc/yum.repos.d/grafan.repo
 			[grafana]
 			name=grafana
 			baseurl=https://packagecloud.io/grafana/stable/el/7/$basearch
@@ -300,12 +300,12 @@ cp -rf var/* /var/
 			gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
 			sslverify=1
 			sslcacert=/etc/pki/tls/certs/ca-bundle.crt
-			[root@logserver-6 ~]#
+			[root@localhost ~]#
 
 
 	- install the Grafana with following commands:
 	
-			[root@logserver-6 ~]# yum search grafana
+			[root@localhost ~]# yum search grafana
 			Loaded plugins: fastestmirror
 			Loading mirror speeds from cached hostfile
 			 * base: ftp.man.szczecin.pl
@@ -317,15 +317,15 @@ cp -rf var/* /var/
 			
 			  Name and summary matches only, use "search all" for everything.
 			
-			[root@logserver-6 ~]# yum install grafana
+			[root@localhost ~]# yum install grafana
 	
 	- to run application use following commands:
 	
-			[root@logserver-6 ~]# systemctl enable grafana-server
+			[root@localhost ~]# systemctl enable grafana-server
 			Created symlink from /etc/systemd/system/multi-user.target.wants/grafana-server.service to /usr/lib/systemd/system/grafana-server.service.
-			[root@logserver-6 ~]#
-			[root@logserver-6 ~]# systemctl start grafana-server
-			[root@logserver-6 ~]# systemctl status grafana-server
+			[root@localhost ~]#
+			[root@localhost ~]# systemctl start grafana-server
+			[root@localhost ~]# systemctl status grafana-server
 			● grafana-server.service - Grafana instance
 			   Loaded: loaded (/usr/lib/systemd/system/grafana-server.service; enabled; vendor preset: disabled)
 			   Active: active (running) since Thu 2018-10-18 10:41:48 CEST; 5s ago
@@ -334,7 +334,7 @@ cp -rf var/* /var/
 			   CGroup: /system.slice/grafana-server.service
 			           └─1757 /usr/sbin/grafana-server --config=/etc/grafana/grafana.ini --pidfile=/var/run/grafana/grafana-server.pid cfg:default.paths.logs=/var/log/grafana cfg:default.paths.data=/var/lib/grafana cfg:default.paths.plugins=/var...
 			
-			 [root@logserver-6 ~]#
+			 [root@localhost ~]#
 
 
 
@@ -342,7 +342,7 @@ cp -rf var/* /var/
 
 	- define the default login/password (line 151;154 in config file)
 
-			[root@logserver-6 ~]# cat /etc/grafana/grafana.ini
+			[root@localhost ~]# cat /etc/grafana/grafana.ini
 			.....
 			148 #################################### Security ####################################
 			149 [security]
@@ -355,7 +355,7 @@ cp -rf var/* /var/
 .....
 	- restart *grafana-server* service:
 
-			[root@logserver-6 ~]# systemctl restart grafana-server
+			[root@localhost ~]# systemctl restart grafana-server
 
 	- Login to Grafana user interface using web browser: *http://ip:3000*
 
@@ -379,7 +379,7 @@ Before uploading index-pattern or dashboard you have to authorize yourself:
 
 1. Set up *login/password/kibana_ip* variables, e.g.:
 
-		login=logserver
+		login=my_user
 		password=my_password
 		kibana_ip=10.4.11.243
 
@@ -402,7 +402,7 @@ Before uploading index-pattern or dashboard you have to authorize yourself:
 
 ## Wazuh integration ##
 
-ITRS Log Analytics can integrate with the Wazuh, which is lightweight agent is designed to perform a number of tasks with the objective of detecting threats and, when necessary, trigger automatic responses. The agent core capabilities are:
+CyberX can integrate with the Wazuh, which is lightweight agent is designed to perform a number of tasks with the objective of detecting threats and, when necessary, trigger automatic responses. The agent core capabilities are:
 
 - Log and events data collection
 - File and registry keys integrity monitoring
@@ -442,31 +442,37 @@ However, if it is to be run with encryption, you also need to change `proxy_pass
 
 1. Create a directory in which the program will be located and its configuration:
 
-		bash
-		mkdir -p /usr/share/oauth2_proxy/
-		mkdir -p /etc/oauth2_proxy/
+```bash
+mkdir -p /usr/share/oauth2_proxy/
+mkdir -p /etc/oauth2_proxy/
+```
 
-1. Copy files to directories:
+2. Copy files to directories:
 
-		bash
-		cp oauth2_proxy /usr/share/oauth2_proxy/
-		cp oauth2_proxy.cfg /etc/oauth2_proxy/
-	
-1. Set directives according to OAuth configuration in Google Cloud project
+```bash
+cp oauth2_proxy /usr/share/oauth2_proxy/
+cp oauth2_proxy.cfg /etc/oauth2_proxy/
+```
 
+3. Set directives according to OAuth configuration in Google Cloud project
+
+```bash
 		cfg
 		client_id =
 		client_secret =
 		# the following limits domains for authorization (* - all)
-		email_domains = [
-		  "*"
-		]
+	​	email_domains = [
+	​	  "*"
+	​	]
+```
 
-1. Set the following according to the public hostname:
+4. Set the following according to the public hostname:
 
+```bash
 cookie_domain = "kibana-host.org"
+```
 
-1. In case 	og-in restrictions for a specific group defined on the Google side:
+5. In case 	og-in restrictions for a specific group defined on the Google side:
 	- Create administrative account: https://developers.google.com/identity/protocols/OAuth2ServiceAccount ; 
 	- Get configuration to JSON file and copy Client ID;
 	- On the dashboard of the Google Cloud select "APIs & Auth" -> "APIs";
@@ -482,63 +488,74 @@ cookie_domain = "kibana-host.org"
 	- Copy the previously downloaded JSON file to `/etc/oauth2_proxy/`.
 	- In file [oauth2_proxy](/files/oauth2_proxy.cfg) set the appropriate path:
 
-			google_service_account_json =
+```bash
+google_service_account_json =
+```
 
 ### Service start up
 
 - Start the NGiNX service 
+
 - Start the oauth2_proxy service
 
-		bash
-		/usr/share/oauth2_proxy/oauth2_proxy -config="/etc/oauth2_proxy/oauth2_proxy.cfg"
+```bash
+/usr/share/oauth2_proxy/oauth2_proxy -config="/etc/oauth2_proxy/oauth2_proxy.cfg"
+```
 
-In the browser enter the address pointing to the server with the Logserver installation
+In the browser enter the address pointing to the server with the CyberX installation
 
 ## Cerebro - Elasticsearch web admin tool
 
 ### Software Requirements
 1. Cerebro v0.8.4
 
-		bash
+```bash
 		wget 'https://github.com/lmenezes/cerebro/releases/download/v0.8.4/cerebro-0.8.4.tgz'
+```
 
-1. Java 11+ [for basic-auth setup]
+2. Java 11+ [for basic-auth setup]
 
-		bash
-		yum install java-11-openjdk-headless.x86_64
+```bash
+yum install java-11-openjdk-headless.x86_64
+```
 
+3. Java 1.8.0 [without authorization]
 
-1. Java 1.8.0 [without authorization]
-
-		bash
-		yum install java-1.8.0-openjdk-headless
+```bash
+yum install java-1.8.0-openjdk-headless
+```
 
 ### Firewall Configuration
 
-	bash
-	firewall-cmd --permanent --add-port=5602/tcp
-	firewall-cmd --reload
+```bash
+firewall-cmd --permanent --add-port=5602/tcp
+firewall-cmd --reload
+```
 
 ### Cerebro Configuration
 
 1. Extract archive & move directory
 
-		bash
-		tar -xvf cerebro-0.8.4.tgz -C /opt/
-		mv /opt/cerebro-0.8.4/ /opt/cerebro
+```bash
+tar -xvf cerebro-0.8.4.tgz -C /opt/
+mv /opt/cerebro-0.8.4/ /opt/cerebro
+```
 
-1. Add Cerebro service user
+2. Add Cerebro service user
 
-		bash
-		useradd -M -d /opt/cerebro -s /sbin/nologin cerebro
+```bash
+useradd -M -d /opt/cerebro -s /sbin/nologin cerebro
+```
 
-1. Change Cerbero permissions
+3. Change Cerbero permissions
 
-		bash
-		chown -R cerebro:cerebro /opt/cerebro && chmod -R 700 /opt/cerebro
+```bash
+chown -R cerebro:cerebro /opt/cerebro && chmod -R 700 /opt/cerebro
+```
 
-1. Install Cerbero service ([cerebro.service](/files/cerebro.service)):
+4. Install Cerbero service ([cerebro.service](/files/cerebro.service)):
 
+```bash
 		[Unit]
 		Description=Cerebro
 		
@@ -552,41 +569,45 @@ In the browser enter the address pointing to the server with the Logserver insta
 		
 		[Install]
 		WantedBy=multi-user.target
+```
 
+```bash
+cp cerebro.service /usr/lib/systemd/system/
+systemctl daemon-reload
+systemctl enable cerebro
+```
 
-		bash
-		cp cerebro.service /usr/lib/systemd/system/
-		systemctl daemon-reload
-		systemctl enable cerebro
-
-
-1. Customize configuration file: [/opt/cerebro/conf/application.conf](/files/application.conf)
-
+5. Customize configuration file: [/opt/cerebro/conf/application.conf](/files/application.conf)
+```bash
 	- Authentication
 
 			auth = {
 			  type: basic
 			    settings: {
-			      username = "logserver"
-			      password = "logserver"
+			      username = "user"
+			      password = "password"
 			    }
 			}
+```
 
 	- A list of known Elasticsearch hosts
 
+```bash
 			hosts = [
 			  {
 			    host = "http://localhost:9200"
-			    name = "logserver"
+			    name = "user"
 			    auth = {
 			      username = "username"
 			      password = "password"
 			    }
 			  }
 			]
+```
 
 	If needed uses secure connection (SSL) with Elasticsearch, set the following section that contains path to certificate. And change the host definition from `http` to `https`:
 
+```bash
 			play.ws.ssl {
 			  trustManager = {
 			    stores = [
@@ -595,10 +616,10 @@ In the browser enter the address pointing to the server with the Logserver insta
 			  }
 			} 
 			play.ws.ssl.loose.acceptAnyCertificate=true
-
+````
 
 	- SSL access to cerebro
-	
+```bash
 			http = {
 			  port = "disabled"
 			}
@@ -621,33 +642,35 @@ In the browser enter the address pointing to the server with the Logserver insta
 			#    ]
 			#  }
 			#}
+```
 
+6. Start the service
 
-1. Start the service
-
-		bash
+```bash
 		systemctl start cerebro
 		goto: https://127.0.0.1:5602
+```
 
 ### Optional configuration
 
 1. Register backup/snapshot repository for Elasticsearch
 
-		bash
+```bash
 		curl -k -XPUT "https://127.0.0.1:9200/_snapshot/backup?pretty" -H 'Content-Type: application/json' -d'
 		{
 		  "type": "fs",
 		  "settings": {
 		    "location": "/var/lib/elasticsearch/backup/"
 		  }
-		}' -u logserver:logserver
+		}' -u user:password
+```
 
+2. Login using curl/kibana
 
-1. Login using curl/kibana
-
-		bash
-		curl -k -XPOST 'https://127.0.0.1:5602/auth/login' -H 'mimeType: application/x-www-form-urlencoded' -d 'user=logserver&password=logserver' -c cookie.txt
+```bash
+		curl -k -XPOST 'https://127.0.0.1:5602/auth/login' -H 'mimeType: application/x-www-form-urlencoded' -d 'user=user&password=passwrd' -c cookie.txt
 		curl -k -XGET 'https://127.0.0.1:5602' -b cookie.txt
+```
 
 ## Curator - Elasticsearch index management tool
 
@@ -702,10 +725,11 @@ Example running command:
 
 ### Sample configuration file
 
-```bash
+
 ---
-# Remember, leave a key empty if there is no value.  None will be a string,
-# not a Python "NoneType"
+ Remember, leave a key empty if there is no value.  None will be a string, not a Python "NoneType"
+
+```bash
 client:
   hosts:
     - 127.0.0.1
@@ -1200,3 +1224,4 @@ Below is the search and options bar.
 ![](/media/media/image146.png)
 
 It allows you to search for event logs, define the systems from which events will be displayed, define the time range for events and define the index pattern.
+

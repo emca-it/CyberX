@@ -125,7 +125,7 @@ give it a name and click the button
 To load the visualization, go to the "Management Object"
  -> "Saved Object" -> "Visualizations" select it from the list. From this place, 
 we can also go into advanced editing mode. To view of the visualization 
-use ![](/media/media/image17_js.png) button.# Dashboards #
+use ![](/media/media/image17_js.png) button.
 
 ## Dashboards ##
 Dashboard is a collection of several visualizations or searches.
@@ -166,7 +166,7 @@ and give it a name.
 To load the Dashboard, go to the "Management Object"
  -> "Saved Object" -> "Dashborad" select it from the list. From this place, 
 we can also go into advanced editing mode. To view of the visualization 
-use ![](/media/media/image17_1_js.png) button.# Sharing dashboards #
+use ![](/media/media/image17_1_js.png) button.
 
 ## Sharing dashboards ##
 

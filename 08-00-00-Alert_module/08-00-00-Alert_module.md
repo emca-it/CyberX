@@ -74,7 +74,9 @@ how many event sit found and how many times it worked.
 
 ![](/media/media/image95.png)
 
-Also, on this tab, you can recover the alert dashboard, by clicking the "Recovery Alert Dashboard" button.# Type of the Alert module rules #
+Also, on this tab, you can recover the alert dashboard, by clicking the "Recovery Alert Dashboard" button.
+
+## Alert rules ##
 
 The various RuleType classes, defined in CyberX. 
 An instance is held in memory for each rule, passed all of the data returned by querying Elasticsearch 
@@ -100,6 +102,49 @@ is higher or lower than a threshold.
 - ***Find Match*** - Rule match when in defined period of time, two correlated documents match certain strings.
 - ***Difference*** - Rule matches for value difference between two aggregations calculated for different periods in time.
 - ***ConsecutiveGrowth*** - Rule matches for value difference between two aggregations calculated for different periods in time.
+## Alert Type ##
+
+When the alert rule is fulfilled, the defined action is performed - the alert method.
+The following alert methods have been predefined in the system:
+- email;
+- commands;
+- user;
+
+### Email 
+
+Method that sends information about an alert to defined email addresses
+
+### User
+
+Method that sends information about an alert to defined system users;
+
+### Command
+
+ A method that performs system tasks. For example, it triggers a script that creates a new event in the customer ticket system.
+
+Below is an example of an alert rule definition that uses the "command" alert method to create and recover an ticket in the client's ticket system:
+
+```bash
+index: op5-*
+name: change-op5-hoststate
+type: change
+
+compare_key: hoststate
+ignore_null: true
+query_key: hostname
+
+filter:
+- query_string:
+    query: "_exists_: hoststate AND datatype: \"HOSTPERFDATA\" AND _exists_: hostname"
+
+realert:
+  minutes: 0
+alert: "command"
+command: ["/opt/alert/send_request_change.sh", "5", "%(hostname)s", "SYSTEM_DOWN", "HOST", "Application Collection", "%(hoststate)s", "%(@timestamp)s"]
+```
+
+The executed command has parameters which are the values of the fields of the executed alert. Syntax: `%(fields_name)`.
+
 ## Example of rules ##
 
 ### Unix - Authentication Fail ###
