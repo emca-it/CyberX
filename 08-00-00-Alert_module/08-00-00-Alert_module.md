@@ -8,7 +8,7 @@ is taken.
 ![](/media/media/image91.PNG)
 
 For example, if you want to know when more than 20
-„status:500" responscode from on our homepage appear within an one
+„status:500" response code from on our homepage appear within an one
 hour, then we create an alert that check the number of occurrences of
 the „status:500" query for a specific index every 5 minutes. If the
 condition we are interested in is met, we send an action in the form
@@ -112,11 +112,11 @@ The following alert methods have been predefined in the system:
 
 ### Email 
 
-Method that sends information about an alert to defined email addresses
+Method that sends information about an alert to defined email addresses.
 
 ### User
 
-Method that sends information about an alert to defined system users;
+Method that sends information about an alert to defined system users.
 
 ### Command
 
