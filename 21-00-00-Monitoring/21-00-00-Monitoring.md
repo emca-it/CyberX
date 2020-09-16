@@ -108,10 +108,10 @@ In the Skimmer configuration file, set the credentials to communicate with Elast
 elasticsearch_auth = $user:$password
 ```
 
-To monitor the Kafka process and the number of documents in the queues of topics, run Skimmer on the Kafka server and uncheck the section:
+To monitor the Kafka process and the number of documents in the queues of topics, run Skimmer on the Kafka server and uncheck the following section:
 
 ```bash
-monitor kafka
+#monitor kafka
 kafka_path = /usr/share/kafka/
 kafka_server_api = 127.0.0.1:9092
 #comma separated kafka topics to be monitored, empty means all available topics
@@ -122,6 +122,11 @@ kafka_monitored_groups = group1,group2
 kafka_outdated_version = false
 
 ```
+
+- `kafka_path` - path to Kafka home directory (require `kafka-consumer-groups.sh`);
+- `kafka_server_api`  -  IP  address and port for kafka server API (default: 127.0.0.1:9092);
+- `kafka_monitored_groups` - comma separated list of Kafka consumer group, if you do not define this parameter, the command will be invoked with the `--all-groups` parameter;
+- `kafka_outdated_version` = true/false, if you use outdated version of kafka - before v.2.4.0 set: `true`
 
 After the changes in the configuration file, restart the service.
 
@@ -137,7 +142,7 @@ Go to the "**Management**" -> "**Index Patterns**" tab and press the "**Create I
 
 In the "**Discovery**" tab, select the `skimmer- *` index from the list of indexes. A list of collected documents with statistics and statuses will be displayed.
 
-Skimmer dashboard
+### Skimmer dashboard ###
 
 To use dashboards and visualization of skimmer results, load dashboards delivered with the product:
 
