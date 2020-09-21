@@ -1,5 +1,65 @@
 # **CHANGELOG** #
 
+## v7.0.3
+
+### NewFeatures
+- Alert: new type - Chain - create alert from underlying rules triggered in defined order
+- Alert: new type - Logical - create alert from underlying rules triggered with defined logic (OR,AND,NOR)
+- Alert: correlate alerts for Chain and Logical types - alert is triggered only if each rule return same value (ip, username, process etc)
+- Alert: each triggered alert is indexed with uniqe alert_id - field added to default field schema
+- Alert: Processing Time visualization on Alert dashboard - easy to identify badly designed alerts
+- Alert: support for automatic search link generation
+- Input: added mikrotik parsing rules
+- Auditing : added IP address field for each action
+- Auditing : possibility to exclude values from auditing
+- Skimmer: indexing rate visualization
+- Skimmer: new metric: offset in Kafka topics
+- SKimmer: new metric: expected-datanodes
+- MasterAgent: added possibility for beats agents restart and the master agent itself (GUI)
+
+### Improvements
+- Search and sort support for User List in Config section
+- Copy/Sync: now supports "insecure" mode (operations without certificates)
+- Fix for "add sample data & web sample dashboard" from Home Page -> changes in default-base-template
+- Skimmer: service status check rewriteen to dbus api
+- Masteragent: possibility to exclude older SSL protocols
+- Masteragent: now supports Centos 8 and related distros
+- XLSX import: updated to 7.6.1
+- Logstash: masteragent pipeline shipped by default
+- Blacklist: Name field and Field names in the Fields column & Default field exclusions
+- Blacklist: runOnce is only killed on a fatal Alert failure
+- Blacklist: IOC excludes threats marked as false-positive
+- Incidents: new design for Preview
+- Incidents: Note - new feature, ability to add notes to incidents
+- Risks: possibility to add new custom value for risk, without the need to index that value
+- Alert: much better performance with multithread support - now default
+- Alert: Validation of email addresses in the Alerts plugin
+- Alert: "Difference" rule description include examples for alert recovery function
+- Logtrail: improved the beauty and readability of the plugin
+- Security: jquery updated to 3.5.1
+- Security: bootstrap updated to 4.5.0
+- The HELP button (in kibana) now leads to the official product documentation
+- Centralization of previous alert code changes to single module
+
+### BugFixes
+- Individual special characters caused problems in user passwords
+- Bad permissions for scheduler of Copy/Sync module has been corrected
+- Wrong Alert status in the alert status tab
+- Skimmer: forcemerge caused under 0 values for cluster_stats_indices_docs_per_sec metric
+- diagnostic-tool.sh: wrong name for the archive in output
+- Reports: export to csv support STOP action 
+- Reports: scroll errors in csv exports
+- Alert: .alertrules is not a required index for proper system operation
+- Alert: /opt/alerts/testrules is not a required directory for proper system operation
+- Alert: .riskcategories is not a required index for proper system operation 
+- Malfunction in Session Timeout
+- Missing directives service_principal_name in bundled properties.yml
+- Blacklist: Removal of the _doc_ type in blacklist template
+- Blacklist: Problem with "generate_kibana_discover_url: true" directive
+- Alert: Overwriting an alert when trying to create a new alert with the same name
+- Reports: When exporting dashboards, PDF generates only one page or cuts the page
+- Wrong product logo when viewing dashboards in full screen mode
+
 ## Version 7.0.2
 
 ### New Features

@@ -159,6 +159,15 @@ the right bottom corner of object and dragging the border) and moving
 (by clicking on the title bar of the object and moving it). 
 
 ### Saving ###
+
+You may change the time period of your dashboard.
+
+At the upper right hand corner, you may choose the time range of your dashboard.
+
+![](/media/media/image147.png)
+
+Click save and choose the 'Store time with dashboard' if you are editing an existing dashboard. Otherwise, you may choose 'Save as a new dashboard' to create a new dashboard with the new time range.
+
 To save a dashboard, click on the "Save" button to the up of the query bar 
 and give it a name. 
 
