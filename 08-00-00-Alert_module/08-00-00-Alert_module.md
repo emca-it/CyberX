@@ -108,7 +108,7 @@ is higher or lower than a threshold.
 
 An example of using the Logical rule type.
 
-![](/media/media/image148.png)
+![](/media/media/image149.png)
 
 Alerts that must occur for the rule to be triggered:
 
