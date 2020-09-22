@@ -102,6 +102,36 @@ is higher or lower than a threshold.
 - ***Find Match*** - Rule match when in defined period of time, two correlated documents match certain strings.
 - ***Difference*** - Rule matches for value difference between two aggregations calculated for different periods in time.
 - ***ConsecutiveGrowth*** - Rule matches for value difference between two aggregations calculated for different periods in time.
+- ***Logical*** - Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
+- ***Chain*** - Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
+### Logical
+
+An example of using the Logical rule type.
+
+![](/media/media/image148.png)
+
+Alerts that must occur for the rule to be triggered:
+
+- Switch - Port is off-line - the alert must appear 5 times.
+  - OR
+- Switch - Port is on-line - the alert must appear 5 times.
+
+If both of the above alerts are met within no more than 5 minutes and the values of the "port_number" field are related to each other, the alert rule is triggered. It is possible to use logical connectives such as: OR, AND, NOR, NAND, XOR.
+
+### Chain
+
+An example of using the Chain rule type.
+
+![](/media/media/image148.png)
+
+Alerts that must occur for the rule to be triggered:
+
+- Linux - Login Failure - the alert must appear 10 times.
+  - AND
+- Linux - Login Success - 1 time triggered alert.
+
+If the sequence of occurrence of the above alerts is met within 5 minutes and the values of the "username" field are related to each other, the alert rule is triggered. The order in which the component alerts occur is important.
+
 ## Alert Type ##
 
 When the alert rule is fulfilled, the defined action is performed - the alert method.
