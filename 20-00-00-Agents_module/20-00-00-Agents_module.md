@@ -289,3 +289,6 @@ A list of configuration files will be displayed,  and the following options for 
 
 To edit the file, select the Edit button, then enter the changes in the content window, after finishing select the Submit button.
 
+After changing or adding the agent configuration, restart the agent by clicking the `Reload config` button.
+
+![](/media/media/image150.png)
