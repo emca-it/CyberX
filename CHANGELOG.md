@@ -2,7 +2,8 @@
 
 ## v7.0.3
 
-### NewFeatures
+### New Features
+
 - Alert: new type - Chain - create alert from underlying rules triggered in defined order
 - Alert: new type - Logical - create alert from underlying rules triggered with defined logic (OR,AND,NOR)
 - Alert: correlate alerts for Chain and Logical types - alert is triggered only if each rule return same value (ip, username, process etc)
