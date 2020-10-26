@@ -298,45 +298,6 @@ After changing or adding the agent configuration, restart the agent by clicking 
 The Agents module works with Beats agents in the following versions:
 
 
-+------+------------+---------------+---------------------------------------------------------------------+
-| Nr   | Agent Name | Beats Version | Link to download                                                    |
-+======+============+===============+=====================================================================+
-| 1    | Filebeat   | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/filebeat=oss=6=8=13  |
-+------+------------+---------------+---------------------------------------------------------------------+
-| 2    | Packetbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/packetbeat=oss=6=8=13|
-+------+------------+---------------+---------------------------------------------------------------------+
-| 3    | Winlogbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/winlogbeat=oss=6=8=13|
-+------+------------+---------------+---------------------------------------------------------------------+
-| 4    | Metricbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/metricbeat=oss=6=8=13|
-+------+------------+---------------+---------------------------------------------------------------------+
-| 5    | Heartbeat  | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/heartbeat=oss=6=8=13 |
-+------+------------+---------------+---------------------------------------------------------------------+
-| 6    | Auditbeat  | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/auditbeat=oss=6=8=13 |
-+------+------------+---------------+---------------------------------------------------------------------+
-| 7    | Logstash   | OSS 6.8.13    | https://www.elastic.co/downloads/past=releases/logstash=oss=6=8=13  |
-+------+------------+---------------+---------------------------------------------------------------------+
-
-|
-
-+------+------------+---------------+
-| Nr   | Agent Name | Beats Version |
-+======+============+===============+
-| 1    | Filebeat   | OSS 6.8.13    |
-+------+------------+---------------+
-| 2    | Packetbeat | OSS 6.8.13    |
-+------+------------+---------------+
-| 3    | Winlogbeat | OSS 6.8.13    |
-+------+------------+---------------+
-| 4    | Metricbeat | OSS 6.8.13    |
-+------+------------+---------------+
-| 5    | Heartbeat  | OSS 6.8.13    |
-+------+------------+---------------+
-| 6    | Auditbeat  | OSS 6.8.13    |
-+------+------------+---------------+
-| 7    | Logstash   | OSS 6.8.13    |
-+------+------------+---------------+
-
-
 <table border="1" class="docutils" id="id1">
 <colgroup>
 <col width="3%" />
@@ -418,29 +379,3 @@ The Agents module works with Beats agents in the following versions:
 </tbody>
 </table>
 
-
-
-<table>
-<tbody>
-<tr>
-<td><strong>Name</strong></td>
-<td><strong>City</strong></td>
-<td><strong>Age</strong></td>
-</tr>
-<tr>
-<td>John</td>
-<td>Chicago</td>
-<td>23</td>
-</tr>
-<tr>
-<td>Lucy</td>
-<td>Wisconsin</td>
-<td>19</td>
-</tr>
-<tr>
-<td>Amanda</td>
-<td>Madison</td>
-<td>22</td>
-</tr>
-</tbody>
-</table>
