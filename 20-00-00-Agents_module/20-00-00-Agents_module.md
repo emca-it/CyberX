@@ -379,3 +379,25 @@ The Agents module works with Beats agents in the following versions:
 </tbody>
 </table>
 
+
+
+Table caption
+^^^^^^^^^^^^^
+
++-----+--------------+---------------+------------------------------------------------------------------------+
+| Nr  | Agent Name   | Beats Version | Link to download                                                       |
++=====+==============+===============+========================================================================+
+| 1   | Filebeat     | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/filebeat-oss-6-8-13     |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 2   | Packetbeat   | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/packetbeat-oss-6-8-13   |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 3   | Winlogbeat   | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/winlogbeat-oss-6-8-13   |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 4   | Metricbeat   | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/metricbeat-oss-6-8-13   |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 5   | Heartbeat    | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/heartbeat-oss-6-8-13    |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 6   | Auditbeat    | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/auditbeat-oss-6-8-13    |
++-----+--------------+---------------+------------------------------------------------------------------------+
+| 7   | Logstash     | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/logstash-oss-6-8-13     |
++-----+--------------+---------------+------------------------------------------------------------------------+
