@@ -150,3 +150,8 @@ To use dashboards and visualization of skimmer results, load dashboards delivere
 curl -k -X POST -u$user:$passowrd "https://127.0.0.1:5601/api/kibana/dashboards/import?force=true" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d@kibana/kibana_objects/skimmer_objects.json
 ```
 
+### Expected Data Nodes ###
+
+Based on the collected data on the performance of the Energy Logserver environment, the Skimmer automatically indicates the need to run additional data nodes.
+
+![](/media/media/image151.png) 
