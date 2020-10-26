@@ -292,3 +292,17 @@ To edit the file, select the Edit button, then enter the changes in the content 
 After changing or adding the agent configuration, restart the agent by clicking the `Reload config` button.
 
 ![](/media/media/image150.png)
+
+## Compatibility matrix ##
+
+The Agents module works with Beats agents in the following versions:
+
+| Nr   | Agent Name | Beats Version | Link to download                                             |
+| ---- | ---------- | ------------- | ------------------------------------------------------------ |
+| 1    | Filebeat   | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/filebeat-oss-6-8-13 |
+| 2    | Packetbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/packetbeat-oss-6-8-13 |
+| 3    | Winlogbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/winlogbeat-oss-6-8-13 |
+| 4    | Metricbeat | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/metricbeat-oss-6-8-13 |
+| 5    | Heartbeat  | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/heartbeat-oss-6-8-13 |
+| 6    | Auditbeat  | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/auditbeat-oss-6-8-13 |
+| 7    | Logstash   | OSS 6.8.13    | https://www.elastic.co/downloads/past-releases/logstash-oss-6-8-13 |
