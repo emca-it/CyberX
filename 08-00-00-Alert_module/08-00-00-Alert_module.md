@@ -32,6 +32,35 @@ Only applies to versions 6.1.5 and older. From version 6.1.6 and later, the Aler
 - start the Alert service:
   
 		systemctl start alert
+
+## SMTP server configuration
+
+To configuring STMP server for email notification you should:
+
+- edit `/opt/alert/config.yml` and add the following section:
+
+  ```bash
+  # email conf
+  smtp_host: "mail.example.conf"
+  smtp_port: 587
+  smtp_ssl: false
+  from_addr: "siem@example.com"
+  smtp_auth_file: "/opt/alert/smtp_auth_file.yml"
+  ```
+
+- add the new `/opt/alert/smtp_auth_file.yml` file:
+
+  ```bash
+  user: "user"
+  password: "password"
+  ```
+
+- restart `alert` service:
+
+  ```bash
+  systemctl restat alert
+  ```
+
 ## Creating Alerts ##
 
 To create the alert, click the "Alerts" button from the main menu bar.
