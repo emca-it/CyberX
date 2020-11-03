@@ -85,7 +85,8 @@ It is recommended to run the Agent as a service in a given operating system.
     openssl pkcs12 -export -in ${DOMAIN}.crt -inkey ${DOMAIN}.pre -out     node_name.p12 -name "${DOMAIN}" -certfile rootCA.crt
     ```
    
-1. Linux host configuration
+### Linux host configuration
+   
 
   - To install the MasterAgent on Linux RH / Centos, the net-tools package must be installed:
 
@@ -128,7 +129,7 @@ It is recommended to run the Agent as a service in a given operating system.
  chown -R kibana:kibana /opt/agents
 ```
 
-- Linux Agent - Installation
+### Linux Agent - Installation
 
 ```bash
  /bin/cp -rf ./agents/linux/masteragent /opt/masteragent
@@ -176,7 +177,22 @@ It is recommended to run the Agent as a service in a given operating system.
   		systemctl enable  masteragent
   		systemctl start masteragent
       ```
-3. Windows host configuration
+### Windows Agent - Installation
+
+- Download and unpack OpenJDK 11: [https://jdk.java.net/java-se-ri/11](https://jdk.java.net/java-se-ri/11)
+
+- Unpack OpenJDK package to your Java installation folder, for example: `C:\Program Files\Java`
+
+- Add necessary environment variables:
+
+  - JAVA_HOME => `C:\Program Files\Java\jdk-11`
+  - Path => `C:\Program Files\Java\jdk-11\bin`
+
+  Example:
+
+  ![](/media/media/image152.png)
+
+  ![](/media/media/image153.png)
 
   - Download the latest version of MasterAgnet, which includes: 
     - Agents.jar;
@@ -186,7 +202,17 @@ It is recommended to run the Agent as a service in a given operating system.
     - lig.keystore;
 
   - Add an exception to the firewall to listen on TCP port 8081;
+
+     ```cmd
+     netsh advfirewall firewall add rule name="MasterAgnet 8081" protocol=TCP dir=in localport=8081 action=allow program="C:\Program Files\MasterAgent\agents.exe"
+     ```
+
   - Add an exception to the firewall to allow connection on TCP port 8080 with remote hosts;
+
+     ```cmd
+     netsh advfirewall firewall add rule name="MasterAgnet 8080" protocol=TCP dir=in localport=8080 action=allow program="C:\Program Files\MasterAgent\agents.exe"
+     ```
+
   - Copy Master Agent files to installation directory: "C:\Program Files\MasterAgent"
 
   - To install the service, start the PowerShell console as an administrator and execute the following commands:
@@ -194,6 +220,7 @@ It is recommended to run the Agent as a service in a given operating system.
      ```powershell
      New-Service -name masteragent -displayName masteragent -binaryPathName "C:\Program Files\MasterAgent\agents.exe"
      ```
+     
   - Check status of the services
      ```cmd
        cd C:\Program Files\MasterAgent
