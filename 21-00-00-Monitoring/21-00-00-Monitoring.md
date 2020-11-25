@@ -150,6 +150,24 @@ To use dashboards and visualization of skimmer results, load dashboards delivere
 curl -k -X POST -u$user:$passowrd "https://127.0.0.1:5601/api/kibana/dashboards/import?force=true" -H 'kbn-xsrf: true' -H 'Content-Type: application/json' -d@kibana/kibana_objects/skimmer_objects.json
 ```
 
+The Skimmer dashboard includes the following monitoring parameters:
+
+- `Elasticsearch - Heap usage in percent` -  is the total amount of Java heap memory that's currently being used by the JVM Elasticsearch process in percent
+- `Logstash - Heap usage in percent` -  is the total amount of Java heap memory that's currently being used by the JVM Logstash process in percent
+- `Elasticsearch - Process CPU usage` - is the amount of time for which a central processing unit was used for processing instructions of Elsticsearch process in percent
+- `Elasticsearch - Node CPU usage` - is the amount of time for which a central processing unit was used for processing instructions for specific node of Elasticsearch in percent
+- `Elasticsearch - Current queries` - is the current count of the search query to Elasticsearch indices
+- `Elasticsearch - Current search fetch` - is the current count of the fetch phase for search query to Elasticsearch indices
+- `GC Old collection` - is the duration of Java Garbage Collector for Old collection in milliseconds
+- `GC Young collection` - is the duration of Java Garbage Collector for Young collection in milliseconds
+- `Flush` - is the duration of Elasticsearch Flushing process that permanently save the transaction log in the Lucene index (in milliseconds).
+- `Refresh` -  is the duration of Elasticsearch Refreshing process that prepares new data for searching (in milliseconds).
+- `Indexing` - is the duration of Elasticsearch document Indexing process  (in milliseconds)
+- `Merge` - is the duration of Elasticsearch Merge process that periodically merged smaller segments into larger segments to keep the index size at bay (in milliseconds)
+- `Indexing Rate` - an indicator that counts the number of saved documents in the Elasticsearch index in one second (event per second - EPS)
+- `Expected DataNodes` - indicator of the number of data nodes that are required for the current load
+- `Free Space` - Total space and Free space in bytes on Elasticsearch cluster
+
 ### Expected Data Nodes ###
 
 Based on the collected data on the performance of the Energy Logserver environment, the Skimmer automatically indicates the need to run additional data nodes.
