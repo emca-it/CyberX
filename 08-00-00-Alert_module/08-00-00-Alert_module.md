@@ -161,6 +161,40 @@ Alerts that must occur for the rule to be triggered:
 
 If the sequence of occurrence of the above alerts is met within 5 minutes and the values of the "username" field are related to each other, the alert rule is triggered. The order in which the component alerts occur is important.
 
+### Difference
+
+This rule calculates percentage difference between aggregations for two non-overlapping time windows.
+
+Let’s assume x represents the current time (i.e. when alert rule is run) then the relation between historical and present time windows is described by the inequality:
+```
+<x – agg_min – delta_min; x – delta_min> <= <x – agg_min; x>; where x – delta_min <= x – agg_min => delta_min >= agg_min
+```
+The percentage difference is then described by the following equation:
+```
+d = | avg_now – avg_history | / max(avg_now, avg_history) * 100; for (avg_now – avg_history != 0; avg_now != 0; avg_history != 0)
+d = 0; (in other cases)
+```
+`avg_now` is the arithmetic mean of `<x – agg_min; x>`
+`avg_history` is the arithmetic mean of `<x – agg_min – delta_min; x – delta_min>`
+
+Required parameters:
+
+- Enable the rule by setting type field.
+`type: difference`
+- Based on the compare_key field aggregation is calculated.
+`compare_key: value`
+- An alert is triggered when the percentage difference between aggregations is higher than the specified value.
+`threshold_pct: 10`
+- The difference in minutes between calculated aggregations.
+`delta_min: 3`
+- Aggregation bucket (in minutes).
+`agg_min: 1`
+
+Optional parameters:
+
+If present, for each unique `query_key` aggregation is calculated (it needs to be of type keyword).
+`query_key: hostname`
+
 ## Alert Type ##
 
 When the alert rule is fulfilled, the defined action is performed - the alert method.
