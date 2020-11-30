@@ -170,6 +170,6 @@ The Skimmer dashboard includes the following monitoring parameters:
 
 ### Expected Data Nodes ###
 
-Based on the collected data on the performance of the Energy Logserver environment, the Skimmer automatically indicates the need to run additional data nodes.
+Based on the collected data on the performance of the CyberX environment, the Skimmer automatically indicates the need to run additional data nodes.
 
 ![](/media/media/image151.png) 

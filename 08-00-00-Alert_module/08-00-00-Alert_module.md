@@ -526,7 +526,7 @@ The value field value is then added to the table on which the risk calculation a
 
 ## Indicators of compromise (IoC)
 
-ITRS Log-Analytics has the Indicators of compromise (IoC) functionality, which is based on the Malware Information Sharing Platform (MISP).
+CyberX has the Indicators of compromise (IoC) functionality, which is based on the Malware Information Sharing Platform (MISP).
 IoC observes the logs sent to the system and marks documents if their content is in MISP signature.
 Based on IoC markings, you can build alert rules or track incident behavior.
 
