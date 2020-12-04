@@ -338,7 +338,7 @@ In the **Name** field, enter the name of the new Playbook.
 In the **Text** field, enter the content of the Playbook message.
 
 In the **Script** field, enter the commands to be executed in the script.
-
+G
 To save the entered content, confirm with the **Submit** button.
 
 ### Playbooks list  ###
@@ -587,3 +587,24 @@ green  open   .blacklists Mld2Qe2bSRuk2VyKm-KoGg   1   0      76549            0
 ```
 
 #### Configuration alert rule
+
+## Calendar function
+
+The alert rule can be executed based on a schedule called Calendar.
+
+### Create a calendar system
+
+The configuration of the **Calendar Function** should be done in the definition of the `Rule Definition` alert using the `calendar` and `scheduler` options, in **Crontab** format.
+
+For example, we want to have an alert that:
+
+- triggers only on working days from 8:00 to 16:00;
+
+- only triggers on weekends;
+
+```bash
+calendar:
+  schedule: "* 8-15 * * mon-fri"
+```
+
+If `aggregation` is used in the alert definition, remember that the aggregation schedule should be the same as the defined calendar.

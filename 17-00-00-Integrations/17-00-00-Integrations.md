@@ -456,11 +456,11 @@ CyberX can integrate with the Wazuh, which is lightweight agent is designed to p
 The Wazuh agents run on many different platforms, including Windows, Linux, Mac OS X, AIX, Solaris and HP-UX. They can be configured and managed from the Wazuh server.
 #### Deploying Wazuh Server ####
 
-https://documentation.wazuh.com/current/installation-guide/installing-wazuh-server/index.html#
+https://documentation.wazuh.com/3.13/installation-guide/installing-wazuh-manager/linux/centos/index.html
 
 #### Deploing Wazuh Agent ####
 
-https://documentation.wazuh.com/current/installation-guide/installing-wazuh-agent/index.html
+https://documentation.wazuh.com/3.13/installation-guide/installing-wazuh-agent/index.html
 
 #### Filebeat configuration ####
 
