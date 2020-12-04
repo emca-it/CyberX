@@ -569,7 +569,7 @@ The value field value is then added to the table on which the risk calculation a
 
 The Incident module allows you to handle incidents created by triggered alert rules. 
 
-![](/media/media/image96.PNG)
+![](/media/media/image154.PNG)
 
 Incident handling allows you to perform the following action:
 
