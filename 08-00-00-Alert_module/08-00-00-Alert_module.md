@@ -565,6 +565,38 @@ A loop is made on this array and a value is collected for the categories in the 
 Based on, for example, Risk_key, you can multiply the value of the value field by the appropriate weight.
 The value field value is then added to the table on which the risk calculation algorithms are executed.
 
+## Incidents
+
+The Incident module allows you to handle incidents created by triggered alert rules. 
+
+![](/media/media/image96.PNG)
+
+Incident handling allows you to perform the following action:
+
+- *Show incident* - shows the details that generated the incident;
+- *Verify* - checks the IP addresses of those responsible for causing an incident with the system reputation lists;
+- *Preview* - takes you to the Discover module and to the raw document responsible for generating the incident;
+- *Update* - allows you to change the Incident status or transfer the incident handling to another user. Status list: *New, Ongoing, False, Solved.*
+- *Playbooks* - enables handling of Playbooks assigned to an incident;
+- *Note* - User notes about the incident;
+
+### Incident Escalation
+
+The alarm rule definition allows an incident to be escalated if the incident status does not change (from New to Ongoing) after a defined time.
+
+Configuration parameter
+
+- *escalate_users* - an array of users who get an email alert about the escalation;
+- *escalate_after* - the time after which the escalation is triggered;
+
+Example of configuration:
+
+```yaml
+escalate_users:["user2", "user3"]
+escalate_after:
+	- hours: 6
+```
+
 ## Indicators of compromise (IoC)
 
 CyberX has the Indicators of compromise (IoC) functionality, which is based on the Malware Information Sharing Platform (MISP).
