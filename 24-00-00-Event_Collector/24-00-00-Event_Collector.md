@@ -346,3 +346,11 @@ vim /etc/logstash/pipeline.yml
              filter: '*[System[(Level=1  or Level=2 or Level=3) and (EventID=4672 or EventID=4624 or EventID=4634)]]'
    
    ```
+   
+   Restart Event Collector service 
+   
+   ```bash
+   systemctl restart wec
+   ```
+   
+   
