@@ -237,7 +237,7 @@ vim server-certopts.cnf
 
 13. Under the `Computer Configuration node`, expand the `Administrative Templates` node, then expand the `Windows Components` node, and then select the `Event Forwarding` node.
 
-14. Select the **SubscriptionManagers** setting and enable it. Click the **Show** button to add a subscription ([use the CA thumbprint you saved earlier](https://support.oneidentity.com/technical-documents/doc956319#step-thumbprint-ca)):
+14. Select the **SubscriptionManagers** setting and enable it. Click the **Show** button to add a subscription (use the CA thumbprint you saved earlier):
 
     ```cmd
     Server=https://<FQDN of the collector>:5986/wsman/SubscriptionManager/WEC,Refresh=<Refresh interval in seconds>,IssuerCA=<Thumbprint of the root CA>
