@@ -43,6 +43,34 @@ These fields contain information:
   create any number of indices
 - Issued on field - date of issue
 - Validity field - validity, in this case for 360000 months
+### Renew license
+
+To change the the CyberX license files on a running system, do the following steps.
+
+1. Copy the current license files to the backup folder:
+
+   ```bash
+   mv /usr/share/elasticsearch/es_* ~/backup/
+   ```
+
+2. Copy the new license files to the Elasticsearch installation directory:
+
+   ```bash
+   cp es_* /usr/share/elasticsearch/
+   ```
+
+3. Add necessary permission to the new license files:
+
+   ```bash
+   chown elasticsearch:elasticsearch /usr/share/elasticsearch/es_*
+   ```
+
+4. Reload the license using the License API:
+
+   ```bash
+   curl -u $USER:$PASSWORD -X POST http://localhost:9200/_license/reload
+   ```
+
 ## Special accounts ##
 
 At the first installation of the CyberX application, apart
