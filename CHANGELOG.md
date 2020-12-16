@@ -1,8 +1,64 @@
-# **CHANGELOG** #
+# **CHANGELOG**
+
+## v7.0.4
+
+### NewFeatures
+
+- New plugin: Archive specified indices
+- Applications Access management based on roles
+- Dashboards: Possibility to play a sound on the dashboard
+- Tenable.SC: Integration with dedicated dashboard
+- QualysGuard: Integration with dedicated dashboard
+- Wazuh: added installation package
+- Beats: added to installation package
+- Central Agents Management (masteragent): Stop & start & restart for each registered agent
+- Central Agents Management (masteragent): Status of detected beats and master agent in each registered agent
+- Central Agents Management (masteragent): Tab with the list of agents can be grouped
+- Central Agents Management (masteragent): Autorolling documents from .agents index based on a Settings in Config tab
+- Alert: New Alert method for op5 Monitor added to GUI.
+- Alert: New Alert method for Slack added to GUI.
+- Alert: Name-change - the ability to rename an already created rule
+- Alert: Groups for different alert types
+- Alert: Possibility to modify all alarms in selected group
+- Alert: Calendar - calendar for managing notifications
+- Alert: Escalate - escalate alarm after specified time
+- Alert: TheHive integration
+
+### Improvements
+
+- Object Permission: When adding an object to a role in "object permission" now is possible to add related objects at the same time
+- Skimmer: New metric - increase of documents in a specific index
+- Skimmer: New metric - size of a specific index
+- Skimmer: New metric - expected datanodes
+- Skimmer: New metric - kafka offset in Kafka cluster
+- Installation script: The setup script validates the license
+- Installation script: Support for Centos 8
+- AD integration: Domain selector on login page
+- Incidents: New fieldsToSkipForVerify option for skipping false-positives
+- Alert: Added sorting of labels in comboxes
+- User Roles: Alphabetical, searchable list of roles
+- User Roles: List of users assigned to a given role
+- Audit: Cache for audit settings (performance)
+- Diagnostic-tool.sh: Added cerebro to audit files
+- Alert Chain/Logical: Few improvements
+
+### BugFixes
+
+- Role caching fix for working in multiple node setup.
+- Alert: Aggregation schedule time
+- Alert: Loading new_term fields
+- Alert: RecursionError: maximum recursion depth exceeded in comparison
+- Alert: Match_body.kibana_discover_url malfunction in aggregation
+- Alert: Dashboard Recovery from Alert Status tab
+- Reports: Black bars after JPEG dashboard export
+- Reports: Problems with Scheduled reports
+- Elasticsearch-auth: Forbidden - not authorized when querying an alias with a wildcard
+- Dashboards: Logserver_table is not present in 7.X, it has been replaced with basic table
+- Logstash: Mikrotik pipeline - failed to start pipeline
 
 ## v7.0.3
 
-### New Features
+### New  Features 
 
 - Alert: new type - Chain - create alert from underlying rules triggered in defined order
 - Alert: new type - Logical - create alert from underlying rules triggered with defined logic (OR,AND,NOR)
@@ -61,7 +117,7 @@
 - Reports: When exporting dashboards, PDF generates only one page or cuts the page
 - Wrong product logo when viewing dashboards in full screen mode
 
-## Version 7.0.2
+## v7.0.2
 
 ### New Features
 
@@ -109,7 +165,7 @@
 - Incorrect CSS injections for dark theme
 - The role could not be removed in specific scenarios
 
-## Version 7.0.1
+## v7.0.1
 
 - init
 - migrated features from branch 6 [ latest:6.1.8 ]
