@@ -52,6 +52,12 @@ CyberX User Guide
 
 .. toctree::
         :maxdepth: 2
+        :caption: SIEM
+
+       23-00-00-SIEM/23-00-00-SIEM.md
+
+.. toctree::
+        :maxdepth: 2
         :caption: Intelligence_Module
 
        09-00-00-Intelligence_Module/09-00-00-Intelligence_Module.md
