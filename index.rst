@@ -55,6 +55,12 @@ CyberX User Guide
         :caption: SIEM
 
        23-00-00-SIEM/23-00-00-SIEM.md
+	   
+.. toctree::
+        :maxdepth: 2
+        :caption: Archive
+
+       25-00-00-Archive/25-00-00-Archive.md
 
 .. toctree::
         :maxdepth: 2
