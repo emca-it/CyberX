@@ -1339,3 +1339,91 @@ Below is the search and options bar.
 
 It allows you to search for event logs, define the systems from which events will be displayed, define the time range for events and define the index pattern.
 
+## Tenable.sc
+
+Tenable.sc is vulnerability management tool, which make a scan systems and environments to find vulnerabilities. The Logstash collector can connect to Tebable.sc API to get results of the vulnerability scan and send it to the Elasticsarch index. Reporting and analysis of the collected data is carried out using a prepared dashboard `[Vulnerability] Overview Tenable`
+
+![](/media/media/image166.png)
+
+### Configuration
+
+- enable pipeline in Logstash configuration:
+
+  ```bash
+  vim /etc/logstash/pipelines.yml
+  ```
+
+  uncomment following lines:
+
+  ```bash
+  - pipeline.id: tenable.sc
+    path.config: "/etc/logstash/conf.d/tenable.sc/*.conf"
+  ```
+
+- configure connection to Tenable.sc manager:
+
+  ```bash
+  vim /etc/logstash/conf.d/tenable.sc/venv/main.py
+  ```
+
+  set of the connection parameters:
+
+  - TENABLE_ADDR - IP address and port Tenable.sc manger;
+  - TENABLE_CRED - user and password;
+  - LOGSTASH_ADDR = IP addresss and port Logstash collector;
+
+  example:
+
+  ```bash
+  TENABLE_ADDR = ('10.4.3.204', 443)
+  TENABLE_CRED = ('admin', 'passowrd')
+  LOGSTASH_ADDR = ('127.0.0.1', 10000)
+  ```
+
+## Qualys Guard
+
+Qualys Guard is vulnerability management tool, which make a scan systems and environments to find vulnerabilities. The Logstash collector can connect to Qualys Guard API to get results of the vulnerability scan and send it to the Elasticsarch index. Reporting and analysis of the collected data is carried out using a prepared dashboard `[Vulnerability] Overview Tenable`
+
+![](/media/media/image166.png)
+
+### Configuration
+
+- enable pipeline in Logstash configuration:
+
+  ```bash
+  vim /etc/logstash/pipelines.yml
+  ```
+
+  uncomment following lines:
+
+  ```bash
+  - pipeline.id: qualys
+    path.config: "/etc/logstash/conf.d/qualys/*.conf"
+  ```
+
+- configure connection to Qualys Guard manager:
+
+  ```bash
+  vim /etc/logstash/conf.d/qualys/venv/main.py
+  ```
+
+  set of the connection parameters:
+
+  - LOGSTASH_ADDR - IP address and port of the Logstash collector;
+
+  - hostname - IP address and port of the Qualys Guard manger;
+  - username - user have access to Qualys Guard manger;
+  - password - password for user have access to Qualys Guard manger.
+
+  example:
+
+  ```bash
+  LOGSTASH_ADDR = ('127.0.0.1', 10001)
+  
+  # connection settings
+  conn = qualysapi.connect(
+      username="emcas5ab1",
+      password="Lewa#stopa1",
+      hostname="qualysguard.qg2.apps.qualys.eu"
+  )
+  ```
