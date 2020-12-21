@@ -255,3 +255,17 @@ Search for triggered alert in Discovery tab. Use alert* search pattern.
 
 Refresh the alert that should contain url for the dashboard.
 Once available, kibana_dashboard field can be exposed to dashboards giving You a real drill down feature.
+
+## Sound notification
+
+You can use sound notification on dashboard when the new document is coming. To configure sound notification on dashboard use the following steps: 
+- create and save the `Saved search` in `Discovery` module;
+- open the proper dashboard and `add` the previously created `Saved search`;
+- exit form dashboard editing mode by click on the `save` button;
+- click on three small square on the previously added object and select `Play audio`:
+![](/media/media/image162.png)
+- select the sound file in the mp3 format from your local disk and click OK:
+![](/media/media/image163.png)
+- on the dashboard set the automatically refresh data. for example every 5 seconds:
+![](/media/media/image164.png)
+-  when new document will coming the sound will playing.
