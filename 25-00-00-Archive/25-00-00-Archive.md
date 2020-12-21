@@ -18,7 +18,7 @@ remove the comment from the following line and set the correct path to the archi
 archive.archivefolderpath: '/var/lib/elastic_archive_test'
 ```
 
-## Archive task
+## Archive Task
 
 ### Create Archive task
 
@@ -40,7 +40,9 @@ In the `Task List` you can follow the current status of ordered tasks. You can m
 
 ![](/media/media/image157.png) 
 
-## Archive search
+If the archiving task finds an existing archive file that matches the data being archived, it will check the number of documents in the archive and the number of documents in the index. If there is a difference in the number of documents then new documents will be added to the archive file.
+
+## Archive Search
 
 The Archive Search module can search archive files for the specific content and back result in the `Task List`
 
@@ -72,7 +74,7 @@ The Archive Upload module move data from archive to Elasticsearch index and make
 
    - `Destination index` - If destination index does not exist it will be created. If exists data will append.
 - `File name` - list of archive file that will be recover to Elasticsearch index.
-   
+  
 
 ![](/media/media/image160.png) 
 
