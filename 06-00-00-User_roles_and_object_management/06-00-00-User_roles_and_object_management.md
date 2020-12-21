@@ -196,3 +196,11 @@ After you change password for one of the system account ( alert, intelligence, l
 		password => "new_password"
 	}
 	```
+
+## Module Access
+
+You can restrict access to specific modules for a user role. For example: the user can only use the Discovery, Alert and Cerebro modules, the other modules should be inaccessible to the user.
+
+You can do this by editing the roles in the `Role List` and selecting the application from the `Apps` list. After saving, the user has access only to specific modules.
+
+![](/media/media/image165.png)
