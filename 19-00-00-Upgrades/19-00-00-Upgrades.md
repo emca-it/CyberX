@@ -7,6 +7,20 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
 
 ## Upgrade from version 7.0.3
 
+### General note
+
+1. Indicators of compromise (IOCs auto-update) require access to the software provider's servers. 
+
+2. GeoIP Databases (auto-update) require access to the software provider's servers.
+
+3. Archive plugin require `ztsd` package to work: 
+
+   ```bash
+   yum install zstd
+   ```
+
+### Upgrade steps
+
 1. Stop services   
 
    ```bash
@@ -29,25 +43,6 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
    ```bash
    systemctl start elasticsearch alert kibana cerebro
    ```
-
-**Extra note**
-
-If the Elasticsearch service has been started on the client-node, then it is necessary to update the **client.rpm** and **data.rpm** packages on the client node. 
-
-After update, you need to edit:
-
-```bash
-/etc/elasticsearch/elasticsearch.yml
-```
-and change:
-```bash
-node.data: false
-```
-Additionally, check the file:
-```bash
-elasticsearch.yml.rpmnew
-```
-and complete the configuration in `elasticsearch.yml` with additional lines.
 
 ## Changing OpenJDK version
 
