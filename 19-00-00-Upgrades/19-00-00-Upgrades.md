@@ -5,55 +5,30 @@
 curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
 ```
 
-## Upgrade from version 7.0.1
+## Upgrade from version 7.0.3
 
-### General note
+1. Stop services   
 
-- Update the `kibana` role to include index-pattern `.kibana*`
-- Update the `alert` role to include index-pattern `.alertrules*` and `alert_status*`
-- Install `python36` which is required for the Alerting engine on client-node:
-```bash 
-yum install python3
-```
-- AD users should move their saved objects  from the `adrole`.
-- Indicators of compromise (IOCs auto-update) require access to the software provider's servers.
-- GeoIP Databases (auto-update) require access to the software provider's servers.
+   ```bash
+   systemctl stop elasticsearch alert kibana cerebro
+   ```
 
-### Upgrade steps
+2. Upgrade client-node (includes alert engine):
 
-- Stop services
+   ```bash
+   yum update ./PACKAGE_NAME_VARIABLE-client-node-VERSION_TEMPLATE_VARIABLE-1.el7.x86_64.rpm
+   ```
+3. Upgrade data-node:   
 
-```bash
-systemctl stop elasticsearch alert kibana
-```
+   ```bash
+   yum update ./PACKAGE_NAME_VARIABLE-data-node-VERSION_TEMPLATE_VARIABLE-1.el7.x86_64.rpm
+   ```
 
-- Upgrade client-node (includes alert engine)
-
-```bash
-yum update ./cyberx-client-node-7.0.2-1.el7.x86_64.rpm
-```
-
-- Login in the GUI CyberX and go to the `Alert List`  on the `Alerts` tab and click `SAVE` button
-
-![](/media/media/image143.png)
-
-- Start  `alert` and `kibana` service
-
-```bash
-systemctl start alert kibana
-```
-
-- Upgrade data-node
-
-```bash
-yum update ./cyberx-data-node-7.0.2-1.el7.x86_64.rpm
-```
-
-- Start services
-
-```bash
-systemctl start elasticsearch alert
-```
+4. Start services:
+   
+   ```bash
+   systemctl start elasticsearch alert kibana cerebro
+   ```
 
 **Extra note**
 
