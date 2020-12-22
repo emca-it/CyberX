@@ -84,7 +84,50 @@ The process will index data back into Elasticsearch. Depend on archive size the 
 
 ![](/media/media/image161.png) 
 
+## Command Line tools
 
+Archive files can be handled by the following commands `zstd`, `zstdcat`, `zstdgrep`, `zstdless`, `zstdmt`.
 
+### zstd
 
+The command for decompress `*.zstd` the Archive files, for example:
+
+```bash
+zstd -d winlogbeat-2020.10_2020-10-23.json.zstd -o
+ winlogbeat-2020.10_2020-10-23.json
+```
+
+### zstdcat
+
+The command for concatenate  `*.zstd` Archive files and print content on the standard output, for example:
+
+```bash
+zstdcat winlogbeat-2020.10_2020-10-23.json.zstd
+```
+
+### zstdgrep
+
+The command for print lines matching a pattern from `*.zstd` Archive files, for example:
+
+```bash
+zstdgrep "optima" winlogbeat-2020.10_2020-10-23.json.zstd
+```
+
+Above example is searching documents contain the "optima" phrase in winlogbeat-2020.10_2020-10-23.json.zstd archive file.
+
+### zstdless
+
+The command for viewing Archive `* .zstd` files, for example:
+
+```bash
+zstdless winlogbeat-2020.10_2020-10-23.json.zstd
+```
+
+### zstdmt
+
+The command for compress and decompress Archive `*.zdtd` file useing multiple CPU core (default is 1), for example:
+
+```bash
+zstdmt -d winlogbeat-2020.10_2020-10-23.json.zstd -o winlogbeat-2020.10_2020-10-23.json
+```
 
