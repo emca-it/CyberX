@@ -282,7 +282,7 @@ The default agent uses TLS 1.2 for communication. In addition, you can disable t
 
 ## The agent management ##
 
-The GUI console is used to manage agents. In the **Agetns** tab, you can find a list of connected agents. There are typical information about agents such as:
+The GUI console is used to manage agents. In the **Agents** tab, you can find a list of connected agents. There are typical information about agents such as:
 
 - Host name;
 - OS name;
