@@ -17,7 +17,8 @@ cp /opt/wec/sub_manager/config.yaml /etc/wec/config.yaml
 ### Generate certificate
 
 ```bash
-cd /opt/wec_7x-master/certgen
+mkdir /opt/wec/certgen
+cd /opt/wec/certgen
 vim server-certopts.cnf
 ```
 
@@ -44,6 +45,12 @@ vim server-certopts.cnf
   ```
 
 - Set `DNS.1` and `IP.1` for client certificate:
+
+  ```bash
+  vim client-certopts.cnf
+  ```
+
+  
 
   ```bash
   [req]
@@ -177,7 +184,7 @@ vim server-certopts.cnf
 ### Running Event Collector service
 
    ```bash
-   vim /etc/sysconfig/wec.service
+   vim /etc/systemd/system/wec.service
    ```
 
    ```bash
@@ -227,6 +234,14 @@ vim server-certopts.cnf
    - In `CompMgmt.msc`, under `Local Users and Groups`, click `Groups > Event Log Readers` to open `Event Log Readers Properties`.
    - Add the "NETWORK SERVICE" account to the `Event Log Readers group`.
 
+   8.1. For domain controller use "Group Policy Manger Editor" and edit: "Default Domain Controller Policy":
+   
+   	- From `Computer Configuration` > `Policy`, expand `Windows Settings` > `Security Settings` > `Restricted Groups`;
+   	- From contest menu add: `Add Group`
+    - Add the following configuration:
+      	- Group = `BUILTIN\Event Log Readers`
+         	- Members = `NT Authority\NETWORK SERVICE`
+   
 9. Make sure collector server is reachable from windows machine
 
 10. Run `winrm qc` and accept changes on windows machine
