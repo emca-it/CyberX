@@ -781,6 +781,29 @@ You need to import host SSL certificate in Java trust store to be able to connec
   }
   ```
 
+## Logstash - Input XML
+
+To download xml files via Logstash use input "file", and set the location of the files in the configuration file:
+
+```bash
+file {
+       path => [ "/etc/logstash/files/*.xml" ]
+       mode => "read"
+  }
+```
+
+The XML filter takes a field that contains XML and expands it into an actual datastructure.
+
+```bash
+filter {
+      xml {
+        source => "message"
+      }
+    }
+```
+
+More configuration options you can find: https://www.elastic.co/guide/en/logstash/6.8/plugins-filters-xml.html#plugins-filters-xml-options
+
 ## Logstash - Filter "beats syslog" ##
 
 
