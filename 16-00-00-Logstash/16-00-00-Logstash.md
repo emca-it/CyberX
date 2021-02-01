@@ -804,6 +804,40 @@ filter {
 
 More configuration options you can find: https://www.elastic.co/guide/en/logstash/6.8/plugins-filters-xml.html#plugins-filters-xml-options
 
+## Logstash - Input WMI
+
+The Logstash input **wmi** allow to collect data from WMI query. This is useful for collecting performance metrics and other data which is accessible via WMI on a Windows host.
+
+### Installation
+
+For plugins not bundled by default, it is easy to install by running: 
+
+`/usr/share/logstash/bin/logstash-plugin install logstash-input-wmi`
+
+### Configuration
+
+Configuration example:
+
+```ruby
+input {
+      wmi {
+        query => "select * from Win32_Process"
+        interval => 10
+      }
+      wmi {
+        query => "select PercentProcessorTime from Win32_PerfFormattedData_PerfOS_Processor where name = '_Total'"
+      }
+      wmi { # Connect to a remote host
+        query => "select * from Win32_Process"
+        host => "MyRemoteHost"
+        user => "mydomain\myuser"
+        password => "Password"
+      }
+    }
+```
+
+More about parameters: [https://www.elastic.co/guide/en/logstash/6.8/plugins-inputs-wmi.html#plugins-inputs-wmi-options](https://www.elastic.co/guide/en/logstash/6.8/plugins-inputs-wmi.html#plugins-inputs-wmi-options)
+
 ## Logstash - Filter "beats syslog" ##
 
 
@@ -1018,7 +1052,274 @@ This filter processing an events data with IP address and check localization:
 	     }
 	
 	}
-## Logstash - Output to Elasticsearch ##
+## Logstash  avoiding duplicate documents
+
+To avoid duplicating the same documents, e.g. if the collector receives the entire event log file on restart, prepare the Logstash filter as follows:
+
+1. Use the **fingerprint** Logstash filter to create consistent hashes of one or more fields whose values are unique for the document and store the result in a new field, for example:
+
+```bash
+fingerprint {
+                        source => [ "log_name", "record_number" ]
+                        target => "generated_id"
+                        method => "SHA1"
+                }
+
+```
+
+- source - The name(s) of the source field(s) whose contents will be used to create the fingerprint
+- target - The name of the field where the generated fingerprint will be stored. Any current contents of that field will be overwritten.
+- method - If set to `SHA1`, `SHA256`, `SHA384`, `SHA512`, or `MD5` and a key is set, the cryptographic hash function with the same name will be used to generate the fingerprint. When a key set, the keyed-hash (HMAC) digest function will be used.
+
+2. In the **elasticsearch** output set the **document_id** as the value of the **generated_id** field:
+
+```bash
+elasticsearch {
+                hosts => ["http://localhost:9200"]
+                user => "logserver"
+                password => "logserver"
+                index => "syslog_wec-%{+YYYY.MM.dd}"
+                document_id => "%{generated_id}"
+        }
+```
+
+- document_id - The document ID for the index. Useful for overwriting existing entries in Elasticsearch with the same ID.
+
+Documents having the same document_id will be indexed only once.
+
+## Logstash data enrichment
+
+It is possible to enrich the events that go to the logstash filters with additional fields, the values of which come from the following sources:
+- databases, using the `jdbc` plugin;
+- Active Directory or OpenLdap, using the `logstash-filter-ldap` plugin;
+- dictionary files, using the `translate` plugin;
+- external systems using their API, e.g. OP5 Monitor/Nagios
+
+### Filter `jdbc`
+
+This filter executes a SQL query and store the result set in the field specified as `target`. It will cache the results locally in an LRU cache with expiry.
+
+For example, you can load a row based on an id in the event:
+
+```bahs
+filter {
+  jdbc_streaming {
+    jdbc_driver_library => "/path/to/mysql-connector-java-5.1.34-bin.jar"
+    jdbc_driver_class => "com.mysql.jdbc.Driver"
+    jdbc_connection_string => "jdbc:mysql://localhost:3306/mydatabase"
+    jdbc_user => "me"
+    jdbc_password => "secret"
+    statement => "select * from WORLD.COUNTRY WHERE Code = :code"
+    parameters => { "code" => "country_code"}
+    target => "country_details"
+  }
+}
+```
+
+More about `jdbc` plugin parameters: [(https://www.elastic.co/guide/en/logstash/6.8/plugins-filters-jdbc_streaming.html](https://www.elastic.co/guide/en/logstash/6.8/plugins-filters-jdbc_streaming.html#plugins-filters-jdbc_streaming-prepared_statements)
+
+### Filter `logstash-filter-ldap`
+
+#### Download and installation
+
+[https://github.com/Transrian/logstash-filter-ldap](https://github.com/Transrian/logstash-filter-ldap)
+
+#### Configuration
+
+The **logstash-filter-ldap** filter will add fields queried from a ldap server to the event.
+The fields will be stored in a variable called **target**, that you can modify in the configuration file.
+
+If an error occurs during the process tha **tags** array of the event is updated with either:
+- **LDAP_ERROR** tag: Problem while connecting to the server: bad *host, port, username, password, or search_dn* -> Check the error message and your configuration.
+- **LDAP_NOT_FOUND** tag: Object wasn't found.
+
+If error logging is enabled a field called **error** will also be added to the event.
+It will contain more details about the problem.
+
+
+##### Input event
+
+```ruby
+{
+    "@timestamp" => 2018-02-25T10:04:22.338Z,
+    "@version" => "1",
+    "myUid" => "u501565"
+}
+```
+
+##### Logstash filter
+
+```ruby
+filter {
+  ldap {
+    identifier_value => "%{myUid}"
+    host => "my_ldap_server.com"
+    ldap_port => "389"
+    username => "<connect_username>"
+    password => "<connect_password>"
+    search_dn => "<user_search_pattern>"
+  }
+}
+```
+
+##### Output event
+
+```ruby
+{
+    "@timestamp" => 2018-02-25T10:04:22.338Z,
+    "@version" => "1",
+    "myUid" => "u501565",
+    "ldap" => {
+        "givenName" => "VALENTIN",
+        "sn" => "BOURDIER"
+    }
+}
+```
+
+#### Parameters availables
+
+Here is a list of all parameters, with their default value, if any, and their description.
+
+```
+|      Option name      | Type    | Required | Default value  | Description                                                  | Example                                   |
+| :-------------------: | ------- | -------- | -------------- | ------------------------------------------------------------ | ----------------------------------------- |
+|   identifier_value    | string  | yes      | n/a            | Identifier of the value to search. If identifier type is uid, then the value should be the uid to search for. | "123456"                                  |
+|    identifier_key     | string  | no       | "uid"          | Type of the identifier to search                             | "uid"                                     |
+|    identifier_type    | string  | no       | "posixAccount" | Object class of the object to search                         | "person"                                  |
+|       search_dn       | string  | yes      | n/a            | Domain name in which search inside the ldap database (usually your userdn or groupdn) | "dc=example,dc=org"                       |
+|      attributes       | array   | no       | []             | List of attributes to get. If not set, all attributes available will be get | ['givenName', 'sn']                       |
+|        target         | string  | no       | "ldap"         | Name of the variable you want the result being stocked in    | "myCustomVariableName"                    |
+|         host          | string  | yes      | n/a            | LDAP server host adress                                      | "ldapserveur.com"                         |
+|       ldap_port       | number  | no       | 389            | LDAP server port for non-ssl connection                      | 400                                       |
+|      ldaps_port       | number  | no       | 636            | LDAP server port for ssl connection                          | 401                                       |
+|        use_ssl        | boolean | no       | false          | Enable or not ssl connection for LDAP  server. Set-up the good ldap(s)_port depending on that | true                                      |
+| enable_error_logging  | boolean | no       | false          | When there is a problem with the connection with the LDAP database, write reason in the event | true                                      |
+|   no_tag_on_failure   | boolean | no       | false          | No tags are added when an error (wrong credentials, bad server, ..) occur | true                                      |
+|       username        | string  | no       | n/a            | Username to use for search in the database                   | "cn=SearchUser,ou=person,o=domain"        |
+|       password        | string  | no       | n/a            | Password of the account linked to previous username          | "123456"                                  |
+|       use_cache       | boolean | no       | true           | Choose to enable or not use of buffer                        | false                                     |
+|      cache_type       | string  | no       | "memory"       | Type of buffer to use. Currently, only one is available, "memory" buffer | "memory"                                  |
+| cache_memory_duration | number  | no       | 300            | Cache duration (in s) before refreshing values of it         | 3600                                      |
+|   cache_memory_size   | number  | no       | 20000          | Number of object max that the buffer can contains            | 100                                       |
+|  disk_cache_filepath  | string  | no       | nil            | Where the cache will periodically be dumped                  | "/tmp/my-memory-backup"                   |
+|  disk_cache_schedule  | string  | no       | 10m            | Cron period of when the dump of the cache should occured. See [here](https://github.com/floraison/fugit) for the syntax. | "10m", "1h", "every day at five", "3h10m" |
+```
+
+#### Buffer
+
+Like all filters, this filter treat only 1 event at a time.
+This can lead to some slowing down of the pipeline speed due to the network round-trip time, and high network I/O.
+
+A buffer can be set to mitigate this.
+
+Currently, there is only one basic **"memory"** buffer.
+
+You can enable / disable use of buffer with the option **use_cache**.
+
+#### Memory Buffer
+
+This buffer **store** data fetched from the LDAP server **in RAM**, and can be configured with two parameters:
+- *cache_memory_duration*: duration (in s) before a cache entry is refreshed if hit.
+- *cache_memory_size*: number of tuple (identifier, attributes) that the buffer can contains.
+
+Older cache values than your TTL will be removed from cache.
+
+#### Persistant cache buffer
+
+For the only buffer for now, you will be able to save it to disk periodically.
+
+Some specificities :
+  - for *the memory cache*, TTL will be reset
+
+Two parameters are required: 
+  - *disk_cache_filepath*: path on disk of this backup
+  - *disk_cache_schedule*: schedule (every X time unit) of this backup. Please check [here](https://github.com/floraison/fugit) for the syntax of this parameter. 
+
+### Filter `translate`
+
+A general search and replace tool that uses a configured hash and/or a file to determine replacement values. Currently supported are YAML, JSON, and CSV files. Each dictionary item is a key value pair.
+
+You can specify dictionary entries in one of two ways:
+
+- The dictionary configuration item can contain a hash representing the mapping.
+  
+
+```ruby
+filter {
+      translate {
+        field => "[http_status]"
+        destination => "[http_status_description]"
+        dictionary => {
+          "100" => "Continue"
+          "101" => "Switching Protocols"
+          "200" => "OK"
+          "500" => "Server Error"
+        }
+        fallback => "I'm a teapot"
+      }
+    }
+```
+
+- An external file (readable by logstash) may be specified in the `dictionary_path` configuration item:
+
+```ruby
+filter {
+	translate {
+		dictionary_path => "/etc/logstash/lists/instance_cpu.yml"
+		field => "InstanceType"
+		destination => "InstanceCPUCount"
+		refresh_behaviour => "replace"
+	}
+}
+```
+
+​		Sample dictionary file:
+
+```yml
+"c4.4xlarge": "16"
+"c5.xlarge": "4"
+"m1.medium": "1"
+"m3.large": "2"
+"m3.medium": "1"
+"m4.2xlarge": "8"
+"m4.large": "2"
+"m4.xlarge": "4"
+"m5a.xlarge": "4"
+"m5d.xlarge": "4"
+"m5.large": "2"
+"m5.xlarge": "4"
+"r3.2xlarge": "8"
+"r3.xlarge": "4"
+"r4.xlarge": "4"
+"r5.2xlarge": "8"
+"r5.xlarge": "4"
+"t2.large": "2"
+"t2.medium": "2"
+"t2.micro": "1"
+"t2.nano": "1"
+"t2.small": "1"
+"t2.xlarge": "4"
+"t3.medium": "2"
+```
+
+### External API
+
+A simple filter that checks if an IP (from **PublicIpAddress** field) address exists in an external system. The result is written to the **op5exists** field. Then, using a grok filter, the number of occurrences is decoded and put into the **op5count** field.
+
+```ruby
+ruby {
+	code => '
+		checkip = event.get("PublicIpAddress")
+		output=`curl -s -k -u monitor:monitor "https://192.168.1.1/api/filter/count?query=%5Bhosts%5D%28address%20~~%20%22#	{checkip}%22%20%29" 2>&1`
+		event.set("op5exists", "#{output}")
+	'
+}
+grok {
+	match => { "op5exists" => [ ".*\:%{NUMBER:op5count}" ] }
+}
+```
+
+## Logstash - Output to Elasticsearch
 
 This output plugin sends all data to the local Elasticsearch instance and create indexes:	
 
@@ -1032,7 +1333,7 @@ This output plugin sends all data to the local Elasticsearch instance and create
 		   password => "logstash"
 		}
 	}
-## Logstash plugin for "naemon beat" ##
+## Logstash plugin for "naemon beat"
 
 This Logstash plugin has example of complete configuration for integration with *naemon* application:
 
