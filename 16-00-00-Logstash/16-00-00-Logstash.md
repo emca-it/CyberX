@@ -1058,32 +1058,32 @@ To avoid duplicating the same documents, e.g. if the collector receives the enti
 
 1. Use the **fingerprint** Logstash filter to create consistent hashes of one or more fields whose values are unique for the document and store the result in a new field, for example:
 
-```bash
-fingerprint {
-                        source => [ "log_name", "record_number" ]
-                        target => "generated_id"
-                        method => "SHA1"
-                }
+   ```bash
+   fingerprint {
+                           source => [ "log_name", "record_number" ]
+                           target => "generated_id"
+                           method => "SHA1"
+                   }
+   
+   ```
 
-```
-
-- source - The name(s) of the source field(s) whose contents will be used to create the fingerprint
-- target - The name of the field where the generated fingerprint will be stored. Any current contents of that field will be overwritten.
-- method - If set to `SHA1`, `SHA256`, `SHA384`, `SHA512`, or `MD5` and a key is set, the cryptographic hash function with the same name will be used to generate the fingerprint. When a key set, the keyed-hash (HMAC) digest function will be used.
+   - source - The name(s) of the source field(s) whose contents will be used to create the fingerprint
+   - target - The name of the field where the generated fingerprint will be stored. Any current contents of that field will be overwritten.
+   - method - If set to `SHA1`, `SHA256`, `SHA384`, `SHA512`, or `MD5` and a key is set, the cryptographic hash function with the same name will be used to generate the fingerprint. When a key set, the keyed-hash (HMAC) digest function will be used.
 
 2. In the **elasticsearch** output set the **document_id** as the value of the **generated_id** field:
 
-```bash
-elasticsearch {
-                hosts => ["http://localhost:9200"]
-                user => "logserver"
-                password => "logserver"
-                index => "syslog_wec-%{+YYYY.MM.dd}"
-                document_id => "%{generated_id}"
-        }
-```
+   ```bash
+   elasticsearch {
+                   hosts => ["http://localhost:9200"]
+                   user => "logserver"
+                   password => "logserver"
+                   index => "syslog_wec-%{+YYYY.MM.dd}"
+                   document_id => "%{generated_id}"
+           }
+   ```
 
-- document_id - The document ID for the index. Useful for overwriting existing entries in Elasticsearch with the same ID.
+   - document_id - The document ID for the index. Useful for overwriting existing entries in Elasticsearch with the same ID.
 
 Documents having the same document_id will be indexed only once.
 
