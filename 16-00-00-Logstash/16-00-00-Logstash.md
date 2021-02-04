@@ -103,6 +103,15 @@ This plugin read events over a TCP or UDP socket assigns the appropriate tags:
 		        }
 		}
 
+To redirect the default syslog port (514/TCP/UDP) to the dedicated collector port, follow these steps:
+
+```bash
+firewall-cmd --add-forward-port=port=514:proto=udp:toport=5514:toaddr=127.0.0.1 --permanent
+firewall-cmd --add-forward-port=port=514:proto=tcp:toport=5514:toaddr=127.0.0.1 --permanent
+firewall-cmd --reload
+systemctl restart firewalld
+```
+
 ## Logstash - Input SNMP
 
 The SNMP input polls network devices using Simple Network Management Protocol (SNMP) to gather information related to the current state of the devices operation:
