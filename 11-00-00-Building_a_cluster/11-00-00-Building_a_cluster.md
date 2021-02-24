@@ -81,7 +81,7 @@ Example of the Elasticsearch cluster configuration:
     - check of the Elasticsearch cluster nodes status via tcp port:
 
 			# curl -XGET '127.0.0.1:9200/_cat/nodes?v'
-
+	
 			host         	  ip           heap.percent ram.percent load node.role master name
 			10.0.0.4 	 10.0.0.4     18           91 		   0.00 -         -      elk01
 			10.0.0.5 	 10.0.0.5     66           91 		   0.00 d        *      elk02
@@ -112,3 +112,56 @@ Restart the Elasticsearch instance of the new node:
 ```/
 systemctl restart elasticsearch
 ```
+
+## Cluster HOT-WARM-COLD architecture
+
+Let's assume we have 3 zones **hot, warm, cold**, with three servers in each zone.
+
+Each of the servers in all zones must have an active Data Node license.
+
+1. We have 3 shards for each index.
+
+2. When indexes are created, they stay in the HOT zone for 3 days.
+
+3. After 3 days, the "rollower" mechanism is activated and the indexes are moved to the "WARM" zone, for example `logs_write` index:
+
+   ```json
+   POST /logs_write/_rollover
+   {
+     "conditions" : {
+       "max_age": "3d",
+       "max_docs": 100000000,
+       "max_size": "5gb"
+     },
+     "settings": {
+       "index.number_of_shards": 3
+       "index.routing.allocation.require._name": "server-warm-1"
+     }
+   }
+   ```
+
+4. After the next 7 days, the indexes are moved to the COLD zone as follows:
+
+   - write in index is blocked and relocation to COLD zone is set:
+
+      ```json
+      PUT active-logs-1/_settings
+      {
+        "index.blocks.write": true,
+        "index.routing.allocation.require._name": "serwer-cold-1"
+      }
+      ```
+
+   - the number of shards is reduced to 1:
+
+      ```bash
+      POST active-logs-1/_shrink/inactive-logs-1
+      ```
+
+   - the number of segments is reduced to 1:
+
+      ```bash
+      POST inactive-logs-1/_forcemerge?max_num_segments=1
+      ```
+
+5. As a result, after 10 days, the `inactive-logs-1` index is on the server in the COLD zone and has 1 shard and 1 segment.
