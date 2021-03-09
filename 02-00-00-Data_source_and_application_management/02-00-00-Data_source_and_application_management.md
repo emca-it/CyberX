@@ -237,109 +237,189 @@ The CyberX installer is delivered as:
 
 #### Installation using "install.sh"
 
+- unpack the archive containing the installer
+
+  ```bash
+  tar xjf cyberx-7.0.x.x86_64.tar.bz2
+  ```
+
+- copy license to installation directory
+
+  ```bash
+  cp es_*.licnse install/
+  ```
+
+- go to the installation directory
+
+  ```bash
+  cd install/
+  ```
+
+- run the installer
+
+  ```bash
+  ./install.sh -i
+  ```
+
 During installation you will be ask about following tasks:
 
 -  install & configure Logstash with custom CyberX Configuration - like Beats, Syslog, Blacklist, Netflow, Wazuh, Winrm, Logtrail, OP5, etc;
-- install the CyberX Client Node, as well as the other client-node dependencies;
-- install the CyberX Data Node, as well as the other data-node dependencies;
-- load the CyberX custom dashboards, alerts and configs;
+-  install the CyberX Client Node, as well as the other client-node dependencies;
+-  install the CyberX Data Node, as well as the other data-node dependencies;
+-  load the CyberX custom dashboards, alerts and configs;
 
 #### Post installation steps
 
 - copy license files to Elasticsearch directory
 
-   ```bash
-   cp es.* /ust/share/elasticsearch/bin/
-   ```
-   
+  ```bash
+  cp es.* /ust/share/elasticsearch/bin/
+  ```
+
 - configure  Elasticsearch cluster settings
 
-    ```bash
-    vi /etc/elaticserach/elasticsearch.yml
-    
-    add all IPs of Elasticsearch node in the following directive:
-    discovery.zen.ping.unicast.hosts: [ "172.10.0.1:9300", "172.10.0.2:9300" ]
-    ```
-    
-- start Elasticsearch service
+  ```bash
+  vi /etc/elaticserach/elasticsearch.yml
+  ```
+
+  - add all IPs of Elasticsearch node in the following directive:
 
     ```bash
-    systemc	start elasticsearch
+    discovery.seed_hosts: [ "172.10.0.1:9300", "172.10.0.2:9300" ]
     ```
+
+- start Elasticsearch service
+
+  ```bash
+  systemc	start elasticsearch
+  ```
 
 - start Logstash service
 
-    ```bash
-    systemctl start logstash
-    ```
+  ```bash
+  systemctl start logstash
+  ```
 
 - start Cerebro service
 
-    ```bash
-    systemctl start cerebro
-    ```
+  ```bash
+  systemctl start cerebro
+  ```
 
 - start  Kibana service
 
-    ```bash
-    systemctl start kibana
-    ```
+  ```bash
+  systemctl start kibana
+  ```
 
 - start Alert service
 
-    ```bash
-    systemctl start alert
-    ```
+  ```bash
+  systemctl start alert
+  ```
 
 - start Skimmer service
 
-    ```bash
-    systemctl start skimmer
-    ```
+  ```bash
+  systemctl start skimmer
+  ```
 
 - Example agent configuration files and additional documentation can be found in the Agents directory:
 
-    - filebeat
-    - winlogbeat
-    - op5 naemon logs
-    - op5 perf_data
+  - filebeat
+  - winlogbeat
+  - op5 naemon logs
+  - op5 perf_data
 
 - For blacklist creation, you can use crontab or kibana scheduler, but the most preferable method is logstash input. Instructions to set it up can be found at `logstash/lists/README.md`
 
 - It is recomended to make small backup of system indices - copy "small_backup.sh" script from Agents directory to desired location, and change `backupPath=` to desired location. Then set up a crontab: 
 
-    ```bash
-    0 1 * * * /path/to/script/small_backup.sh
-    ```
-    
+  ```bash
+  0 1 * * * /path/to/script/small_backup.sh
+  ```
+
 - Redirect Kibana port 5601/TCP to 443/TCP
 
-    ```bash
-    firewall-cmd --zone=public --add-masquerade --permanent
-    firewall-cmd --zone=public --add-forward-port=port=443:proto=tcp:toport=5601 --permanent
-    firewall-cmd --reload
-    ```
+  ```bash
+  firewall-cmd --zone=public --add-masquerade --permanent
+  firewall-cmd --zone=public --add-forward-port=port=443:proto=tcp:toport=5601 --permanent
+  firewall-cmd --reload
+  ```
 
-     \# NOTE: Kibana on 443 tcp port *without* redirection needs additional permissions:
+   \# NOTE: Kibana on 443 tcp port *without* redirection needs additional permissions:
 
-    ```bash
-    setcap 'CAP_NET_BIND_SERVICE=+eip' /usr/share/kibana/node/bin/node
-    ```
-    
+  ```bash
+  setcap 'CAP_NET_BIND_SERVICE=+eip' /usr/share/kibana/node/bin/node
+  ```
+
 - Cookie TTL and Cookie Keep Alive - for better work comfort, you can set two new variables in the Kibana configuration file `/etc/kibana/kibana.yml`:
 
-    ```bash
-    login.cookiettl: 10
-    login.cookieKeepAlive: true
-    ```
+  ```bash
+  login.cookiettl: 10
+  login.cookieKeepAlive: true
+  ```
 
-    CookieTTL is the value in minutes of the cookie's lifetime. The cookieKeepAlive renews this time with every valid query made by browser clicks.
+  CookieTTL is the value in minutes of the cookie's lifetime. The cookieKeepAlive renews this time with every valid query made by browser clicks.
 
-    After saving changes in the configuration file, you must restart the service:
+  After saving changes in the configuration file, you must restart the service:
 
-    ```bash
-    systemctl restart kibana
-    ```
+  ```bash
+  systemctl restart kibana
+  ```
+
+#### Scheduling bad IP lists update
+
+Requirements:
+
+- Make sure you have Logstash 6.4 or newer.
+- Enter your credentials into scripts: misp_threat_lists.sh
+
+To update bad reputation lists and to create `.blacklists` index, you have to run `badreputation_iplists.sh and misp_threat_lists.sh script (best is to put in schedule).
+
+1. This can be done in cron (host with logstash installed) in /etc/crontab:
+
+```bash
+0 1 * * * logstash /etc/logstash/lists/bin/badreputation_iplists.sh
+0 2 * * * logstash /etc/logstash/lists/bin/misp_threat_lists.sh
+```
+
+2. Or with Kibana Scheduller app (**only if logstash is running on the same host**).
+
+- Prepare script path:
+
+```bash
+/bin/ln -sfn /etc/logstash/lists/bin /opt/ai/bin/lists
+chown logstash:kibana /etc/logstash/lists/
+chmod g+w /etc/logstash/lists/
+```
+
+- Log in to GUI and go to **Scheduler** app. Set it up with below options and push "Submit" button:
+
+```
+Name:           BadReputationList
+Cron pattern:   0 1 * * *
+Command:        lists/badreputation_iplists.sh
+Category:       logstash
+```
+
+and second:
+
+```
+Name:           MispThreatList
+Cron pattern:   0 2 * * *
+Command:        lists/misp_threat_lists.sh
+Category:       logstash
+
+```
+
+3. After a couple of minutes check for blacklists index:
+
+```bash
+curl -sS -u logserver:logserver -XGET '127.0.0.1:9200/_cat/indices/.blacklists?s=index&v'
+health status index       uuid                   pri rep docs.count docs.deleted store.size pri.store.size
+green  open   .blacklists Mld2Qe2bSRuk2VyKm-KoGg   1   0      76549            0      4.7mb          4.7mb
+```
 
 ## First login ##
 
