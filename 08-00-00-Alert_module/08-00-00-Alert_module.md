@@ -279,6 +279,64 @@ hive_observable_data_mapping:
   - source: "{match[field2]}"
 ```
 
+## Alert Content
+
+There are several ways to format the body text of the various types of events. In EBNF::
+
+    rule_name           = name
+    alert_text          = alert_text
+    ruletype_text       = Depends on type
+    top_counts_header   = top_count_key, ":"
+    top_counts_value    = Value, ": ", Count
+    top_counts          = top_counts_header, LF, top_counts_value
+    field_values        = Field, ": ", Value
+
+Similarly to ``alert_subject``, ``alert_text`` can be further formatted using standard Python formatting syntax.
+The field names whose values will be used as the arguments can be passed with ``alert_text_args`` or ``alert_text_kw``.
+You may also refer to any top-level rule property in the ``alert_subject_args``, ``alert_text_args``, ``alert_missing_value``, and ``alert_text_kw fields``.  However, if the matched document has a key with the same name, that will take preference over the rule property.
+
+By default::
+
+    body                = rule_name
+    
+                          [alert_text]
+    
+                          ruletype_text
+    
+                          {top_counts}
+    
+                          {field_values}
+
+With ``alert_text_type: alert_text_only``::
+
+    body                = rule_name
+    
+                          alert_text
+
+With ``alert_text_type: exclude_fields``::
+
+    body                = rule_name
+    
+                          [alert_text]
+    
+                          ruletype_text
+    
+                          {top_counts}
+
+With ``alert_text_type: aggregation_summary_only``::
+
+    body                = rule_name
+    
+                          aggregation_summary
+
+ruletype_text is the string returned by RuleType.get_match_str.
+
+field_values will contain every key value pair included in the results from Elasticsearch. These fields include "@timestamp" (or the value of ``timestamp_field``),
+every key in ``include``, every key in ``top_count_keys``, ``query_key``, and ``compare_key``. If the alert spans multiple events, these values may
+come from an individual event, usually the one which triggers the alert.
+
+When using ``alert_text_args``, you can access nested fields and index into arrays. For example, if your match was ``{"data": {"ips": ["127.0.0.1", "12.34.56.78"]}}``, then by using ``"data.ips[1]"`` in ``alert_text_args``, it would replace value with ``"12.34.56.78"``. This can go arbitrarily deep into fields and will still work on keys that contain dots themselves.
+
 ## Example of rules ##
 
 ### Unix - Authentication Fail ###
