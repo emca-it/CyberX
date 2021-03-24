@@ -253,12 +253,12 @@ The CyberX installer is delivered as:
   The installation process:
 
   - unpack the archive containing the installer
-  `tar xjf cyberx-${product-version}.x.x86_64.tar.bz2`
+    `tar xjf cyberx-${product-version}.x.x86_64.tar.bz2`
   - copy license to installation directory
-  `cp es_*.license install/`
+    `cp es_*.license install/`
   - go to the installation directory (you can run install.sh script from any location)
   - run installation script with interactive install command
-  `./install.sh -i`
+    `./install.sh -i`
 
   During interactive installation you will be ask about following tasks:  
   - install & configure Logstash with custom  CyberX Configuration - like Beats, Syslog, Blacklist, Netflow, Wazuh, Winrm, Logtrail, OP5, etc;  
@@ -270,8 +270,10 @@ The CyberX installer is delivered as:
 
   With the help of an install script, installation is possible without questions that require user interaction, which can be helpful with automatic deployment. In this case, you should provide options which components (data, client node) should be installed.
 
-  Example:  
-  `./install.sh -n -d` - will install only data node components.  
+  Example: 
+
+  `./install.sh -n -d` - will install only data node components. 
+
   `./install.sh -n -c -d` - will install both - data and client node components.
 
 ###### Generating basic system information report
