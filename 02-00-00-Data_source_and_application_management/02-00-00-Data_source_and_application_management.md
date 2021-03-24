@@ -246,38 +246,60 @@ The CyberX installer is delivered as:
     systemctl status kibana cerebro alert
     ```
 
-#### Installation using "install.sh"
+#### Interactive installation using "install.sh"
 
-- unpack the archive containing the installer
+  The CyberX comes with simple installation script called `install.sh`. It is designed to facilitate the installation and deployment process of our product. After running (execute) the script, it will detect supported distribution and by default it will ask incl. about the components we want to install. The script is located in the `"install"`directory.
+
+  The installation process:
+
+  - unpack the archive containing the installer
+  `tar xjf cyberx-${product-version}.x.x86_64.tar.bz2`
+  - copy license to installation directory
+  `cp es_*.license install/`
+  - go to the installation directory (you can run install.sh script from any location)
+  - run installation script with interactive install command
+  `./install.sh -i`
+
+  During interactive installation you will be ask about following tasks:  
+  - install & configure Logstash with custom  CyberX Configuration - like Beats, Syslog, Blacklist, Netflow, Wazuh, Winrm, Logtrail, OP5, etc;  
+  - install the  CyberX Client Node, as well as the other client-node dependencies;  
+  - install the  CyberX Data Node, as well as the other data-node dependencies;  
+  - load the  CyberX custom dashboards, alerts and configs;  
+
+#### Non-interactive installation mode using "install.sh"
+
+  With the help of an install script, installation is possible without questions that require user interaction, which can be helpful with automatic deployment. In this case, you should provide options which components (data, client node) should be installed.
+
+  Example:  
+  `./install.sh -n -d` - will install only data node components.  
+  `./install.sh -n -c -d` - will install both - data and client node components.
+
+###### Generating basic system information report
+
+  The `install.sh` script also contains functions for collecting basic information about the system environment - such information can be helpful in the support process or troubleshooting. Note that you can redirect output (`STDOUT`) to external file.
+
+  Example:  
+
+  `./install.sh -s > system_report.txt`
+
+#### "install.sh" command list:
+
+  Run `install.sh --help` to see information about builtin commands and options.
 
   ```bash
-  tar xjf cyberx-7.0.x.x86_64.tar.bz2
+  Usage: install.sh {COMMAND} {OPTIONS}  
+  
+  COMMAND is one of:  
+      -i|install                  Run CyberX installation wizard.  
+      -n|noninteractive           Run CyberX installation in non interactive mode.  
+      -u|upgrade                  Update CyberX packages.  
+      -s|systeminfo               Get basic system information report.  
+  
+  OPTIONS if one of:  
+      -v|--verbose                Run commands with verbose flag.  
+      -d|--data                   Select data node installation for   non interactive mode.  
+      -c|--client                 Select client node installation for non interactive mode.  
   ```
-
-- copy license files to installation directory
-
-  ```bash
-  cp es_*.license install/
-  ```
-
-- go to the installation directory
-
-  ```bash
-  cd install/
-  ```
-
-- run the installer
-
-  ```bash
-  ./install.sh -i
-  ```
-
-During installation you will be ask about following tasks:
-
--  install & configure Logstash with custom CyberX Configuration - like Beats, Syslog, Blacklist, Netflow, Wazuh, Winrm, Logtrail, OP5, etc;
--  install the CyberX Client Node, as well as the other client-node dependencies;
--  install the CyberX Data Node, as well as the other data-node dependencies;
--  load the CyberX custom dashboards, alerts and configs;
 
 #### Post installation steps
 
