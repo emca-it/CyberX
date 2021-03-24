@@ -78,6 +78,17 @@ systemctl status kibana.service
 ![](/media/media/image88.PNG)
 ## First configuration steps ##
 
+### System Requirements
+
+1. Supported Operating Systems
+
+   - Red Hat Linux 7
+   - Red Hat Linux 8
+   - Centos 7
+   - Centos 8
+   - Oracle Linux 8.3 - Unbreakable Enterprise Kernel (UEK)
+   - Centos Stream /SK
+
 ### Run the instalation ###
 
 The CyberX installer is delivered as:
