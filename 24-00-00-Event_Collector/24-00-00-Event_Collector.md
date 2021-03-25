@@ -275,52 +275,49 @@ vim server-certopts.cnf
 
 ### Logstash pipeline configuration
 
+
+
+Create directory for Event Collector pipeline configuration files:
+
 ```bash
 mkdir /etc/logstash/conf.d/syslog_wec
-vim /etc/logstash/conf.d/syslog_wec/syslog_wec.conf
 ```
+Copy the following Logstash configuration files to pipeline directory:
 
 ```bash
-input {
-        tcp {
-                port => 5614
-        }
-}
- filter {
-      grok {
-        overwrite => ["message"]
-        match => { "message" => [ "<%{INT:syslog_pri}>%{GREEDYDATA:message}" ] }
-      }
-      syslog_pri {}
-      xml {
-        source => "message"
-        target => "windata"
-      }
-    }
-output {
-      elasticsearch {
-                hosts => ["localhost:9200"]
-                user => "logserver"
-                password => "logserver"
-                index => "syslog_wec-%{+YYYY.MM.dd}"
-        }
-     file {
-        path => "/var/log/logstash/syslog.out"
-        codec => line {
-                        format => "%{message}"
-                }
-    }
-}
-
+cp 001-input-wec.conf /etc/logstash/conf.d/syslog_wec/
+cp 050-filter-wec.conf /etc/logstash/conf.d/syslog_wec/
+cp 060-filter-wec-siem.conf /etc/logstash/conf.d/syslog_wec/
+cp 100-output-wec.conf /etc/logstash/conf.d/syslog_wec/
 ```
+
+### Enabling Logstash pipeline
+
+To enable the `syslog_wec` Logstash pipeline edit the `pipelie.yml` file:
 
 ```bash
 vim /etc/logstash/pipeline.yml
 ```
 
+Add the following section:
+
 ```bash
 - pipeline.id: syslog_wec
   path.config: "/etc/logstash/conf.d/syslog_wec/*.conf"
+```
+
+And restart Logstash:
+
+```bash
+systemctl restart logstash
+```
+
+### Elasticsearch template
+
+Install the Elasticsearch template for Event Collector data index:
+
+```bash
+curl -ulogserver:logserver -X PUT "http://localhost:9200/_template/syslog_wec?pretty" -H 'Content-Type: application/json' -d@template_wec.json
 ```
 
 ### Building the subscription filter
