@@ -1,7 +1,5 @@
 # **CHANGELOG**
 
-## v7.0.4
-
 ## v7.0.5
 
 ### NewFeatures
@@ -131,6 +129,7 @@
 - Skimmer: Fixes in indices stats monitoring
 - Skimmer: Overwrite config files after updating, now it should create /opt/skimmer/skimmer.conf.rpmnew
 
+## v7.0.4
 
 ### NewFeatures
 

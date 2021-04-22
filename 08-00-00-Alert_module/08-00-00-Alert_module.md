@@ -238,27 +238,42 @@ command: ["/opt/alert/send_request_change.sh", "5", "%(hostname)s", "SYSTEM_DOWN
 
 The executed command has parameters which are the values of the fields of the executed alert. Syntax: `%(fields_name)`.
 
-### The Hive
+- ### The Hive
 
-The alert module can forward information about the alert to *Security Incident Response Platform* **TheHive**.
+  The alert module can forward information about the alert to *Security Incident Response Platform* **TheHive**.
 
-The configuration of the **Hive Alert** should be done in the definition of the `Rule Definition` alert using the following options:
+  The configuration of the **Hive Alert** should be done in the definition of the `Rule Definition` alert using the following options:
 
-- `hive_alert_config_type: classic` - allows the use of variables to build The Hive alert
-- `hive_alert_config`:
-  - `title` (text) : title of the alert
-  - `description` (text) : description of the alert
-  - `severity` (number) : severity of the alert (1: low; 2: medium; 3: high) **default=2**
-  - `date` (date) : date and time when the alert was raised **default=now**
-  - `tags` (multi-string) : case tags **default=empty**
-  - `tlp` (number) : [TLP](https://www.us-cert.gov/tlp) (`0`: `white`; `1`: `green`; `2: amber`; `3: red`) **default=2**
-  - `status` (AlertStatus) : status of the alert (*New*, *Updated*, *Ignored*, *Imported*) **default=New**
-  - `type` (string) : type of the alert (read only)
-  - `source` (string) : source of the alert (read only)
-  - `sourceRef` (string) : source reference of the alert (read only)
-  - `artifacts` (multi-artifact) : artifact of the alert. It is a array of JSON object containing artifact attributes **default=empty**
-  - `follow` (boolean) : if true, the alert becomes active when updated **default=true**
-- `hive_observable_data_mapping` - mapping field values to the The Hive alert.
+  - `hive_alert_config_type: classic` - allows the use of variables to build The Hive alert
+  - `hive_alert_config`:
+    - `title` (text) : title of the alert (ignored in `classic` config type)
+    - `description` (text) : description of the alert (ignored in `classic` config type)
+    - `severity` (number) : severity of the alert (1: low; 2: medium; 3: high) **default=2**
+    - `date` (date) : date and time when the alert was raised **default=now**
+    - `tags` (multi-string) : case tags **default=empty**
+    - `tlp` (number) : [TLP](https://www.us-cert.gov/tlp) (`0`: `white`; `1`: `green`; `2: amber`; `3: red`) **default=2**
+    - `status` (AlertStatus) : status of the alert (*New*, *Updated*, *Ignored*, *Imported*) **default=New**
+    - `type` (string) : type of the alert (read only)
+    - `source` (string) : source of the alert (read only)
+    - `sourceRef` (string) : source reference of the alert (read only)
+    - `artifacts` (multi-artifact) : artifact of the alert. It is a array of JSON object containing artifact attributes **default=empty**
+    - `follow` (boolean) : if true, the alert becomes active when updated **default=true**
+  - `hive_observable_data_mapping` - mapping field values to the The Hive alert.
+
+  **Note:** When use: `hive_alert_config_type: classic` the following parameters are ignored:
+
+  ```yaml
+  hive_alert_config:
+      title: title of the alert
+      description: description of the alert
+  ```
+
+  and you should use:
+
+  ```yaml
+  alert_subject: "title of the alert"
+  alert_text: "description of the alert"
+  ```
 
 Example of configuration:
 
