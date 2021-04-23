@@ -2,7 +2,7 @@
 
  You can check the current version using the API command:
 ```bash
-curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
+curl -u $USER:$PASSWORD -X GET http://localhost:9200/_license
 ```
 
 ## Upgrade from version 7.0.4
@@ -70,13 +70,13 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/license
 2. Upgrade client-node (includes alert engine):
    
    ```bash
-   yum update ./PACKAGE_NAME_VARIABLE-client-node-VERSION_TEMPLATE_VARIABLE-1.el7.x86_64.rpm
+   yum update ./cyberx-client-node-7.0.5-1.el7.x86_64.rpm
    ```
    
 3. Upgrade data-node:
    
    ```bash
-   yum update ./PACKAGE_NAME_VARIABLE-data-node-VERSION_TEMPLATE_VARIABLE-1.el7.x86_64.rpm
+   yum update ./cyberx-data-node-7.0.5-1.el7.x86_64.rpm
    ```
    
 4. Start services:
