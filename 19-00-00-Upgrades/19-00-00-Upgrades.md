@@ -22,7 +22,7 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/_license
 1. Run upgrade script:
    
    ```bash
-   /install.sh -u
+   ./install.sh -u
    ```
    
 2. Restart services:
