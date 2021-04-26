@@ -1427,3 +1427,22 @@ Qualys Guard is vulnerability management tool, which make a scan systems and env
       hostname="qualysguard.qg2.apps.qualys.eu"
   )
   ```
+
+## Embedding dashboard in iframe
+
+It is possible to send alerts containing HTML *iframe* as notification content. For example:
+
+```html
+<a href="https://siem-vip:5601/app/kibana#/discover/72503360-1b25-11ea-bbe4-d7be84731d2c?_g=%28refreshInterval%3A%28display%3AOff%2Csection%3A0%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272021-03-03T08%3A36%3A50Z%27%2Cmode%3Aabsolute%2Cto%3A%272021-03-04T08%3A36%3A50Z%27%29%29" target="_blank" rel="noreferrer">https://siem-vip:5601/app/kibana#/discover/72503360-1b25-11ea-bbe4-d7be84731d2c?_g=%28refreshInterval%3A%28display%3AOff%2Csection%3A0%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272021-03-03T08%3A36%3A50Z%27%2Cmode%3Aabsolute%2Cto%3A%272021-03-04T08%3A36%3A50Z%27%29%29</a>
+```
+
+If you want an existing HTTP session to be used to display the iframe content, you need to set the following parameters in the `/etc/kibana/kibana.yml` file:
+
+```yaml
+login.isSameSite: "Lax"
+login.isSecure: true
+```
+
+Possible values for *isSameSite* are: **"None", "Lax", "Strict", false**
+
+For *isSecure*: **false or true**
