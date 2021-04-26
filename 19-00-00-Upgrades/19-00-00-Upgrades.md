@@ -305,14 +305,32 @@ The update includes packages:
 - cyberx-data-node
 - cyberx-client-node
 
-### Upgrade CyberX Data Node
+### Pre-upgrade steps for data node
 
-1. Upload Package
+1. Stop the Logstash service
 
-    ```bash
-    scp ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm root@hostname:~/
-    ```
+   ```bash
+   systemctl stop logstash
+   ```
 
+2. Flush sync for indices
+
+   ```bash
+   curl -sS -X POST "localhost:9200/_flush/synced?pretty" -u$USER:$PASSWORD
+   ```
+
+3. Close all indexes with production data, except system indexes (the name starts with a dot `.`), example of query:
+
+   ```bash
+   for i in `curl -u$USER:$PASSWORD "localhost:9200/_cat/indices/winlogbeat*?h=i"` ; do curl -u$USER:$PASSWORD -X POST localhost:9200/$i/_close ; done
+   ```
+
+4. Disable shard allocation
+
+   ```bash
+   curl -u$USER:$PASSWORD -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d' { "persistent": {"cluster.routing.allocation.enable": "none"}}'
+   ```
+   
 1. Check Cluster Status
 
     ```bash
@@ -342,55 +360,69 @@ The update includes packages:
         "active_shards_percent_as_number" : 100.0
        }
     ```
-
-1. Upgrade CyberX Package
-
-    ```bash
-    yum update ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm
-    ```
-
-      Output:
+    
+6. Stop Elasticsearch service
 
     ```bash
-    Loaded plugins: fastestmirror
-    Examining ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm: cyberx-data-node-7.0.1-1.el7.x86_64
-    Marking ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm as an update to cyberx-data-node-6.1.8-1.x86_64
-    Resolving Dependencies
-    --> Running transaction check
-    ---> Package cyberx-data-node.x86_64 0:6.1.8-1 will be updated
-    ---> Package cyberx-data-node.x86_64 0:7.0.1-1.el7 will be an update
-    --> Finished Dependency Resolution
-
-    Dependencies Resolved
-    =======================================================================================================================================================================================
-     Package                                        Arch                       Version                            Repository                                                          Size
-    =======================================================================================================================================================================================
-    Updating:
-     cyberx-data-node                     x86_64                     7.0.1-1.el7                        /cyberx-data-node-7.0.1-1.el7.x86_64                     117 M
-
-    Transaction Summary
-    =======================================================================================================================================================================================
-    Upgrade  1 Package
-
-    Total size: 117 M
-    Is this ok [y/d/N]: y
-    Downloading packages:
-    Running transaction check
-    Running transaction test
-    Transaction test succeeded
-    Running transaction
-      Updating   : cyberx-data-node-7.0.1-1.el7.x86_64                                                                                                                       1/2
-    Removed symlink /etc/systemd/system/multi-user.target.wants/elasticsearch.service.
-    Created symlink from /etc/systemd/system/multi-user.target.wants/elasticsearch.service to /usr/lib/systemd/system/elasticsearch.service.
-      Cleanup    : cyberx-data-node-6.1.8-1.x86_64                                                                                                                           2/2
-      Verifying  : cyberx-data-node-7.0.1-1.el7.x86_64                                                                                                                       1/2
-      Verifying  : cyberx-data-node-6.1.8-1.x86_64                                                                                                                           2/2
-
-    Updated:
-      cyberx-data-node.x86_64 0:7.0.1-1.el7
-
-    Complete!
+    systemctl stop elasticsearch
     ```
+
+### Upgrade CyberX Data Node
+
+1. Upload Package
+
+   ```bash
+   scp ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm root@hostname:~/
+   ```
+
+2. Upgrade CyberX Package
+
+   ```bash
+   yum update ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm
+   ```
+
+   Output:
+
+   ```bash
+   Loaded plugins: fastestmirror
+   Examining ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm:       cyberx-data-node-7.0.1-1.el7.x86_64
+   Marking ./cyberx-data-node-7.0.1-1.el7.x86_64.rpm as an    update to cyberx-data-node-6.1.8-1.x86_64
+   Resolving Dependencies
+   --> Running transaction check
+   ---> Package cyberx-data-node.x86_64 0:6.1.8-1 will be    updated
+   ---> Package cyberx-data-node.x86_64 0:7.0.1-1.el7 will be an update
+   --> Finished Dependency Resolution
+
+   Dependencies Resolved
+   =======================================================================================================================================================================================
+    Package                                        Arch                          Version                            Repository                                                          Size
+   ========================================================================  ========================================================================  =======================================
+   Updating:
+    cyberx-data-node                     x86_64                        7.0.1-1.el7                        /cyberx-data-node-   7.0.1-1.el7.x86_64                     117 M
+
+   Transaction Summary
+   =======================================================================================================================================================================================
+   Upgrade  1 Package
+
+   Total size: 117 M
+   Is this ok [y/d/N]: y
+   Downloading packages:
+   Running transaction check
+   Running transaction test
+   Transaction test succeeded
+   Running transaction
+     Updating   : cyberx-data-node-7.0.1-1.el7.x86_64                                                                                                                       1/2
+   Removed symlink /etc/systemd/system/multi-   user.target.wants/elasticsearch.service.
+   Created symlink from /etc/systemd/system/multi-   user.target.wants/elasticsearch.service to    /usr/lib/systemd/system/elasticsearch.service.
+     Cleanup    : cyberx-data-node-6.1.8-1.x86_64                                                                                                                           2/2
+     Verifying  : cyberx-data-node-7.0.1-1.el7.x86_64                                                                                                                       1/2
+     Verifying  : cyberx-data-node-6.1.8-1.x86_64                                                                                                                           2/2
+
+   Updated:
+     cyberx-data-node.x86_64 0:7.0.1-1.el7
+
+   Complete!
+   ```
 
 1. Verification of Configuration Files
 
@@ -497,6 +529,64 @@ curl -k -XPUT -H 'Content-Type: application/json' -u logserver:logserver 'http:/
 ```
 
 If everything went correctly, we should see 100% allocated shards in cluster health. However, while connection on port 9200/TCP we  can observe a new version of Elasticsearch.
+
+### Post-upgrade steps for data node
+
+1. Start Elasticsearch service
+
+   ```bash
+   systemctl statrt elasticsearch
+   ```
+
+2. Delete .auth index
+
+   ```bash
+   curl -u$USER:$PASSWORD -X DELETE localhost:9200/.auth
+   ```
+
+4. Use `elasticdump` to get all templates and load it back
+
+   - get templates
+
+   ```bash
+   /usr/share/kibana/elasticdump/elasticdump  --output=http://logserver:logserver@localhost:9200 --input=templates_elasticdump.json --type=template
+   ```
+   
+   - delete templates
+   
+   ```bash
+   for i in `curl -ss -ulogserver:logserver http://localhost:9200/_cat/templates | awk '{print $1}'`; do curl -ulogserver:logserver -XDELETE http://localhost:9200/_template/$i ; done
+   ```
+
+   - load templates
+
+   ```bash
+   /usr/share/kibana/elasticdump/elasticdump  --input=http://logserver:logserver@localhost:9200 --output=templates_elasticdump.json --type=template
+   ```
+   
+4. Open indexes that were closed before the upgrade, example of query:
+
+   ```bash
+   curl -ss -u$USER:$PASSWORD "http://localhost:9200/_cat/indices/winlogbeat*?h=i,s&s=i" |awk '{if ($2 ~ /close/) system("curl -ss -u$USER:$PASSWORD -XPOST http://localhost:9200/"$1"/_open?pretty")}'
+   ```
+
+5. Start the Logstash service
+
+   ```bash
+   systemctl start logstash
+   ```
+
+6. Enable Elasticsearch allocation
+
+   ```bash
+   curl -sS -u$USER:$PASSWORD -X PUT "http://localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d' { "persistent": {"cluster.routing.allocation.enable": "none"}}'
+   ```
+
+7. After starting on GUI remove aliases .kibana* (double version of index patterns)
+
+   ```bash
+   curl -u$USER:$PASSWORD "http://localhost:9200/.kibana_1/_alias/_all" -XDELETE
+   ```
 
 ### Upgrade CyberX Client Node
 
