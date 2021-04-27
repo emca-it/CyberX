@@ -1075,3 +1075,17 @@ logserverguard.ssl.http.enabled_ciphers:
  - "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384"
 ```
 Otherwise, the beat will not be able to send documents directly and if you want to avoid it you can send a document with Logstash first.
+
+## Index rollover
+
+Using the rollover function, you can make changes to removing documents from the *audit*, *.agents*, *alert\** indexes. 
+
+You can configure the rollover by going to the *Config* module, then clicking the *Settings* tab, go to the *Index rollover settings* section and select click *Configure* button:
+
+![](/media/media/image167.PNG)
+
+You can set the following retention parameters for the above indexes:
+
+- Maximum size (GB);
+- Maximum age (h);
+- Maximum number of documents.
