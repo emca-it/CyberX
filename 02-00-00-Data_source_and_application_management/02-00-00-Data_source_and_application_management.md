@@ -1082,7 +1082,7 @@ Using the rollover function, you can make changes to removing documents from the
 
 You can configure the rollover by going to the *Config* module, then clicking the *Settings* tab, go to the *Index rollover settings* section and select click *Configure* button:
 
-![](/media/media/image167.PNG)
+![](/media/media/image167.png)
 
 You can set the following retention parameters for the above indexes:
 
