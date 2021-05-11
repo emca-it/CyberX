@@ -1,5 +1,31 @@
 # **CHANGELOG**
 
+## v7.0.6
+
+### NewFeatures
+- Alert: Added 5 alerts to detect SUNBURST attack
+- Incidents: Added the ability of transferring the calculated risk_value to be sent in any alarm method
+- Indidents: Added visibility of unassigned incidents based on user role - security-tenant role 
+- install.sh: Added the ability to update with ./install.sh -u
+
+### Improvements
+- Object permission: Object filtering optimization
+- Reports: Date verification with scheduler enabled tasks
+- Reports: UI optimization
+
+### BugFixes
+- Agents: CVE-2020-28168
+- Alert: Fixes problem with Syslog notifications
+- Alert: Fixes problem with Test Rule functionality
+- Alert: CVE-2020-28168
+- Archive: CVE-2020-28168
+- Cerebro: CVE-2019-12384
+- Kibana-xlsx-import: CVE-2020-28168
+- Login: CVE-2020-28168
+- Reports: CVE-2020-28168
+- Reports: Fixes errors related to background tasks
+- Sync: CVE-2020-28168
+
 ## v7.0.5
 
 ### NewFeatures
