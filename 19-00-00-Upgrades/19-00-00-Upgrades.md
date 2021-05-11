@@ -5,6 +5,109 @@
 curl -u $USER:$PASSWORD -X GET http://localhost:9200/_license
 ```
 
+## Upgrade from version 7.0.5
+
+### General note
+
+1. Indices *.agents, audit, alert* indices currently uses rollover for rotation, after upgrade please use dedicated API for migration: 
+
+```bash
+curl -u $USER:$PASSWORD -X POST http://localhost:9200/license_logserver/prepareindex/$indexname
+```
+
+2. Wiki plugin require open port *tcp/5603*
+3. Update alert role to include index-paths: *".alert", "alert_status", "alert_error", ".alertrules_", ".risks", ".riskcategories", ".playbooks"*
+
+### Preferred Upgrade steps
+
+1. Run upgrade script:
+
+   ```bash
+   ./install.sh -u
+   ```
+
+2. Restart services:
+
+   ```bash
+   systemctl restart elasticsearch alert kibana cerebro wiki
+   ```
+
+3. Migrate Audit index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/audit' -u logserver
+   ```
+
+4. Migrate Alert index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/alert' -u logserver
+   ```
+
+5. Migrate Agents index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/.agents' -u logserver
+   ```
+
+6. Open tcp/5603 port for wikipedia plugin:
+
+   ```bash
+   firewall-cmd --zone=public --add-port=5603/tcp --permanent
+   firewall-cmd --reload
+   ```
+
+### Alternative Upgrade steps (without install.sh script)
+
+1. Stop services:
+
+   ```bash
+   systemctl stop elasticsearch alert kibana cerebro
+   ```
+
+2. Upgrade client-node (includes alert engine):
+
+   ```bash
+   yum update ./cyberx-client-node-7.0.6-1.el7.x86_64.rpm
+   ```
+
+3. Upgrade data-node:
+
+   ```bash
+   yum update ./cyberx-data-node-7.0.6-1.el7.x86_64.rpm
+   ```
+
+4. Start services:
+
+   ```bash
+   systemctl start elasticsearch alert kibana cerebro wiki 
+   ```
+
+5. Migrate Audit index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/audit' -u logserver
+   ```
+
+6. Migrate Alert index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/alert' -u logserver
+   ```
+
+7. Migrate Agents index to new format (the next call will display the current status of the task):
+
+   ```bash
+   curl -XPOST '127.0.0.1:9200/_logserver/prepareindex/.agents' -u logserver
+   ```
+
+8. Open tcp/5603 port for wikipedia plugin:
+
+   ```bash
+   firewall-cmd --zone=public --add-port=5603/tcp --permanent
+   firewall-cmd --relod
+   ```
+
 ## Upgrade from version 7.0.4
 
 ### General note
@@ -335,7 +438,7 @@ The update includes packages:
 
     ```bash
     export CREDENTIAL="logserver:logserver"
-
+    
     curl -s -u $CREDENTIAL localhost:9200/_cluster/health?pretty
     ```
 
@@ -665,19 +768,19 @@ If everything went correctly, we should see 100% allocated shards in cluster hea
       --> Running transaction check
       ---> Package cyberx-client-node.x86_64 0:7.0.1-1.el7 will be installed
       --> Finished Dependency Resolution
-
+  
       Dependencies Resolved
-
+  
       =======================================================================================================================================================================================
        Package                                         Arch                      Version                           Repository                                                           Size
       =======================================================================================================================================================================================
       Installing:
        cyberx-client-node                    x86_64                    7.0.1-1.el7                       /cyberx-client-node-7.0.1-1.el7.x86_64                    1.2 G
-
+  
       Transaction Summary
       =======================================================================================================================================================================================
       Install  1 Package
-
+  
       Total size: 1.2 G
       Installed size: 1.2 G
       Is this ok [y/d/N]: y
@@ -699,10 +802,10 @@ If everything went correctly, we should see 100% allocated shards in cluster hea
       Removed symlink /etc/systemd/system/multi-user.target.wants/cerebro.service.
       Created symlink from /etc/systemd/system/multi-user.target.wants/cerebro.service to /usr/lib/systemd/system/cerebro.service.
         Verifying  : cyberx-client-node-7.0.1-1.el7.x86_64                                                                                                                     1/1
-
+  
       Installed:
         cyberx-client-node.x86_64 0:7.0.1-1.el7
-
+  
       Complete!
       ```
 
