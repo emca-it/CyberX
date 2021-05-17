@@ -1,5 +1,255 @@
 # Integrations #
 
+## Wiki.js
+
+**Wiki.js** is one of the most powerful and extensible Wiki software. The **CyberX** have integration plugin with **Wiki.js**, which allows you to access **Wiki.js** directly from the CyberX GUI. Additionally, CyberX provides access management to the Wiki content.
+
+### Login to Wiki
+
+Access to the **Wiki** is from the main **CyberX** GUI window via the **Wiki** button located at the top of the window:
+
+![](/media/media/image168.png)
+
+### Creating a public site
+
+There are several ways to create a public site:
+
+- by clicking the **New Page** icon on the existing page;
+- by clicking on a link of a non-existent site;
+- by entering the path in the browser's address bar to a non-existent site;
+- by duplicating an existing site;
+
+1. Create a site by clicking the **New Page** icon on an existing page
+
+   - On the opened page, click the **New Page** button in the menu at the top of the opened website:
+
+     ![](/media/media/image169.png)
+
+   - A new page location selection window will appear, where in the **Virtual Folders** panel you can select where the new page will be saved. 
+
+   - In the text field at the bottom of the window, the **new-page** string is entered by default, specifying the address of the page being created:
+
+     ![](/media/media/image170.png)
+
+   - After clicking on the ***SELECT*** button at the bottom of the window, a window will appear with the option to select the editor type of the newly created site:
+
+     ![](/media/media/image171.png)
+
+   - After selecting the site editor (in this case, the ***Visual Editor*** editor has been selected), a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
+
+     ![](/media/media/image172.png)
+
+   - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the "Guest" group.
+
+   - After completing the site with content, save it by clicking on the **Create** button
+     located in the menu at the top of the new site editor:
+
+     ![](/media/media/image173.png)
+
+   - After the site is successfully created, the browser will open the newly created site.
+
+2. Create a site by typing a nonexistent path into the browser's address bar
+
+   - In the address bar of the browser, enter the address of non-existent websites, e.g. by adding ***/en/public/test-page*** to the end of the domain name:
+
+     ![](/media/media/image174.png)
+
+   - The browser will display the information ***This page does not exists yet.***, Below there will be a button to create a ***CREATE PAGE*** page (if you have permission to create a site at the given address):
+
+     ![](/media/media/image175.png)
+
+   - After clicking the ***CREATE PAGE*** button, a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
+
+     ![](/media/media/image176.png)
+
+   - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the ***Guest*** group.
+
+   - After completing the site with content, save it by clicking on the **Create** button
+     located in the menu at the top of the new site editor:
+
+     ![](/media/media/image176.png)
+
+   - After the site is successfully created, the browser will open the newly created site.
+
+3. Create a site by duplicating an existing site
+
+   - On the open page, click the ***Page Actions*** button in the menu at the top of the open site: 
+
+     ![](/media/media/image178.png)
+
+   - The list of actions that can be performed on the currently open site will appear:
+
+     ![](/media/media/image179.png)
+
+   - From the expanded list of actions, click on the ***Duplicate*** item, then a new page location selection window will appear, where in the ***Virtual Folders*** panel you can indicate where the new page will be saved. In the text field at the bottom of the window, the string ***public/new-page*** is entered (by default), specifying the address of the page being created:
+
+     ![](/media/media/image180.png)
+
+   - After clicking the ***SELECT*** button, a window with site properties will appear where you can set the site title (change the title of the duplicated page), set a short site description (change the description of the duplicated site), change the path to the site and optionally add tags to the site:
+
+     ![](/media/media/image181.png)
+
+   - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the ***Guest*** group.
+
+   - After completing the site with content, save it by clicking on the **Create** button
+     located in the menu at the top of the new site editor:
+
+     ![](/media/media/image176.png)
+
+   - After the site is successfully created, the browser will open the newly created site.
+
+### Creating a site with the permissions of a given group
+
+To create sites with the permissions of a given group, do the following:
+
+1. Check the permissions of the group to which the user belongs. To do this, click on the ***Account*** button in the top right menu in Wiki.js:
+
+   ![](/media/media/image195.png)
+
+2. After clicking on the ***Account*** button, a menu with a list of actions to be performed on your own account will be displayed:
+
+   ![](/media/media/image196.png)
+
+3. From the expanded list of actions, click on the ***Profiles*** item, then the profile of the currently logged in user will be displayed. The ***Groups*** tile will display the groups to which the currently logged in user belongs:
+
+   ![](/media/media/image197.png)
+
+4. Then create the site in the path, putting the name of the group to which the user belongs. In this case it will be putting your site in the path starting with ***/demo***(preceded by an abbreviation of the language name):
+
+   ![](/media/media/image198.png)
+
+5. Click the ***SELECT*** button at the bottom of the window, a new window will appear with the option to select the editor type for the newly created site:
+
+   ![](/media/media/image199.png)
+
+6. After selecting the site editor (for example ***Visual Editor***), a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
+
+   ![](/media/media/image200.png)
+
+7. After completing the site with content, save it by clicking the ***Create*** button in the menu at the top of the new site editor
+
+   ![](/media/media/image201.png)
+
+8. After the site is successfully created, the browser will open the newly created site.
+
+### Content management
+
+#### Text formatting features
+
+- change the text size;
+- changing the font type;
+- bold;
+- italics;
+- stress;
+- strikethrough;
+- subscript;
+- superscript;
+- align (left, right, center, justify);
+- numbered list;
+- bulleted list;
+- to-do list;
+- inserting special characters;
+- inserting tables;
+- inserting text blocks Wiki.js also offers non-text insertion.
+
+#### Insert Links
+
+- To insert links, click in the site editor on the ***Link*** icon on the editor icon bar:
+
+![](/media/media/image182.png)
+
+- After clicking on the icon, a text field will appear to enter the website address:
+
+  ![](/media/media/image183.png)
+
+- Then click the ***Save*** button (green sign next to the text field), then the address to the external site will appear on the current site:
+
+  ![](/media/media/image184.png)
+
+#### Insert images
+
+- To insert images, click in the site editor on the ***Insert Assets*** icon on the editor icon bar:
+
+  ![](/media/media/image185.png)
+
+- After clicking on the icon, the window for upload images will appear:
+
+  ![](/media/media/image186.png)
+
+- To upload the image, click the ***Browse*** button (or from the file manager, drag and drop the file to the ***Browse or Drop files here ...*** area) then the added file will appear on the list, its name will be on a gray background:
+
+  ![](/media/media/image187.png)
+
+- Click the ***UPLOAD*** button to send files to the editor, after the upload is completed, you will see information about the status of the operation performed:
+
+  ![](/media/media/image188.png)
+
+- After uploading, the image file will also appear in the window where you can select images to insert:
+
+  ![](/media/media/image189.png)
+
+- Click on the file name and then the ***INSERT*** button to make the image appear on the edited site:
+
+  ![](/media/media/image190.png)
+
+- After completing the site with content, save it by clicking the ***CREATE*** button in the menu at the top of the editor of the new site:
+
+  ![](/media/media/image191.png)
+
+- or the ***SAVE*** button in the case of editing an existing site:
+
+  ![](/media/media/image192.png)
+
+- After the site is successfully created, the browser will open the newly created site.
+
+### Create a "tree" of documents
+
+***Wiki.js*** does not offer a document tree structure directly. Creating a structure (tree) of documents is done automatically by grouping sites according to the paths in which they are available.
+
+1. To create document structures (trees), create sites with the following paths:
+
+   ```markdown
+   /en/linux/1-introduction
+   /en/linux/2-installation
+   /en/linux/3-configuration
+   /en/linux/4-administration
+   /en/linux/5-summary
+   ```
+
+2. The items in the menu are sorted alphabetically, so the site titles should begin with a number followed by a dot followed by the name of the site, for example:
+
+   - for the site in the path ***/en/linux/1-introduction*** you should set the title ***1.Introduction***;
+   - for the site in the path ***/en/linux/2-installation*** you should set the title ***2.Installation***;
+   - for the site in the path ***/en/linux/3-configuration*** you should set the title ***3.Configuration***;
+   - for the site in the path ***/en/linux/4-administration*** you should set the title ***4.Administration***;
+   - for the site in the path ***/en/linux/5-summary*** you should set the title ***5.Summary***
+
+3. In this way, you can create a structure (tree) of documents relating to one topic:
+
+   ![](/media/media/image193.png)
+
+4. You can create a document with chapters in a similar way. To do this, create sites with the following paths:
+
+   ```wiki
+   /en/elaboration/1-introduction
+   /en/elaboration/2-chapter-1
+   /en/elaboration/2-chapter-1
+   /en/elaboration/2-chapter-1
+   /en/elaboration/3-summary
+   ```
+
+5. The menu items are in alphabetical order. Site titles should begin with a number followed by a period followed by a name that identifies the site's content:
+
+   - for the site in the path ***/en/elaboration/1-introduction*** you should set the title ***1. Introduction***
+   - for the site in the path ***/en/elaboration/2-chapter-1*** you should set the title ***2. Chapter 1***
+   - for the site in the path ***/en/elaboration/2-chapter-2*** you should set the title ***2. Chapter 2***
+   - for the site in the path ***/en/elaboration/2-chapter-3*** the title should be set to ***2. Chapter 3***
+   - for the site in the path ***/en/elaboration/3-summary*** you should set the title ***3. Summary***
+
+6. In this way, you can create a structure (tree) of documents related to one essay or research work:
+
+   ![](/media/media/image194.png)
+
 ## OP5 - Naemon logs ##
 
 ### Logstash ###
