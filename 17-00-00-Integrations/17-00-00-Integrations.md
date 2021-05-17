@@ -10,6 +10,8 @@ Access to the **Wiki** is from the main **CyberX** GUI window via the **Wiki** b
 
 ![](/media/media/image168.png)
 
+
+
 ### Creating a public site
 
 There are several ways to create a public site:
@@ -25,19 +27,27 @@ There are several ways to create a public site:
 
      ![](/media/media/image169.png)
 
+     
+
    - A new page location selection window will appear, where in the **Virtual Folders** panel you can select where the new page will be saved. 
 
    - In the text field at the bottom of the window, the **new-page** string is entered by default, specifying the address of the page being created:
 
      ![](/media/media/image170.png)
 
+     
+
    - After clicking on the ***SELECT*** button at the bottom of the window, a window will appear with the option to select the editor type of the newly created site:
 
      ![](/media/media/image171.png)
 
+     
+
    - After selecting the site editor (in this case, the ***Visual Editor*** editor has been selected), a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
 
      ![](/media/media/image172.png)
+
+     
 
    - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the "Guest" group.
 
@@ -46,6 +56,8 @@ There are several ways to create a public site:
 
      ![](/media/media/image173.png)
 
+     
+     
    - After the site is successfully created, the browser will open the newly created site.
 
 2. Create a site by typing a nonexistent path into the browser's address bar
@@ -54,13 +66,19 @@ There are several ways to create a public site:
 
      ![](/media/media/image174.png)
 
+     
+
    - The browser will display the information ***This page does not exists yet.***, Below there will be a button to create a ***CREATE PAGE*** page (if you have permission to create a site at the given address):
 
      ![](/media/media/image175.png)
 
+     
+
    - After clicking the ***CREATE PAGE*** button, a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
 
      ![](/media/media/image176.png)
+
+     
 
    - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the ***Guest*** group.
 
@@ -69,6 +87,8 @@ There are several ways to create a public site:
 
      ![](/media/media/image176.png)
 
+     
+     
    - After the site is successfully created, the browser will open the newly created site.
 
 3. Create a site by duplicating an existing site
@@ -77,25 +97,35 @@ There are several ways to create a public site:
 
      ![](/media/media/image178.png)
 
+     
+
    - The list of actions that can be performed on the currently open site will appear:
 
      ![](/media/media/image179.png)
+
+     
 
    - From the expanded list of actions, click on the ***Duplicate*** item, then a new page location selection window will appear, where in the ***Virtual Folders*** panel you can indicate where the new page will be saved. In the text field at the bottom of the window, the string ***public/new-page*** is entered (by default), specifying the address of the page being created:
 
      ![](/media/media/image180.png)
 
+     
+
    - After clicking the ***SELECT*** button, a window with site properties will appear where you can set the site title (change the title of the duplicated page), set a short site description (change the description of the duplicated site), change the path to the site and optionally add tags to the site:
-
+   
      ![](/media/media/image181.png)
-
+   
+     
+   
    - A public site should be placed in the path ***/public*** which is available for the **Guest** group and have the ***public-pages*** tag assigned. The ***public-pages*** tag mark sites are accessible to the ***Guest*** group.
-
+   
    - After completing the site with content, save it by clicking on the **Create** button
      located in the menu at the top of the new site editor:
-
+   
      ![](/media/media/image176.png)
-
+   
+     
+     
    - After the site is successfully created, the browser will open the newly created site.
 
 ### Creating a site with the permissions of a given group
@@ -106,31 +136,47 @@ To create sites with the permissions of a given group, do the following:
 
    ![](/media/media/image195.png)
 
+   
+
 2. After clicking on the ***Account*** button, a menu with a list of actions to be performed on your own account will be displayed:
 
    ![](/media/media/image196.png)
+
+   
 
 3. From the expanded list of actions, click on the ***Profiles*** item, then the profile of the currently logged in user will be displayed. The ***Groups*** tile will display the groups to which the currently logged in user belongs:
 
    ![](/media/media/image197.png)
 
+   
+
 4. Then create the site in the path, putting the name of the group to which the user belongs. In this case it will be putting your site in the path starting with ***/demo***(preceded by an abbreviation of the language name):
 
    ![](/media/media/image198.png)
+
+   
 
 5. Click the ***SELECT*** button at the bottom of the window, a new window will appear with the option to select the editor type for the newly created site:
 
    ![](/media/media/image199.png)
 
+   
+
 6. After selecting the site editor (for example ***Visual Editor***), a window with site properties will appear where you can set the site title (change the default page title), set a short site description, change the path to the site and optionally add tags to the site:
 
    ![](/media/media/image200.png)
+
+   
 
 7. After completing the site with content, save it by clicking the ***Create*** button in the menu at the top of the new site editor
 
    ![](/media/media/image201.png)
 
+   
+
 8. After the site is successfully created, the browser will open the newly created site.
+
+
 
 ### Content management
 
@@ -158,13 +204,19 @@ To create sites with the permissions of a given group, do the following:
 
 ![](/media/media/image182.png)
 
+
+
 - After clicking on the icon, a text field will appear to enter the website address:
 
   ![](/media/media/image183.png)
 
+  
+
 - Then click the ***Save*** button (green sign next to the text field), then the address to the external site will appear on the current site:
 
   ![](/media/media/image184.png)
+  
+  
 
 #### Insert images
 
@@ -172,35 +224,53 @@ To create sites with the permissions of a given group, do the following:
 
   ![](/media/media/image185.png)
 
+  
+
 - After clicking on the icon, the window for upload images will appear:
 
   ![](/media/media/image186.png)
+
+  
 
 - To upload the image, click the ***Browse*** button (or from the file manager, drag and drop the file to the ***Browse or Drop files here ...*** area) then the added file will appear on the list, its name will be on a gray background:
 
   ![](/media/media/image187.png)
 
+  
+
 - Click the ***UPLOAD*** button to send files to the editor, after the upload is completed, you will see information about the status of the operation performed:
 
   ![](/media/media/image188.png)
+
+  
 
 - After uploading, the image file will also appear in the window where you can select images to insert:
 
   ![](/media/media/image189.png)
 
+  
+
 - Click on the file name and then the ***INSERT*** button to make the image appear on the edited site:
 
   ![](/media/media/image190.png)
+
+  
 
 - After completing the site with content, save it by clicking the ***CREATE*** button in the menu at the top of the editor of the new site:
 
   ![](/media/media/image191.png)
 
+  
+
 - or the ***SAVE*** button in the case of editing an existing site:
 
   ![](/media/media/image192.png)
 
+  
+
 - After the site is successfully created, the browser will open the newly created site.
+
+
 
 ### Create a "tree" of documents
 
@@ -228,6 +298,8 @@ To create sites with the permissions of a given group, do the following:
 
    ![](/media/media/image193.png)
 
+   
+
 4. You can create a document with chapters in a similar way. To do this, create sites with the following paths:
 
    ```wiki
@@ -249,6 +321,8 @@ To create sites with the permissions of a given group, do the following:
 6. In this way, you can create a structure (tree) of documents related to one essay or research work:
 
    ![](/media/media/image194.png)
+   
+   
 
 ## OP5 - Naemon logs ##
 
