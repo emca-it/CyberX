@@ -805,13 +805,13 @@ Object "item" contains information about the incident that action was used on.
 
 6. You should now be able to see an additional item in the action context menu in GUI Alerts::Incidents:
 
-   ![](/media/media/image202.PNG)
+   ![](/media/media/image202.png)
 
    
 
 7. Running the action will resolve into an alert:  
 
-   ![](/media/media/image203.PNG)
+   ![](/media/media/image203.png)
 
    
 
@@ -871,11 +871,11 @@ Object "item" contains information about the incident that action was used on.
 
 6. Now both actions should be present on the context menu:
 
-   ![](/media/media/image204.PNG)
+   ![](/media/media/image204.png)
 
 7. Using it will open dashboard in new tab:
 
-   ![](/media/media/image205.PNG)
+   ![](/media/media/image205.png)
 
 #### Updating system
 
