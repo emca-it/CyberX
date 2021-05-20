@@ -670,6 +670,221 @@ escalate_after:
 	- hours: 6
 ```
 
+### Context menu for Alerts::Incidents
+
+In this section, you will find steps and examples that will allow you to add custom items in the actions context menu for the Incidents table. This allows you to expand on the functionalities of the system.
+
+#### Important file paths
+
+- `/usr/share/kibana/plugins/alerts/public/reactui/incidenttab.js`
+- `/usr/share/kibana/optimize/bundles/`
+
+#### List element template
+
+```javascript
+{
+  name: 'Name of the Action to add',
+  icon: 'Name of the chosen icon',
+  type: 'icon',
+  onClick: this.runActionFunction,
+}
+```
+
+You should pick the icon from available choices. After listing `ls /usr/share/kibana/built_assets/dlls/icon*` if you want to use:
+
+- `icon.editor_align_center-js.bundle.dll.js`  
+  The for `icon: ` you should set:  
+- `editorAlignCenter`  
+  Use the same transformation for each icon.
+
+#### Action function template
+
+```javascript
+runActionFunction = item => {
+  // Functino logic to run => information from "item" object can be used here
+};
+```
+
+Object "item" contains information about the incident that action was used on.
+
+#### Steps to add the first custom action to the codebase
+
+1. Create backup of a file you are about to modify:
+
+   ```bash
+   cp /usr/share/kibana/plugins/alerts/public/reactui/incidenttab.js ~/incidenttab.js.bak
+   ```
+
+   
+
+2. Working example for the onClick function and action item:
+
+   ```bash
+   showMyLocation = () => {
+     const opt = {
+       enableHighAccuracy: true,
+       timeout: 5000,
+       maximumAge: 0
+     };
+     const success = pos => {
+       const crd = pos.coords;
+       alert(`Your current position is:\nLatitude: ${
+         crd.latitude
+       }\nLongitude: ${
+         crd.longitude
+       }\nMore or less ${
+         crd.accuracy
+       } meters.`);
+     }
+     const err = err => {
+       alert(`ERROR(${err.code}): ${err.message}`);
+     }
+     navigator.geolocation.getCurrentPosition(success, err, opt);
+   }
+   
+   const customActions = [
+     {
+       name: 'Show my location',
+       icon: 'broom',
+       type: 'icon',
+       onClick: this.showMyLocation,
+     }
+   ];
+   incidentactions.push(...customActions);
+   ```
+
+   
+
+3. The "showMyLocation" function code should be placed in `/usr/share/kibana/plugins/alerts/public/reactui/incidenttab.js` under:
+
+   ```bash
+     showIncidentModal = incident => {
+       const updateIncident = incident;
+       this.setState({ showIncidentModal: true, updateIncident });
+     };
+   
+     // paste function here
+   
+     render() {
+   ```
+
+   
+
+4. Custom action with a `push` function should be placed:
+
+   ```bash
+         {
+           name: 'Note',
+           icon: 'pencil',
+           type: 'icon',
+           isPrimary: true,
+           color: 'danger',
+           onClick: this.note,
+         },
+       ];
+   
+       // insert HERE your action with function 'push'
+   
+       const incidentcolumns = [
+   ```
+
+   
+
+5. For the changes to take effect run below commands on the client serwer (as root or with sudo):
+
+   ```bash
+   systemctl stop kibana
+   rm -rf /usr/share/kibana/optimize/bundles
+   systemctl start kibana
+   # verify that process runs correctly afterwards
+   journalctl -fu kibana
+   # in case of errors restore backup
+   ```
+
+   
+
+6. You should now be able to see an additional item in the action context menu in GUI Alerts::Incidents:
+
+   ![](/media/media/image202.PNG)
+
+   
+
+7. Running the action will resolve into an alert:  
+
+   ![](/media/media/image203.PNG)
+
+   
+
+#### Steps to add a second and subsequent custom actions
+
+1. Execute identicly as in the last section.
+
+2. Example of a function that uses `item` object. It will open a new tab in the browser with the default [Alert] dashboard with a custom filter and time set, based on information from the passed `item` variable:
+
+   ```bash
+   openAlertDashboardWithFilter = item => {
+     const ruleName = `"${item.rule_name}"`;
+     const startT = new Date(item.match_time);
+     startT.setHours(0);
+     const endT = new Date(item.match_time);
+     endT.setHours(24);
+     const alertDashboardPath =
+       '/app/kibana#/dashboard/777ace50-d200-11e8-98f8-31520a7f9701';
+     const timeQuery = 
+       `_g=(time:(from:'${startT.toISOString()}',to:'${endT.toISOString()}'))`;
+     const nameQuery = 
+       `_a=(query:(language:lucene,query:'rule_name:${encodeURIComponent(
+         ruleName
+       )}'))`;
+     const dashboardLocation = `${alertDashboardPath}?${timeQuery}&${nameQuery}`;
+     window.open(dashboardLocation, '_blank');
+   };
+   ```
+
+   
+
+3. Execute identicly as in the last section.
+
+4. The difference in adding subsequent action is that you append a new one to `customActions` array variable. The rest should stay the same:
+
+   ```bash
+   const customActions = [
+     {
+       name: 'Show my location',
+       icon: 'broom',
+       type: 'icon',
+       onClick: this.showMyLocation,
+     },
+     {
+       name: 'Show on Dashboard',
+       icon: 'arrowRight',
+       type: 'icon',
+       onClick: this.openAlertDashboardWithFilter,
+     },
+   ];
+   incidentactions.push(...customActions);
+   ```
+
+   
+
+5. Execute identicly as in the last section.
+
+6. Now both actions should be present on the context menu:
+
+   ![](/media/media/image204.PNG)
+
+7. Using it will open dashboard in new tab:
+
+   ![](/media/media/image205.PNG)
+
+#### Updating system
+
+When updating the system your changes might be overwritten. You should in that case save a backup of your changes and restore them after the update with the use of this instruction. Or for instance, with `vimdiff` compare your changes with the original file:
+
+```bash
+vimdiff ~/incidenttab.js.bak /usr/share/kibana/plugins/alerts/public/reactui/incidenttab.js
+```
+
 ## Indicators of compromise (IoC)
 
 CyberX has the Indicators of compromise (IoC) functionality, which is based on the Malware Information Sharing Platform (MISP).
