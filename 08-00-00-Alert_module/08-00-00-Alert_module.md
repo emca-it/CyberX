@@ -719,7 +719,7 @@ Object "item" contains information about the incident that action was used on.
 
 2. Working example for the onClick function and action item:
 
-   ```bash
+   ```javascript
    showMyLocation = () => {
      const opt = {
        enableHighAccuracy: true,
@@ -757,7 +757,7 @@ Object "item" contains information about the incident that action was used on.
 
 3. The "showMyLocation" function code should be placed in `/usr/share/kibana/plugins/alerts/public/reactui/incidenttab.js` under:
 
-   ```bash
+   ```javascript
      showIncidentModal = incident => {
        const updateIncident = incident;
        this.setState({ showIncidentModal: true, updateIncident });
@@ -772,7 +772,7 @@ Object "item" contains information about the incident that action was used on.
 
 4. Custom action with a `push` function should be placed:
 
-   ```bash
+   ```javascript
          {
            name: 'Note',
            icon: 'pencil',
@@ -821,7 +821,7 @@ Object "item" contains information about the incident that action was used on.
 
 2. Example of a function that uses `item` object. It will open a new tab in the browser with the default [Alert] dashboard with a custom filter and time set, based on information from the passed `item` variable:
 
-   ```bash
+   ```javascript
    openAlertDashboardWithFilter = item => {
      const ruleName = `"${item.rule_name}"`;
      const startT = new Date(item.match_time);
@@ -847,7 +847,7 @@ Object "item" contains information about the incident that action was used on.
 
 4. The difference in adding subsequent action is that you append a new one to `customActions` array variable. The rest should stay the same:
 
-   ```bash
+   ```javascript
    const customActions = [
      {
        name: 'Show my location',
