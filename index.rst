@@ -97,6 +97,12 @@ CyberX User Guide
         :caption: Configure_email_delivery
 
        14-00-00-Configure_email_delivery/14-00-00-Configure_email_delivery.md
+	   
+.. toctree::
+        :maxdepth: 2
+        :caption: Wiki
+
+       27-00-00-Wiki/27-00-00-Wiki.md
 
 .. toctree::
         :maxdepth: 2

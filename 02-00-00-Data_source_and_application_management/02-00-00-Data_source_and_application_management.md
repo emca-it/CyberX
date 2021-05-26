@@ -1084,20 +1084,20 @@ Secure Sockets Layer (SSL) and Transport Layer Security (TLS) provide encryption
 
 1. Obtain a server certificate and private key for CyberX GUI.
 
-   Kibana will need to use this "server certificate" and corresponding private key when receiving connections from web browsers.
+	Kibana will need to use this "server certificate" and corresponding private key when receiving connections from web browsers.
 
-   When you obtain a server certificate, you must set its subject alternative name (SAN) correctly to ensure that modern web browsers with hostname verification will trust it. You can set one or more SANs to the CyberX GUI server’s fully-qualified domain name (FQDN), hostname, or IP address. When choosing the SAN, you should pick whichever attribute you will be using to connect to Kibana in your browser, which is likely the FQDN in a production environment.
+	When you obtain a server certificate, you must set its subject alternative name (SAN) correctly to ensure that modern web browsers with hostname verification will trust it. You can set one or more SANs to the CyberX GUI server’s fully-qualified domain name (FQDN), hostname, or IP address. When choosing the SAN, you should pick whichever attribute you will be using to connect to Kibana in your browser, which is likely the FQDN in a production environment.
 
 2. Configure CyberX GUI to access the server certificate and private key.
 
-   `vi /etc/kibana/kibana.yml`
+	`vi /etc/kibana/kibana.yml`
 
-   ```bash
-   server.ssl.enabled: true
-   server.ssl.supportedProtocols: ["TLSv1.3"]
-   server.ssl.certificate: "/path/to/kibana-server.crt"
-   server.ssl.key: "/path/to/kibana-server.key"
-   ```
+	```bash
+	server.ssl.enabled: true
+	server.ssl.supportedProtocols: ["TLSv1.3"]
+	server.ssl.certificate: "/path/to/kibana-server.crt"
+	server.ssl.key: "/path/to/kibana-server.key"
+	```
 
 ## Index rollover
 
