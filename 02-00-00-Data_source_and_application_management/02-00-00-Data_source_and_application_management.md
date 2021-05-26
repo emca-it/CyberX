@@ -1076,16 +1076,25 @@ logserverguard.ssl.http.enabled_ciphers:
 ```
 Otherwise, the beat will not be able to send documents directly and if you want to avoid it you can send a document with Logstash first.
 
-## Index rollover
+## Browser layer encryption
 
-Using the rollover function, you can make changes to removing documents from the *audit*, *.agents*, *alert\** indexes. 
+Secure Sockets Layer (SSL) and Transport Layer Security (TLS) provide encryption for data-in-transit. While these terms are often used interchangeably, CyberX GUI supports only TLS, which supersedes the old SSL protocols. Browsers send traffic to CyberX  GUI and CyberX GUI sends traffic to Elasticsearch database. These communication channels are configured separately to use TLS. TLS requires X.509 certificates to authenticate the communicating parties and perform encryption of data-in-transit. Each certificate contains a public key and has an associated — but separate — private key; these keys are used for cryptographic operations. CyberX  GUI supports certificates and private keys in PEM format and support TLS 1.3 version.
 
-You can configure the rollover by going to the *Config* module, then clicking the *Settings* tab, go to the *Index rollover settings* section and select click *Configure* button:
+### Configuration steps
 
-![](/media/media/image167.png)
+1. Obtain a server certificate and private key for CyberX GUI.
 
-You can set the following retention parameters for the above indexes:
+   Kibana will need to use this "server certificate" and corresponding private key when receiving connections from web browsers.
 
-- Maximum size (GB);
-- Maximum age (h);
-- Maximum number of documents.
+   When you obtain a server certificate, you must set its subject alternative name (SAN) correctly to ensure that modern web browsers with hostname verification will trust it. You can set one or more SANs to the CyberX GUI server’s fully-qualified domain name (FQDN), hostname, or IP address. When choosing the SAN, you should pick whichever attribute you will be using to connect to Kibana in your browser, which is likely the FQDN in a production environment.
+
+2. Configure CyberX GUI to access the server certificate and private key.
+
+   `vi /etc/kibana/kibana.yml`
+
+   ```bash
+   server.ssl.enabled: true
+   server.ssl.supportedProtocols: ["TLSv1.3"]
+   server.ssl.certificate: "/path/to/kibana-server.crt"
+   server.ssl.key: "/path/to/kibana-server.key"
+   ```
