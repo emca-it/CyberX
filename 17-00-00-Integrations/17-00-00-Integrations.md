@@ -5,35 +5,51 @@
 ### Logstash ###
 
 1. In CyberX `naemon_beat.conf` set up `ELASTICSEARCH_HOST`, `ES_PORT`, `FILEBEAT_PORT`
+
 2. Copy CyberX `naemon_beat.conf` to `/etc/logstash/conf.d`
+
 3. Based on "FILEBEAT_PORT" if firewall is running:
-```bash
-sudo firewall-cmd --zone=public --permanent --add-port=FILEBEAT_PORT/tcp
-sudo firewall-cmd --reload
-```
+
+   ```bash
+   sudo firewall-cmd --zone=public --permanent --add-port=FILEBEAT_PORT/tcp
+   sudo firewall-cmd --reload
+   ```
+
+   
+
 4. Based on amount of data that elasticsearch will receive you can also choose whether you want index creation to be based on moths or days:
-```json
-index => "CyberX-naemon-%{+YYYY.MM}"
-or
-index => "CyberX-naemon-%{+YYYY.MM.dd}"
-```
+
+   ```bash
+   index => "CyberX-naemon-%{+YYYY.MM}"
+   or
+   index => "CyberX-naemon-%{+YYYY.MM.dd}"
+   ```
+
+   
+
 5. Copy `naemon` file to `/etc/logstash/patterns` and make sure it is readable by logstash process
-6. Restart *logstash* configuration e.g.:
-```bash
-sudo systemct restart logstash
-```
-### Elasticsearch ###
+5. Restart *logstash* configuration e.g.:
 
+   ```bash
+   sudo systemct restart logstash
+   ```
+
+   
+
+   ### Elasticsearch
 1. Connect to Elasticsearch node via SSH and Install index pattern for naemon logs. Note that if you have a default pattern covering *settings* section you should delete/modify that in naemon_template.sh:
-```json
-  "settings": {
-    "number_of_shards": 5,
-    "auto_expand_replicas": "0-1"
-  },
-```
-2. Install template by running:
-`./naemon_template.sh`
 
+   ```bash
+   "settings": {
+       "number_of_shards": 5,
+       "auto_expand_replicas": "0-1"
+     },
+   ```
+
+   
+
+2. Install template by running:
+   `./naemon_template.sh`
 ### CyberX Monitor ###
 
 1. On CyberX Monitor host install filebeat (for instance via rpm `https://www.elastic.co/downloads/beats/filebeat`)
@@ -88,7 +104,7 @@ Below instruction requires that between CyberX node and Elasticsearch node is wo
 1.	First, settings section in *CyberXtemplate.sh* should be adjusted, either:
 	- there is a default template present on Elasticsearch that already covers shards and replicas then settings sections should be removed from the *CyberXtemplate.sh* before executing
 	- there is no default template - shards and replicas should be adjusted for you environment (keep in mind replicas can be added later, while changing shards count on existing index requires 
-	reindexing it)
+		reindexing it)
 
 			"settings": {
 			  "number_of_shards": 5,
@@ -112,12 +128,15 @@ Below instruction requires that between CyberX node and Elasticsearch node is wo
 
 1.	The *CyberXperflogs.conf* contains example of *input/filter/output* configuration. It has to be copied to */etc/logstash/conf.d/*. Make sure that the *logstash* has permissions to read the configuration files:
 	
-
-chmod 664 /etc/logstash/conf.d/CyberXperflogs.conf
-
+	```bash
+	chmod 664 /etc/logstash/conf.d/CyberXperflogs.conf
+	```
+	
+	
+	
 2. In the input section comment/uncomment *“beats”* or *“tcp”* depending on preference (beats if *Filebeat* will be used and tcp if *NetCat*). The port and the type has to be adjusted as well:
 
-   ```
+   ```bash
    port => PORT_NUMBER
    type => "CyberXperflogs"
    ```
@@ -128,21 +147,19 @@ chmod 664 /etc/logstash/conf.d/CyberXperflogs.conf
 
 4. In an output section type should match with the rest of a *config*. host should point to your elasticsearch node. index name should correspond with what has been set in elasticsearch template to allow mapping application. The date for index rotation in its name is recommended and depending on the amount of data expecting to be transferred should be set to daily (+YYYY.MM.dd) or monthly (+YYYY.MM) rotation:
 
-    ```yaml
-    hosts => ["127.0.0.1:9200"]
-    index => "CyberX-perflogs-%{+YYYY.MM.dd}"
-    ```
+   ```bash
+   hosts => ["127.0.0.1:9200"]
+   index => "CyberX-perflogs-%{+YYYY.MM.dd}"
+   ```
 
 5. Port has to be opened on a firewall:
 
-    ```bash
-    sudo firewall-cmd --zone=public --permanent --add-port=PORT_NUMBER/tcp
-    sudo firewall-cmd --reload
-    ```
+   ```bash
+   sudo firewall-cmd --zone=public --permanent --add-port=PORT_NUMBER/tcp
+   sudo firewall-cmd --reload
+   ```
 
-    
-
-6. Logstash has to be reloaded:	
+6. Logstash has to be reloaded:
 
    ```bash
    sudo systemctl restart logstash
@@ -154,98 +171,111 @@ chmod 664 /etc/logstash/conf.d/CyberXperflogs.conf
    sudo kill -1 LOGSTASH_PID
    ```
 
-   
-
 ### CyberX Monitor ###
 
-1.	You have to decide wether FileBeat or NetCat will be used. In case of Filebeat - skip to the second step. Otherwise:
+1. You have to decide wether FileBeat or NetCat will be used. In case of Filebeat - skip to the second step. Otherwise:
 
-- Comment line:
+   - Comment line:
 
-  ```bash
-  54    open(my $logFileHandler, '>>', $hostPerfLogs) or die "Could not open $hostPerfLogs"; #FileBeat
-  •	Uncomment lines:
-  55 #    open(my $logFileHandler, '>', $hostPerfLogs) or die "Could not open $hostPerfLogs"; #NetCat
-  ...
-  88 #    my $logstashIP = "LOGSTASH_IP";
-  89 #    my $logstashPORT = "LOGSTASH_PORT";
-  90 #    if (-e $hostPerfLogs) {
-  91 #        my $pid1 = fork();
-  92 #        if ($pid1 == 0) {
-  93 #            exec("/bin/cat $hostPerfLogs | /usr/bin/nc -w 30 $logstashIP $logstashPORT");
-  94 #        }
-  95 #    }
-  ```
+     ```bash
+     54    open(my $logFileHandler, '>>', $hostPerfLogs) or die "Could not open $hostPerfLogs"; #FileBeat
+     •	Uncomment lines:
+     55 #    open(my $logFileHandler, '>', $hostPerfLogs) or die "Could not open $hostPerfLogs"; #NetCat
+     ...
+     88 #    my $logstashIP = "LOGSTASH_IP";
+     89 #    my $logstashPORT = "LOGSTASH_PORT";
+     90 #    if (-e $hostPerfLogs) {
+     91 #        my $pid1 = fork();
+     92 #        if ($pid1 == 0) {
+     93 #            exec("/bin/cat $hostPerfLogs | /usr/bin/nc -w 30 $logstashIP $logstashPORT");
+     94 #        }
+     95 #    }
+     ```
 
-- In process-service-perfdata-log.pl and process-host-perfdata-log.pl: change logstash IP and port:
-	
-  ```bash
-  92 my $logstashIP = "LOGSTASH_IP";
-  93 my $logstashPORT = "LOGSTASH_PORT";
-  ```
+     
 
+   - In process-service-perfdata-log.pl and process-host-perfdata-log.pl: change logstash IP and port:
+
+     ```bash
+     92 my $logstashIP = "LOGSTASH_IP";
+     93 my $logstashPORT = "LOGSTASH_PORT";
+     ```
+     
+     
 
 2. In case of running single CyberX node, there is no problem with the setup. In case of a peered environment *$do_on_host* variable has to be set up and the script *process-service-perfdata-log.pl/process-host-perfdata-log.pl* has to be propagated on all of CyberX nodes:
 
-```bash
-16 $do_on_host = "EXAMPLE_HOSTNAME"; # CyberX node name to run the script on
-17 $hostName = hostname; # will read hostname of a node running the script
-```
+   ```bash
+   16 $do_on_host = "EXAMPLE_HOSTNAME"; # CyberX node name to run the script on
+   17 $hostName = hostname; # will read hostname of a node running the script
+   ```
+
+   
 
 3. Example of command definition (*/opt/monitor/etc/checkcommands.cfg*) if scripts have been copied to */opt/plugins/custom/*:
 
-```bash
-# command 'process-service-perfdata-log'
-define command{
-    command_name                   process-service-perfdata-log
-    command_line                   /opt/plugins/custom/process-service-perfdata-log.pl $TIMET$
-    }
-# command 'process-host-perfdata-log'
-define command{
-    command_name                   process-host-perfdata-log
-    command_line                   /opt/plugins/custom/process-host-perfdata-log.pl $TIMET$
-    }
-```
+   ```bash
+   # command 'process-service-perfdata-log'
+   define command{
+       command_name                   process-service-perfdata-log
+       command_line                   /opt/plugins/custom/process-service-perfdata-log.pl $TIMET$
+       }
+   # command 'process-host-perfdata-log'
+   define command{
+       command_name                   process-host-perfdata-log
+       command_line                   /opt/plugins/custom/process-host-perfdata-log.pl $TIMET$
+       }
+   ```
+
+   
 
 4. In */opt/monitor/etc/naemon.cfg service_perfdata_file_processing_command* and *host_perfdata_file_processing_command* has to be changed to run those custom scripts:
 
-```bash
-service_perfdata_file_processing_command=process-service-perfdata-log
-host_perfdata_file_processing_command=process-host-perfdata-log
-```
+   ```bash
+   service_perfdata_file_processing_command=process-service-perfdata-log
+   host_perfdata_file_processing_command=process-host-perfdata-log
+   ```
 
-In addition *service_perfdata_file_template* and *host_perfdata_file_template* can be changed to support sending more data to Elasticsearch. For instance, by adding *$HOSTGROUPNAMES$* and *$SERVICEGROUPNAMES$* macros logs can be separated better (it requires changes to Logstash filter config as well)
+   
+
+5. In addition *service_perfdata_file_template* and *host_perfdata_file_template* can be changed to support sending more data to Elasticsearch. For instance, by adding *$HOSTGROUPNAMES$* and *$SERVICEGROUPNAMES$* macros logs can be separated better (it requires changes to Logstash filter config as well)
 
 5. Restart naemon service:
 
-```bash
-sudo systemctl restart naemon # CentOS/RHEL 7.x
-sudo service naemon restart # CentOS/RHEL 7.x
-```
+   ```bash
+   sudo systemctl restart naemon # CentOS/RHEL 7.x
+   sudo service naemon restart # CentOS/RHEL 7.x
+   ```
+
+   
 
 6. If *FileBeat* has been chosen, append below to *filebeat.conf* (adjust IP and PORT):
 
-```yaml
-filebeat.inputs:
-type: log
-enabled: true
-paths:
-  - /opt/monitor/var/service_performance.log
-  - /opt/monitor/var/host_performance.log
-tags: ["CyberXperflogs"]
-  output.logstash:
-# The Logstash hosts
-  hosts: ["LOGSTASH_IP:LOGSTASH_PORT"]
-```
+   ```bash
+   filebeat.inputs:
+   type: log
+   enabled: true
+   paths:
+     - /opt/monitor/var/service_performance.log
+     - /opt/monitor/var/host_performance.log
+   tags: ["CyberXperflogs"]
+     output.logstash:
+   # The Logstash hosts
+     hosts: ["LOGSTASH_IP:LOGSTASH_PORT"]
+   ```
+
+   
 
 7. Restart FileBeat service:
 
-```bash
-sudo systemctl restart filebeat # CentOS/RHEL 7.x
-sudo service filebeat restart # CentOS/RHEL 7.x
-```
+   ```bash
+   sudo systemctl restart filebeat # CentOS/RHEL 7.x
+   sudo service filebeat restart # CentOS/RHEL 7.x
+   ```
 
-### Kibana ###
+   
+
+   ### Kibana
 
 At this moment there should be new index on the Elasticsearch node with performance data documents from CyberX Monitor. 
 Login to an Elasticsearch node and run: `curl -XGET '127.0.0.1:9200/_cat/indices?v'` Example output:
@@ -263,7 +293,7 @@ After a while, if there is no new index make sure that:
 If the index has been created, in order to browse and visualize the data “*index pattern*” needs to be added to Kibana. 
 
 1. After logging in to Kibana GUI go to *Settings* tab and add *CyberX-perflogs-** pattern. Chose *@timestamp* time field and click *Create*. 
-1. Performance data logs should be now accessible from Kibana GUI Discovery tab ready to be visualize.
+2. Performance data logs should be now accessible from Kibana GUI Discovery tab ready to be visualize.
 
 ## OP5 Beat
 
@@ -275,32 +305,34 @@ The op5beat  is located in the installation directory: `utils/op5integration/op5
 
 1. Copy the necessary files to the appropriate directories:
 
-```bash
-cp -rf etc/* /etc/
-cp -rf usr/* /usr/
-cp -rf var/* /var/
-```
+   ```bash
+   cp -rf etc/* /etc/
+   cp -rf usr/* /usr/
+   cp -rf var/* /var/
+   ```
+
+   
 
 2. Configure and start  op5beat service (systemd):
 
-```bash
-cp -rf op5beat.service /usr/lib/systemd/system/
-systemctl daemon-reload
-systemctl enable op5beat
-systemctl start op5beat
-```
+   ```bash
+   cp -rf op5beat.service /usr/lib/systemd/system/
+   systemctl daemon-reload
+   systemctl enable op5beat
+   systemctl start op5beat
+   ```
 
-
+   
 
 ### Installation for Centos6 and older
 
 1. Copy the necessary files to the appropriate directories:
 
-```bash
-cp -rf etc/* /etc/
-cp -rf usr/* /usr/
-cp -rf var/* /var/
-```
+   ```bash
+   cp -rf etc/* /etc/
+   cp -rf usr/* /usr/
+   cp -rf var/* /var/
+   ```
 
 2. Configure and start  op5beat service:
 
@@ -319,94 +351,105 @@ cp -rf var/* /var/
      cp -rf supervisord.conf /etc/supervisord.conf
      ```
 
-     
-
+    
 ## The Grafana instalation ##
 
 1. To install the Grafana application you should:
-	- add necessary repository to operating system:
 
-			[root@localhost ~]# cat /etc/yum.repos.d/grafan.repo
-			[grafana]
-			name=grafana
-			baseurl=https://packagecloud.io/grafana/stable/el/7/$basearch
-			repo_gpgcheck=1
-			enabled=1
-			gpgcheck=1
-			gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
-			sslverify=1
-			sslcacert=/etc/pki/tls/certs/ca-bundle.crt
-			[root@localhost ~]#
+   - add necessary repository to operating system:
 
+     ```bash
+     [root@localhost ~]# cat /etc/yum.repos.d/grafan.repo
+       [grafana]
+       name=grafana
+       baseurl=https://packagecloud.io/grafana/stable/el/7/$basearch
+       repo_gpgcheck=1
+       enabled=1
+       gpgcheck=1
+       gpgkey=https://packagecloud.io/gpg.key https://grafanarel.s3.amazonaws.com/RPM-GPG-KEY-grafana
+       sslverify=1
+       sslcacert=/etc/pki/tls/certs/ca-bundle.crt
+       [root@localhost ~]#
+     ```
 
-	- install the Grafana with following commands:
-	
-			[root@localhost ~]# yum search grafana
-			Loaded plugins: fastestmirror
-			Loading mirror speeds from cached hostfile
-			 * base: ftp.man.szczecin.pl
-			 * extras: centos.slaskdatacenter.com
-			 * updates: centos.slaskdatacenter.com
-			=========================================================================================================== N/S matched: grafana ===========================================================================================================
-			grafana.x86_64 : Grafana
-			pcp-webapp-grafana.noarch : Grafana web application for Performance Co-Pilot (PCP)
-			
-			  Name and summary matches only, use "search all" for everything.
-			
-			[root@localhost ~]# yum install grafana
-	
-	- to run application use following commands:
-	
-			[root@localhost ~]# systemctl enable grafana-server
-			Created symlink from /etc/systemd/system/multi-user.target.wants/grafana-server.service to /usr/lib/systemd/system/grafana-server.service.
-			[root@localhost ~]#
-			[root@localhost ~]# systemctl start grafana-server
-			[root@localhost ~]# systemctl status grafana-server
-			● grafana-server.service - Grafana instance
-			   Loaded: loaded (/usr/lib/systemd/system/grafana-server.service; enabled; vendor preset: disabled)
-			   Active: active (running) since Thu 2018-10-18 10:41:48 CEST; 5s ago
-			     Docs: http://docs.grafana.org
-			 Main PID: 1757 (grafana-server)
-			   CGroup: /system.slice/grafana-server.service
-			           └─1757 /usr/sbin/grafana-server --config=/etc/grafana/grafana.ini --pidfile=/var/run/grafana/grafana-server.pid cfg:default.paths.logs=/var/log/grafana cfg:default.paths.data=/var/lib/grafana cfg:default.paths.plugins=/var...
-			
-			 [root@localhost ~]#
+     
 
+   - install the Grafana with following commands: 
 
+     ```bash
+      [root@localhost ~]# yum search grafana
+       Loaded plugins: fastestmirror
+       Loading mirror speeds from cached hostfile
+        * base: ftp.man.szczecin.pl
+        * extras: centos.slaskdatacenter.com
+        * updates: centos.slaskdatacenter.com
+       =========================================================================================================== N/S matched: grafana ===========================================================================================================
+       grafana.x86_64 : Grafana
+       pcp-webapp-grafana.noarch : Grafana web application for Performance Co-Pilot (PCP)
+     
+         Name and summary matches only, use "search all" for everything.
+     
+       [root@localhost ~]# yum install grafana
+     ```
 
-1. To connect the Grafana application you should:
+     
 
-  - define the default login/password (line 151;154 in config file)
+   - to run application use following commands:
 
-    ```bash
-    [root@localhost ~]# cat /etc/grafana/grafana.ini
-    148 #################################### Security ####################################
-    149 [security]
-    150 # default admin user, created on startup
-    151 admin_user = admin
-    152
-    153 # default admin password, can be changed before first start of grafana,  or in profile settings
-    154 admin_password = admin
-    155
-    ```
-    
-    
-    
-  - restart *grafana-server* service:
+     ```bash
+      [root@localhost ~]# systemctl enable grafana-server
+       Created symlink from /etc/systemd/system/multi-user.target.wants/grafana-server.service to /usr/lib/systemd/system/grafana-server.service.
+       [root@localhost ~]#
+       [root@localhost ~]# systemctl start grafana-server
+       [root@localhost ~]# systemctl status grafana-server
+       ● grafana-server.service - Grafana instance
+          Loaded: loaded (/usr/lib/systemd/system/grafana-server.service; enabled; vendor preset: disabled)
+          Active: active (running) since Thu 2018-10-18 10:41:48 CEST; 5s ago
+            Docs: http://docs.grafana.org
+        Main PID: 1757 (grafana-server)
+          CGroup: /system.slice/grafana-server.service
+                  └─1757 /usr/sbin/grafana-server --config=/etc/grafana/grafana.ini --pidfile=/var/run/grafana/grafana-server.pid cfg:default.paths.logs=/var/log/grafana cfg:default.paths.data=/var/lib/grafana cfg:default.paths.plugins=/var...
+     
+        [root@localhost ~]#
+     ```
 
-```bash
-[root@localhost ~]# systemctl restart grafana-server
-```
+     
 
-- Login to Grafana user interface using web browser: *http://ip:3000*
+2. To connect the Grafana application you should:
 
-![](/media/media/image112.png)
+   - define the default login/password (line 151;154 in config file):
 
-  - use login and password that you set in the config file.
+     ```bash
+     [root@localhost ~]# cat /etc/grafana/grafana.ini
+     148 #################################### Security ####################################
+     149 [security]
+     150 # default admin user, created on startup
+     151 admin_user = admin
+     152
+     153 # default admin password, can be changed before first start of grafana,  or in profile settings
+     154 admin_password = admin
+     155
+     ```
 
-- Use below example to set conection to Elasticsearch server:
+     
 
-![](/media/media/image113.png)
+   - restart *grafana-server* service:
+
+     ```bash
+     systemctl restart grafana-server
+     ```
+
+     
+
+   - Login to Grafana user interface using web browser: *http://ip:3000*
+
+     ![](/media/media/image112.png)
+
+   - use login and password that you set in the config file.
+
+   - Use below example to set conection to Elasticsearch server:
+
+     ![](/media/media/image113.png)
 
 ## The Beats configuration ##
 
@@ -469,6 +512,7 @@ https://documentation.wazuh.com/3.13/installation-guide/installing-wazuh-agent/i
 ## 2FA authorization with Google Auth Provider (example)
 
 ### Software used (tested versions):
+
 - NGiNX (1.16.1 - from CentOS base reposiory)
 - oauth2_proxy ([https://github.com/pusher/oauth2_proxy/releases](https://github.com/pusher/oauth2_proxy/releases) - 4.0.0)
 
@@ -545,8 +589,9 @@ https://documentation.wazuh.com/3.13/installation-guide/installing-wazuh-agent/i
        # or "root /path/to/site;" or "fastcgi_pass ..." etc
      }
    }
-   
    ```
+
+   
 
 1. Set `ssl_certificate` and `ssl_certificate_key` path in ng_oauth2_proxy.conf
 
@@ -624,21 +669,27 @@ In the browser enter the address pointing to the server with the CyberX installa
 ### Software Requirements
 1. Cerebro v0.8.4
 
-```bash
-wget 'https://github.com/lmenezes/cerebro/releases/download/v0.8.4/cerebro-0.8.4.tgz'
-```
+   ```bash
+   wget 'https://github.com/lmenezes/cerebro/releases/download/v0.8.4/cerebro-0.8.4.tgz'
+   ```
+
+   
 
 2. Java 11+ [for basic-auth setup]
 
-```bash
-yum install java-11-openjdk-headless.x86_64
-```
+   ```bash
+   yum install java-11-openjdk-headless.x86_64
+   ```
 
-3. Java 1.8.0 [without authorization]
+   
 
-```bash
-yum install java-1.8.0-openjdk-headless
-```
+3. Java 1.8.0 [without authorization
+
+   ```bash
+   yum install java-1.8.0-openjdk-headless
+   ```
+
+   
 
 ### Firewall Configuration
 
@@ -651,74 +702,80 @@ firewall-cmd --reload
 
 1. Extract archive & move directory
 
-```bash
-tar -xvf cerebro-0.8.4.tgz -C /opt/
-mv /opt/cerebro-0.8.4/ /opt/cerebro
-```
+   ```bash
+   tar -xvf cerebro-0.8.4.tgz -C /opt/
+   mv /opt/cerebro-0.8.4/ /opt/cerebro
+   ```
+
+   
 
 2. Add Cerebro service user
 
-```bash
-useradd -M -d /opt/cerebro -s /sbin/nologin cerebro
-```
+   ```bash
+   useradd -M -d /opt/cerebro -s /sbin/nologin cerebro
+   ```
+
+   
 
 3. Change Cerbero permissions
 
-```bash
-chown -R cerebro:cerebro /opt/cerebro && chmod -R 700 /opt/cerebro
-```
+   ```bash
+   chown -R cerebro:cerebro /opt/cerebro && chmod -R 700 /opt/cerebro
+   ```
+
+   
 
 4. Install Cerbero service ([cerebro.service](/files/cerebro.service)):
 
-```bash
-[Unit]
-Description=Cerebro
+   ```bash
+   [Unit]
+   Description=Cerebro
+   
+   [Service]
+   Type=simple
+   User=cerebro
+   Group=cerebro
+   ExecStart=/opt/cerebro/bin/cerebro "-Dconfig.file=/opt/cerebro/conf/application.conf"
+   Restart=always
+   WorkingDirectory=/opt/cerebro
+   
+   [Install]
+   WantedBy=multi-user.target
+   ```
 
-[Service]
-Type=simple
-User=cerebro
-Group=cerebro
-ExecStart=/opt/cerebro/bin/cerebro "-Dconfig.file=/opt/cerebro/conf/application.conf"
-Restart=always
-WorkingDirectory=/opt/cerebro
-
-[Install]
-WantedBy=multi-user.target
-```
-
-```bash
-cp cerebro.service /usr/lib/systemd/system/
-systemctl daemon-reload
-systemctl enable cerebro
-```
+   ```bash
+   cp cerebro.service /usr/lib/systemd/system/
+   systemctl daemon-reload
+   systemctl enable cerebro
+   ```
 
 5. Customize configuration file: [/opt/cerebro/conf/application.conf](/files/application.conf)
 
-```bash
-- Authentication
-auth = {
-  type: basic
-   settings: {
-      username = "user"
-      password = "password"
-    }
-}
-```
+   ```bash
+   - Authentication
+   auth = {
+     type: basic
+      settings: {
+         username = "user"
+         password = "password"
+       }
+   }
+   ```
 
-	- A list of known Elasticsearch hosts
+   - A list of known Elasticsearch hosts
 
-```bash
-hosts = [
-  {
-    host = "http://localhost:9200"
-    name = "user"
-    auth = {
-      username = "username"
-      password = "password"
-    }
-  }
-]
-```
+     ```bash
+     hosts = [
+       {
+         host = "http://localhost:9200"
+         name = "user"
+         auth = {
+           username = "username"
+           password = "password"
+         }
+       }
+     ]
+     ```
 
 If needed uses secure connection (SSL) with Elasticsearch, set the following section that contains path to certificate. And change the host definition from `http` to `https`:
 
@@ -749,7 +806,7 @@ play.ws.ssl.loose.acceptAnyCertificate=true
     #    password = "SuperSecretKeystorePassword"
     #  }
     #}
-
+    
     #play.ws.ssl {
     #  trustManager = {
     #    stores = [
@@ -761,31 +818,580 @@ play.ws.ssl.loose.acceptAnyCertificate=true
 
 6. Start the service
 
-```bash
-systemctl start cerebro
-goto: https://127.0.0.1:5602
-```
+   ```bash
+   systemctl start cerebro
+   goto: https://127.0.0.1:5602
+   ```
+
+   
 
 ### Optional configuration
 
 1. Register backup/snapshot repository for Elasticsearch
 
-```bash
-		curl -k -XPUT "https://127.0.0.1:9200/_snapshot/backup?pretty" -H 'Content-Type: application/json' -d'
-		{
-		  "type": "fs",
-		  "settings": {
-		    "location": "/var/lib/elasticsearch/backup/"
-		  }
-		}' -u user:password
-```
+   ```bash
+   		curl -k -XPUT "https://127.0.0.1:9200/_snapshot/backup?pretty" -H 'Content-Type: application/json' -d'
+   		{
+   		  "type": "fs",
+   		  "settings": {
+   		    "location": "/var/lib/elasticsearch/backup/"
+   		  }
+   		}' -u user:password
+   ```
+
+   
 
 2. Login using curl/kibana
 
+   ```bash
+   curl -k -XPOST 'https://127.0.0.1:5602/auth/login' -H 'mimeType: application/x-www-form-urlencoded' -d 'user=user&password=passwrd' -c cookie.txt
+   curl -k -XGET 'https://127.0.0.1:5602' -b cookie.txt
+   ```
+
+## Elasticdump
+
+Elasticdump is a tool for moving and saving indices.
+
+### Location
+
 ```bash
-curl -k -XPOST 'https://127.0.0.1:5602/auth/login' -H 'mimeType: application/x-www-form-urlencoded' -d 'user=user&password=passwrd' -c cookie.txt
-curl -k -XGET 'https://127.0.0.1:5602' -b cookie.txt
+/usr/share/kibana/elasticdump/elasticdump
 ```
+
+### Examples of use
+
+#### Copy an index from production to staging with analyzer and mapping
+
+```bash
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=http://staging.es.com:9200/my_index \
+  --type=analyzer
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=http://staging.es.com:9200/my_index \
+  --type=mapping
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=http://staging.es.com:9200/my_index \
+  --type=data
+```
+
+#### Backup index data to a file:
+
+```bash
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=/data/my_index_mapping.json \
+  --type=mapping
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=/data/my_index.json \
+  --type=data
+```
+
+#### Backup and index to a gzip using stdout
+
+```bash
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=$ \
+  | gzip > /data/my_index.json.gz
+```
+
+#### Backup the results of a query to a file
+
+```bash
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=query.json \
+  --searchBody="{\"query\":{\"term\":{\"username\": \"admin\"}}}"
+```
+
+#### Copy a single shard data
+
+```bash
+elasticdump \
+  --input=http://es.com:9200/api \
+  --output=http://es.com:9200/api2 \
+  --params="{\"preference\":\"_shards:0\"}"
+```
+
+#### Backup aliases to a file
+
+```bash
+elasticdump \
+  --input=http://es.com:9200/index-name/alias-filter \
+  --output=alias.json \
+  --type=alias
+```
+
+#### Import aliases into ES
+
+```bash
+elasticdump \
+  --input=./alias.json \
+  --output=http://es.com:9200 \
+  --type=alias
+```
+
+#### Backup templates to a file
+
+```bash
+elasticdump \
+  --input=http://es.com:9200/template-filter \
+  --output=templates.json \
+  --type=template
+```
+
+#### Import templates into ES
+
+```bash
+elasticdump \
+  --input=./templates.json \
+  --output=http://es.com:9200 \
+  --type=template
+```
+
+#### Split files into multiple parts
+
+```bash
+elasticdump \
+  --input=http://production.es.com:9200/my_index \
+  --output=/data/my_index.json \
+  --fileSize=10mb
+```
+
+#### Import data from S3 into ES (using s3urls)
+
+```bash
+elasticdump \
+  --s3AccessKeyId "${access_key_id}" \
+  --s3SecretAccessKey "${access_key_secret}" \
+  --input "s3://${bucket_name}/${file_name}.json" \
+  --output=http://production.es.com:9200/my_index
+```
+
+#### Export ES data to S3 (using s3urls)
+
+```bash
+elasticdump \
+  --s3AccessKeyId "${access_key_id}" \
+  --s3SecretAccessKey "${access_key_secret}" \
+  --input=http://production.es.com:9200/my_index \
+  --output "s3://${bucket_name}/${file_name}.json"
+```
+
+#### Import data from MINIO (s3 compatible) into ES (using s3urls)
+
+```bash
+elasticdump \
+  --s3AccessKeyId "${access_key_id}" \
+  --s3SecretAccessKey "${access_key_secret}" \
+  --input "s3://${bucket_name}/${file_name}.json" \
+  --output=http://production.es.com:9200/my_index
+  --s3ForcePathStyle true
+  --s3Endpoint https://production.minio.co
+```
+
+#### Export ES data to MINIO (s3 compatible) (using s3urls)
+
+```bash
+elasticdump \
+  --s3AccessKeyId "${access_key_id}" \
+  --s3SecretAccessKey "${access_key_secret}" \
+  --input=http://production.es.com:9200/my_index \
+  --output "s3://${bucket_name}/${file_name}.json"
+  --s3ForcePathStyle true
+  --s3Endpoint https://production.minio.co
+```
+
+#### Import data from CSV file into ES (using csvurls)
+
+```bash
+elasticdump \
+
+  # csv:// prefix must be included to allow parsing of csv files
+
+  # --input "csv://${file_path}.csv" \
+
+  --input "csv:///data/cars.csv"
+  --output=http://production.es.com:9200/my_index \
+  --csvSkipRows 1    # used to skip parsed rows (this does not include the headers row)
+  --csvDelimiter ";" # default csvDelimiter is ','
+
+```
+
+#### Copy a single index from a elasticsearch:
+
+```bash
+elasticdump \
+  --input=http://es.com:9200/api/search \
+  --input-index=my_index \
+  --output=http://es.com:9200/api/search \
+  --output-index=my_index \
+  --type=mapping
+```
+
+#### Copy a single type:
+
+```bash
+elasticdump \
+  --input=http://es.com:9200/api/search \
+  --input-index=my_index/my_type \
+  --output=http://es.com:9200/api/search \
+  --output-index=my_index \
+  --type=mapping
+```
+
+### Usage
+
+```bash
+elasticdump --input SOURCE --output DESTINATION [OPTIONS]
+```
+
+### All parameters
+
+```bash
+--input
+                    Source location (required)
+--input-index
+                    Source index and type
+                    (default: all, example: index/type)
+--output
+                    Destination location (required)
+--output-index
+                    Destination index and type
+                    (default: all, example: index/type)
+--overwrite
+                    Overwrite output file if it exists
+                    (default: false)                    
+--limit
+                    How many objects to move in batch per operation
+                    limit is approximate for file streams
+                    (default: 100)
+--size
+                    How many objects to retrieve
+                    (default: -1 -> no limit)
+--concurrency
+                    The maximum number of requests the can be made concurrently to a specified transport.
+                    (default: 1)       
+--concurrencyInterval
+                    The length of time in milliseconds in which up to <intervalCap> requests can be made
+                    before the interval request count resets. Must be finite.
+                    (default: 5000)       
+--intervalCap
+                    The maximum number of transport requests that can be made within a given <concurrencyInterval>.
+                    (default: 5)
+--carryoverConcurrencyCount
+                    If true, any incomplete requests from a <concurrencyInterval> will be carried over to
+                    the next interval, effectively reducing the number of new requests that can be created
+                    in that next interval.  If false, up to <intervalCap> requests can be created in the
+                    next interval regardless of the number of incomplete requests from the previous interval.
+                    (default: true)                                                                                       
+--throttleInterval
+                    Delay in milliseconds between getting data from an inputTransport and sending it to an
+                    outputTransport.
+                     (default: 1)
+--debug
+                    Display the elasticsearch commands being used
+                    (default: false)
+--quiet
+                    Suppress all messages except for errors
+                    (default: false)
+--type
+                    What are we exporting?
+                    (default: data, options: [settings, analyzer, data, mapping, alias, template, component_template, index_template])
+--filterSystemTemplates
+                    Whether to remove metrics-*-* and logs-*-* system templates 
+                    (default: true])
+--templateRegex
+                    Regex used to filter templates before passing to the output transport 
+                    (default: ((metrics|logs|\\..+)(-.+)?)
+--delete
+                    Delete documents one-by-one from the input as they are
+                    moved.  Will not delete the source index
+                    (default: false)
+--searchBody
+                    Preform a partial extract based on search results
+                    when ES is the input, default values are
+                      if ES > 5
+                        `'{"query": { "match_all": {} }, "stored_fields": ["*"], "_source": true }'`
+                      else
+                        `'{"query": { "match_all": {} }, "fields": ["*"], "_source": true }'`
+--searchWithTemplate
+                    Enable to use Search Template when using --searchBody
+                    If using Search Template then searchBody has to consist of "id" field and "params" objects
+                    If "size" field is defined within Search Template, it will be overridden by --size parameter
+                    See https://www.elastic.co/guide/en/elasticsearch/reference/current/search-template.html for 
+                    further information
+                    (default: false)
+--headers
+                    Add custom headers to Elastisearch requests (helpful when
+                    your Elasticsearch instance sits behind a proxy)
+                    (default: '{"User-Agent": "elasticdump"}')
+--params
+                    Add custom parameters to Elastisearch requests uri. Helpful when you for example
+                    want to use elasticsearch preference
+                    (default: null)
+--sourceOnly
+                    Output only the json contained within the document _source
+                    Normal: {"_index":"","_type":"","_id":"", "_source":{SOURCE}}
+                    sourceOnly: {SOURCE}
+                    (default: false)
+--ignore-errors
+                    Will continue the read/write loop on write error
+                    (default: false)
+--scrollId
+                    The last scroll Id returned from elasticsearch. 
+                    This will allow dumps to be resumed used the last scroll Id &
+                    `scrollTime` has not expired.
+--scrollTime
+                    Time the nodes will hold the requested search in order.
+                    (default: 10m)
+--maxSockets
+                    How many simultaneous HTTP requests can we process make?
+                    (default:
+                      5 [node <= v0.10.x] /
+                      Infinity [node >= v0.11.x] )
+--timeout
+                    Integer containing the number of milliseconds to wait for
+                    a request to respond before aborting the request. Passed
+                    directly to the request library. Mostly used when you don't
+                    care too much if you lose some data when importing
+                    but rather have speed.
+--offset
+                    Integer containing the number of rows you wish to skip
+                    ahead from the input transport.  When importing a large
+                    index, things can go wrong, be it connectivity, crashes,
+                    someone forgetting to `screen`, etc.  This allows you
+                    to start the dump again from the last known line written
+                    (as logged by the `offset` in the output).  Please be
+                    advised that since no sorting is specified when the
+                    dump is initially created, there's no real way to
+                    guarantee that the skipped rows have already been
+                    written/parsed.  This is more of an option for when
+                    you want to get most data as possible in the index
+                    without concern for losing some rows in the process,
+                    similar to the `timeout` option.
+                    (default: 0)
+--noRefresh
+                    Disable input index refresh.
+                    Positive:
+
+                         1. Much increase index speed
+                            are requirements
+                                                Negative:
+                                                     1. Recently added data may not be indexed
+                                                         with big data indexing,
+                                                                            where speed and system health in a higher priority
+                                                                            than recently added data.
+                                                        --inputTransport
+                                                                            Provide a custom js file to use as the input transport
+                                                        --outputTransport
+                                                                            Provide a custom js file to use as the output transport
+                                                        --toLog
+                                                                            When using a custom outputTransport, should log lines
+                                                                            be appended to the output stream?
+                                                                            (default: true, except for `$`)
+                                                        --transform
+                                                                            A method/function which can be called to modify documents
+                                                                            before writing to a destination. A global variable 'doc'
+                                                                            is available.
+                                                                            Example script for computing a new field 'f2' as doubled
+                                                                            value of field 'f1':
+                                                                                doc._source["f2"] = doc._source.f1 * 2;
+                                                                            May be used multiple times.
+                                                                            Additionally, transform may be performed by a module. See [Module Transform](#module-transform) below.
+                                                        --awsChain
+                                                                            Use [standard](https://aws.amazon.com/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/) location and ordering for resolving credentials including environment variables, config files, EC2 and ECS metadata locations
+                                                                            _Recommended option for use with AWS_
+                                                                            Use [standard](https://aws.amazon.com/blogs/security/a-new-and-standardized-way-to-manage-credentials-in-the-aws-sdks/) 
+                                                                            location and ordering for resolving credentials including environment variables, 
+                                                                            config files, EC2 and ECS metadata locations _Recommended option for use with AWS_
+                                                        --awsAccessKeyId
+                                                        --awsSecretAccessKey
+                                                                            When using Amazon Elasticsearch Service protected by
+                                                                            AWS Identity and Access Management (IAM), provide
+                                                                            your Access Key ID and Secret Access Key.
+                                                                            --sessionToken can also be optionally provided if using temporary credentials
+                                                        --awsIniFileProfile
+                                                                            Alternative to --awsAccessKeyId and --awsSecretAccessKey,
+                                                                            loads credentials from a specified profile in aws ini file.
+                                                                            For greater flexibility, consider using --awsChain
+                                                                            and setting AWS_PROFILE and AWS_CONFIG_FILE
+                                                                            environment variables to override defaults if needed
+                                                        --awsIniFileName
+                                                                            Override the default aws ini file name when using --awsIniFileProfile
+                                                                            Filename is relative to ~/.aws/
+                                                                            (default: config)
+                                                        --awsService
+                                                                            Sets the AWS service that the signature will be generated for
+                                                                            (default: calculated from hostname or host)
+                                                        --awsRegion
+                                                                            Sets the AWS region that the signature will be generated for
+                                                                            (default: calculated from hostname or host)
+                                                        --awsUrlRegex
+                                                                            Regular expression that defined valied AWS urls that should be signed
+                                                                            (default: ^https?:\\.*.amazonaws.com.*$)
+                                                        --support-big-int   
+                                                                            Support big integer numbers
+                                                        --big-int-fields   
+                                                                            Sepcifies a comma-seperated list of fields that should be checked for big-int support
+                                                                            (default '')
+                                                        --retryAttempts  
+                                                                            Integer indicating the number of times a request should be automatically re-attempted before failing
+                                                                            when a connection fails with one of the following errors `ECONNRESET`, `ENOTFOUND`, `ESOCKETTIMEDOUT`,
+                                                                            ETIMEDOUT`, `ECONNREFUSED`, `EHOSTUNREACH`, `EPIPE`, `EAI_AGAIN`
+                                                                            (default: 0)
+
+--retryDelay   
+                    Integer indicating the back-off/break period between retry attempts (milliseconds)
+                    (default : 5000)            
+--parseExtraFields
+                    Comma-separated list of meta-fields to be parsed  
+--maxRows
+                    supports file splitting.  Files are split by the number of rows specified
+--fileSize
+                    supports file splitting.  This value must be a string supported by the **bytes** module.     
+                    The following abbreviations must be used to signify size in terms of units         
+                    b for bytes
+                    kb for kilobytes
+                    mb for megabytes
+                    gb for gigabytes
+                    tb for terabytes
+                    
+                    e.g. 10mb / 1gb / 1tb
+                    Partitioning helps to alleviate overflow/out of memory exceptions by efficiently segmenting files
+                    into smaller chunks that then be merged if needs be.
+--fsCompress
+                    gzip data before sending output to file.
+                    On import the command is used to inflate a gzipped file
+--s3AccessKeyId
+                    AWS access key ID
+--s3SecretAccessKey
+                    AWS secret access key
+--s3Region
+                    AWS region
+--s3Endpoint        
+                    AWS endpoint can be used for AWS compatible backends such as
+                    OpenStack Swift and OpenStack Ceph
+--s3SSLEnabled      
+                    Use SSL to connect to AWS [default true]
+                    
+--s3ForcePathStyle  Force path style URLs for S3 objects [default false]
+                    
+--s3Compress
+                    gzip data before sending to s3  
+--s3ServerSideEncryption
+                    Enables encrypted uploads
+--s3SSEKMSKeyId
+                    KMS Id to be used with aws:kms uploads                    
+--s3ACL
+                    S3 ACL: private | public-read | public-read-write | authenticated-read | aws-exec-read |
+                    bucket-owner-read | bucket-owner-full-control [default private]
+
+--retryDelayBase
+                    The base number of milliseconds to use in the exponential backoff for operation retries. (s3)
+--customBackoff
+                    Activate custom customBackoff function. (s3)
+--tlsAuth
+                    Enable TLS X509 client authentication
+--cert, --input-cert, --output-cert
+                    Client certificate file. Use --cert if source and destination are identical.
+                    Otherwise, use the one prefixed with --input or --output as needed.
+--key, --input-key, --output-key
+                    Private key file. Use --key if source and destination are identical.
+                    Otherwise, use the one prefixed with --input or --output as needed.
+--pass, --input-pass, --output-pass
+                    Pass phrase for the private key. Use --pass if source and destination are identical.
+                    Otherwise, use the one prefixed with --input or --output as needed.
+--ca, --input-ca, --output-ca
+                    CA certificate. Use --ca if source and destination are identical.
+                    Otherwise, use the one prefixed with --input or --output as needed.
+--inputSocksProxy, --outputSocksProxy
+                    Socks5 host address
+--inputSocksPort, --outputSocksPort
+                    Socks5 host port
+--handleVersion
+                    Tells elastisearch transport to handle the `_version` field if present in the dataset
+                    (default : false)
+--versionType
+                    Elasticsearch versioning types. Should be `internal`, `external`, `external_gte`, `force`.
+                    NB : Type validation is handled by the bulk endpoint and not by elasticsearch-dump
+--csvDelimiter        
+                    The delimiter that will separate columns.
+                    (default : ',')
+--csvFirstRowAsHeaders        
+                    If set to true the first row will be treated as the headers.
+                    (default : true)
+--csvRenameHeaders        
+                    If you want the first line of the file to be removed and replaced by the one provided in the `csvCustomHeaders` option
+                    (default : true)
+--csvCustomHeaders  A comma-seperated listed of values that will be used as headers for your data. This param must
+                    be used in conjunction with `csvRenameHeaders`
+                    (default : null)
+--csvWriteHeaders   Determines if headers should be written to the csv file.
+                    (default : true)
+--csvIgnoreEmpty        
+                    Set to true to ignore empty rows. 
+                    (default : false)
+--csvSkipLines        
+                    If number is > 0 the specified number of lines will be skipped.
+                    (default : 0)
+--csvSkipRows        
+                    If number is > 0 then the specified number of parsed rows will be skipped
+                    NB:  (If the first row is treated as headers, they aren't a part of the count)
+                    (default : 0)
+--csvMaxRows        
+                    If number is > 0 then only the specified number of rows will be parsed.(e.g. 100 would return the first 100 rows of data)
+                    (default : 0)
+--csvTrim        
+                    Set to true to trim all white space from columns.
+                    (default : false)
+--csvRTrim        
+                    Set to true to right trim all columns.
+                    (default : false)
+--csvLTrim        
+                    Set to true to left trim all columns.
+                    (default : false)   
+--csvHandleNestedData        
+                    Set to true to handle nested JSON/CSV data. 
+                    NB : This is a very optioninated implementaton !
+                    (default : false)
+--csvIdColumn        
+                    Name of the column to extract the record identifier (id) from
+                    When exporting to CSV this column can be used to override the default id (@id) column name
+                    (default : null)   
+--csvIndexColumn        
+                    Name of the column to extract the record index from
+                    When exporting to CSV this column can be used to override the default index (@index) column name
+                    (default : null)
+--csvTypeColumn        
+                    Name of the column to extract the record type from
+                    When exporting to CSV this column can be used to override the default type (@type) column name
+                    (default : null)              
+--help
+                    This page
+```
+
+
+
+### Elasticsearch's Scroll API
+
+Elasticsearch provides a scroll API to fetch all documents of an index starting from (and keeping) a consistent snapshot in time, which we use under the hood. This method is safe to use for large exports since it will maintain the result set in cache for the given period of time.
+
+NOTE: only works for --output
+
+### Bypassing self-sign certificate errors
+
+Set the environment NODE_TLS_REJECT_UNAUTHORIZED=0 before running elasticdump
+
+### An alternative method of passing environment variables before execution
+
+NB : This only works with linux shells
+
+NODE_TLS_REJECT_UNAUTHORIZED=0 elasticdump --input="https://localhost:9200" --output myfile
 
 ## Curator - Elasticsearch index management tool
 
@@ -1027,62 +1633,65 @@ logging:
 
 1. Use `_cluster` API to add least one remote cluster:
 
-```bash
-curl -u user:password -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
-{
-  "persistent": {
-    "cluster": {
-      "remote": {
-        "cluster_one": {
-          "seeds": [
-            "192.168.0.1:9300"
-          ]
-        },
-        "cluster_two": {
-          "seeds": [
-            "192.168.0.2:9300"
-          ]
-        }
-      }
-    }
-  }
-}'
-```
+   ```bash
+   curl -u user:password -X PUT "localhost:9200/_cluster/settings?pretty" -H 'Content-Type: application/json' -d'
+   {
+     "persistent": {
+       "cluster": {
+         "remote": {
+           "cluster_one": {
+             "seeds": [
+               "192.168.0.1:9300"
+             ]
+           },
+           "cluster_two": {
+             "seeds": [
+               "192.168.0.2:9300"
+             ]
+           }
+         }
+       }
+     }
+   }'
+   ```
+
+   
 
 2. To search data in index `twitter` located on the `cluster_one` use following command:
 
-```bash
-curl -u user:password -X GET "localhost:9200/cluster_one:twitter/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "match": {
-      "user": "kimchy"
-    }
-  }
-}'
+   ```bash
+   curl -u user:password -X GET "localhost:9200/cluster_one:twitter/_search?pretty" -H 'Content-Type: application/json' -d'
+   {
+     "query": {
+       "match": {
+         "user": "kimchy"
+       }
+     }
+   }'
+   ```
 
-```
+   
 
 3. To search data in index `twitter` located on multiple clusters, use following command:
 
-```bash
-curl -u user:password -X GET "localhost:9200/twitter,cluster_one:twitter,cluster_two:twitter/_search?pretty" -H 'Content-Type: application/json' -d'
-{
-  "query": {
-    "match": {
-      "user": "kimchy"
-    }
-  }
-}'
-```
+   ```bash
+   curl -u user:password -X GET "localhost:9200/twitter,cluster_one:twitter,cluster_two:twitter/_search?pretty" -H 'Content-Type: application/json' -d'
+   {
+     "query": {
+       "match": {
+         "user": "kimchy"
+       }
+     }
+   }'
+   ```
 
 4. Configure index pattern in Kibana GUI to discover data from multiple clusters:
 
-```
-cluster_one:logstash-*,cluster_two:logstash-*
-```
+   ```bash
+   cluster_one:logstash-*,cluster_two:logstash-*
+   ```
 
-![](/media/media/image133.png)
+   ![](/media/media/image133.png)
 
 ### Security
 
@@ -1171,23 +1780,24 @@ The XLSX Import module allow to import your `xlsx` and `csv` file to indices.
 
 1. Go to XLSX Import module and select your file and sheet:
 
-![](/media/media/image138.png)
+   ![](/media/media/image138.png)
 
-After the data has been successfully loaded, you will see a preview of your data at the bottom of the window. 
+2. After the data has been successfully loaded, you will see a preview of your data at the bottom of the window. 
 
-Press `Next` button.
+3. Press `Next` button.
 
-2. In the next step, enter the index name in the `Index name` field, you can also change the pattern for the document ID and select the columns that the import will skip.
+4. In the next step, enter the index name in the `Index name` field, you can also change the pattern for the document ID and select the columns that the import will skip.
 
-![](/media/media/image139.png)
+   ![](/media/media/image139.png)
 
-3. Select the `Configure your own mapping` for every field. You can choose the type and apply more options with the advanced JSON.
+5. Select the `Configure your own mapping` for every field. You can choose the type and apply more options with the advanced JSON.
    The list of parameters can be found here, https://www.elastic.co/guide/en/elasticsearch/reference/7.x/mapping-params.html
 
-4.  After the import configuration is complete, select the `Import` button to start the import process.
-5. After the import process is completed, a summary will be displayed. Now you can create a new index pattern to view your data in the Discovery module.
+6. After the import configuration is complete, select the `Import` button to start the import process.
 
-![](/media/media/image140.png)
+7. After the import process is completed, a summary will be displayed. Now you can create a new index pattern to view your data in the Discovery module.
+
+   ![](/media/media/image140.png)
 
 ## Logtrail
 
@@ -1427,3 +2037,23 @@ Qualys Guard is vulnerability management tool, which make a scan systems and env
       hostname="qualysguard.qg2.apps.qualys.eu"
   )
   ```
+
+## Embedding dashboard in iframe
+
+It is possible to send alerts containing HTML *iframe* as notification content. For example:
+
+```html
+<a href="https://siem-vip:5601/app/kibana#/discover/72503360-1b25-11ea-bbe4-d7be84731d2c?_g=%28refreshInterval%3A%28display%3AOff%2Csection%3A0%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272021-03-03T08%3A36%3A50Z%27%2Cmode%3Aabsolute%2Cto%3A%272021-03-04T08%3A36%3A50Z%27%29%29" target="_blank" rel="noreferrer">https://siem-vip:5601/app/kibana#/discover/72503360-1b25-11ea-bbe4-d7be84731d2c?_g=%28refreshInterval%3A%28display%3AOff%2Csection%3A0%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272021-03-03T08%3A36%3A50Z%27%2Cmode%3Aabsolute%2Cto%3A%272021-03-04T08%3A36%3A50Z%27%29%29</a>
+```
+
+If you want an existing HTTP session to be used to display the iframe content, you need to set the following parameters in the `/etc/kibana/kibana.yml` file:
+
+```yaml
+login.isSameSite: "Lax"
+login.isSecure: true
+```
+
+Possible values for *isSameSite* are: **"None", "Lax", "Strict", false**
+
+For *isSecure*: **false or true**
+

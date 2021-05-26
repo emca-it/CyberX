@@ -1098,3 +1098,17 @@ Secure Sockets Layer (SSL) and Transport Layer Security (TLS) provide encryption
    server.ssl.certificate: "/path/to/kibana-server.crt"
    server.ssl.key: "/path/to/kibana-server.key"
    ```
+
+## Index rollover
+
+Using the rollover function, you can make changes to removing documents from the *audit*, *.agents*, *alert\** indexes. 
+
+You can configure the rollover by going to the *Config* module, then clicking the *Settings* tab, go to the *Index rollover settings* section and select click *Configure* button:
+
+![](/media/media/image167.png)
+
+You can set the following retention parameters for the above indexes:
+
+- Maximum size (GB);
+- Maximum age (h);
+- Maximum number of documents.
