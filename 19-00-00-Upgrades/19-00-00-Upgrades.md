@@ -12,7 +12,7 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/_license
 1. Indices *.agents, audit, alert* indices currently uses rollover for rotation, after upgrade please use dedicated API for migration: 
 
 ```bash
-curl -u $USER:$PASSWORD -X POST http://localhost:9200/license_logserver/prepareindex/$indexname
+curl -u $USER:$PASSWORD -X POST http://localhost:9200/_logserver/prepareindex/$indexname
 ```
 
 2. Wiki plugin require open port *tcp/5603*
@@ -115,7 +115,7 @@ curl -u $USER:$PASSWORD -X POST http://localhost:9200/license_logserver/preparei
 1. The following indices `.agents`, `audit`, `alert` currently uses rollover for rotation, after upgrade please use dedicated AIP for migration:
 
    ```bash
-   curl -u $USER:$PASSWORD -X POST http://localhost:9200/license_logserver/prepareindex/$indexname
+   curl -u $USER:$PASSWORD -X POST http://localhost:9200/_logserver/prepareindex/$indexname
    ```
 
 2. The Wiki plugin require open port `tcp/5603`
@@ -768,19 +768,19 @@ If everything went correctly, we should see 100% allocated shards in cluster hea
       --> Running transaction check
       ---> Package cyberx-client-node.x86_64 0:7.0.1-1.el7 will be installed
       --> Finished Dependency Resolution
-  
+    
       Dependencies Resolved
-  
+    
       =======================================================================================================================================================================================
        Package                                         Arch                      Version                           Repository                                                           Size
       =======================================================================================================================================================================================
       Installing:
        cyberx-client-node                    x86_64                    7.0.1-1.el7                       /cyberx-client-node-7.0.1-1.el7.x86_64                    1.2 G
-  
+    
       Transaction Summary
       =======================================================================================================================================================================================
       Install  1 Package
-  
+    
       Total size: 1.2 G
       Installed size: 1.2 G
       Is this ok [y/d/N]: y
@@ -802,10 +802,10 @@ If everything went correctly, we should see 100% allocated shards in cluster hea
       Removed symlink /etc/systemd/system/multi-user.target.wants/cerebro.service.
       Created symlink from /etc/systemd/system/multi-user.target.wants/cerebro.service to /usr/lib/systemd/system/cerebro.service.
         Verifying  : cyberx-client-node-7.0.1-1.el7.x86_64                                                                                                                     1/1
-  
+    
       Installed:
         cyberx-client-node.x86_64 0:7.0.1-1.el7
-  
+    
       Complete!
       ```
 

@@ -9,14 +9,11 @@ To go to the reports windows, select to tiles icon from the main menu
 bar, and then go to the „Reports" icon (To go back, go to the „Search"
 icon).
 
-![](/media/media/image38_js7.png)
+![](/media/media/image38_js8.png)
 ## CSV Report ##
 
-
-To export data to CSV Report click the Reports icon, you immediately go 
-to the first tab - Export Task Management.
-
-![](./media/media/image39_js.png)
+To export data to CSV Report click the ***Reports*** icon, you immediately go 
+to the first tab - ***Export Data***
 
 In this tab we have the opportunity to specify the source from which
 we want to do export. It can be an index pattern. After selecting it,

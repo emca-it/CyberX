@@ -1112,3 +1112,29 @@ You can set the following retention parameters for the above indexes:
 - Maximum size (GB);
 - Maximum age (h);
 - Maximum number of documents.
+
+## Default home page
+
+To set the default application for the GUI home page, please do the following:
+
+- edit `/etc/kibana/kibana.yml` configuration file:
+
+  ```bash
+  vi /etc/kibana/kibana.yml
+  ```
+
+- change the following directives:
+
+  ```yml
+  # Home Page settings
+  #kibana.defaultAppId: "home"
+  ```
+
+  example:
+
+  ```yml
+  # Home Page settings
+  kibana.defaultAppId: "alerts"
+  ```
+  
+  
