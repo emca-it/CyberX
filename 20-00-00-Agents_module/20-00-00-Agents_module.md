@@ -155,7 +155,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Filebeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/filebeat-oss-6-8-13</p>
 </td>
@@ -164,7 +164,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Packetbeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/packetbeat-oss-6-8-13</p>
 </td>
@@ -173,7 +173,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Winlogbeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/winlogbeat-oss-6-8-13</p>
 </td>
@@ -182,7 +182,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Metricbeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/metricbeat-oss-6-8-13</p>
 </td>
@@ -191,7 +191,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Heartbeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/heartbeat-oss-6-8-13</p>
 </td>
@@ -200,7 +200,7 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Auditbeat</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/auditbeat-oss-6-8-13</p>
 </td>
@@ -209,9 +209,908 @@ The Agents module works with Beats agents in the following versions:
 </td>
 <td><p class="first last">Logstash</p>
 </td>
-<td><p class="first last">OSS 6.8.13</p>
+<td><p class="first last">OSS 6.8.14</p>
 </td>
 <td><p class="first last">https://www.elastic.co/downloads/past-releases/logstash-oss-6-8-13</p>
 </td>
 </tr>
 </table>
+
+
+
+##  Beats agents installation
+
+### Windows
+
+#### Winlogbeat
+
+##### Installation
+
+1. Copy the Winlogbeat installer from the installation directory `install/Agents/beats/windows/winlogbeat-oss-6.8.14-windows-x86_64.zip` and unpack
+
+2. Copy the installation files to the `C:\Program Files\Winlogbeat` directory
+
+##### Configuration
+
+Editing the file: `C:\Program Files\Winlogbeat\winlogbeat.yml`:
+
+1. In section:
+
+   ```yml
+   winlogbeat.event_logs:
+     - name: Application
+       ignore_older: 72h
+     - name: Security
+     - name: System
+   ```
+
+   change to:
+
+   ```yml
+   winlogbeat.event_logs:
+     - name: Application
+       ignore_older: 72h
+     - name: Security
+       ignore_older: 72h
+     - name: System
+       ignore_older: 72h
+   ```
+
+2. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 1
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 1
+   ```
+
+3. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+4. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+5. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+6. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["winlogbeat"]
+   ```
+
+Run the `PowerShell` console as Administrator and execute the following commands:
+
+```powershell
+cd 'C:\Program Files\Winlogbeat'
+.\install-service-winlogbeat.ps1
+
+Security warning
+Run only scripts that you trust. While scripts from the internet can be useful,
+this script can potentially harm your computer. If you trust this script, use
+the Unblock-File cmdlet to allow the script to run without this warning message.
+Do you want to run C:\Program Files\Winlogbeat\install-service-winlogbeat.ps1?
+[D] Do not run  [R] Run once  [S] Suspend  [?] Help (default is "D"): R
+
+```
+
+Output:
+
+```powershell
+Status   Name               DisplayName
+------   ----               -----------
+Stopped    Winlogbeat      Winlogbeat
+```
+
+Start Winlogbeat service:
+
+```powershell
+sc start Winlogbeat
+```
+
+Test configuration:
+
+```cmd
+cd 'C:\Program Files\Winlogbeat'
+winlogbeat.exe test config
+winlogbeat.exe test output
+```
+
+#### Filebeat
+
+##### Installation
+
+1. Copy the Filebeat installer from the installation directory `install/Agents/beats/windows/filebeat-oss-6.8.14-windows-x86_64.zip` and unpack
+
+2. Copy the installation files to the `C:\Program Files\Filebeat` directory
+
+##### Configuration
+
+Editing the file: `C:\Program Files\Filebeat\filebeat.yml`:
+
+1. In section:
+
+   ```yml
+   - type: log
+   
+     # Change to true to enable this input configuration.
+     enabled: false
+   ```
+
+   change to:
+
+   ```yml
+   - type: log
+   
+     # Change to true to enable this input configuration.
+     enabled: true
+   ```
+
+2. In section:
+
+   ```yml
+       paths:
+       - /var/log/*.log
+       #- c:\programdata\elasticsearch\logs\*
+   ```
+
+   change to:
+
+   ```yml
+   paths:
+       #- /var/log/*.log
+       #- c:\programdata\elasticsearch\logs\*
+       - "C:\Program Files\Microsoft SQL Server\*\MSSQL\Log\*"
+       - "C:\inetpub\logs\*""
+   ```
+
+3. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 1
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 1
+   ```
+
+4. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+5. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+6. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+   
+
+7. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["filebeat"]
+   ```
+
+Run the `PowerShell` console as Administrator and execute the following commands:
+
+```powershell
+cd 'C:\Program Files\Filebeat'
+.\install-service-filebeat.ps1
+
+Security warning
+Run only scripts that you trust. While scripts from the internet can be useful,
+this script can potentially harm your computer. If you trust this script, use
+the Unblock-File cmdlet to allow the script to run without this warning message.
+Do you want to run C:\Program Files\Filebeat\install-service-filebeat.ps1?
+[D] Do not run  [R] Run once  [S] Suspend  [?] Help (default is "D"): R
+
+```
+
+Output:
+
+```powershell
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Filebeat        Filebeat
+```
+
+Start Filebeat service:
+
+```powershell
+sc start filebeat
+```
+
+You can enable, disable and list Filebeat modules using the following command:
+
+```cmd
+cd 'C:\Program Files\Filebeat'
+filebeat.exe modules list
+filebeat.exe modules apache enable
+filebeat.exe modules apache disable
+```
+
+Test configuration:
+
+```cmd
+cd 'C:\Program Files\Filebeat'
+filebeat.exe test config
+filebeat.exe test output
+```
+
+#### Merticbeat
+
+##### Installation
+
+1. Copy the Merticbeat installer from the installation directory `install/Agents/beats/windows/merticbeat-oss-6.8.14-windows-x86_64.zip` and unpack
+
+2. Copy the installation files to the `C:\Program Files\Merticbeat` directory
+
+##### Configuration
+
+Editing the file: `C:\Program Files\Merticbeat\metricbeat.yml`:
+
+1. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 1
+     index.codec: best_compression
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 1
+     #index.codec: best_compression
+   ```
+
+2. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+3. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+4. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+5. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["metricbeat"]
+   ```
+
+Run the `PowerShell` console as Administrator and execute the following commands:
+
+```powershell
+cd 'C:\Program Files\Metricbeat'
+.\install-service-metricbeat.ps1
+
+Security warning
+Run only scripts that you trust. While scripts from the internet can be useful,
+this script can potentially harm your computer. If you trust this script, use
+the Unblock-File cmdlet to allow the script to run without this warning message.
+Do you want to run C:\Program Files\Metricbeat\install-service-metricbeat.ps1?
+[D] Do not run  [R] Run once  [S] Suspend  [?] Help (default is "D"): R
+
+```
+
+Output:
+
+```powershell
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Metricbeat        Metricbeat
+```
+
+Start Filebeat service:
+
+```powershell
+sc start metricbeat
+```
+
+You can enable, disable and list Metricbeat modules using the following command:
+
+```cmd
+cd 'C:\Program Files\Metricbeat'
+metricbeat.exe modules list
+metricbeat.exe modules apache enable
+metricbeat.exe modules apache disable
+```
+
+Test configuration:
+
+```cmd
+cd 'C:\Program Files\Metricbeat'
+metricbeat.exe test config
+metricbeat.exe test output
+```
+
+#### Packetbeat
+
+##### Installation
+
+1. Copy the Packetbeatinstaller from the installation directory `install/Agents/beats/windows/packetbeat-oss-6.8.14-windows-x86_64.zip` and unpack
+
+2. Copy the installation files to the `C:\Program Files\Packetbeat` directory
+
+##### Configuration
+
+Editing the file: `C:\Program Files\Packetbeat\packetbeat.yml`:
+
+1. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 3
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 3
+   ```
+
+2. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+3. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+4. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+5. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["packetbeat"]
+   ```
+
+Run the `PowerShell` console as Administrator and execute the following commands:
+
+```powershell
+cd 'C:\Program Files\\Packetbeat'
+.\install-service-packetbeat.ps1
+
+Security warning
+Run only scripts that you trust. While scripts from the internet can be useful,
+this script can potentially harm your computer. If you trust this script, use
+the Unblock-File cmdlet to allow the script to run without this warning message.
+Do you want to run C:\Program Files\Packetbeat\install-service-packetbeat.ps1?
+[D] Do not run  [R] Run once  [S] Suspend  [?] Help (default is "D"): R
+
+```
+
+Output:
+
+```powershell
+Status   Name               DisplayName
+------   ----               -----------
+Stopped  Packetbeat        Packetbeat
+```
+
+Start Packetbeat service:
+
+```powershell
+sc start packetbeat
+```
+
+Test configuration:
+
+```cmd
+cd 'C:\Program Files\Packetbeat'
+packetbeat.exe test config
+packetbeat.exe test output
+```
+
+### Linux
+
+#### Filebeat
+
+##### Installation
+
+1. Copy the Filebeat installer from the installation directory `install/Agents/beats/linux/filebeat-oss-6.8.14-x86_64.rpm`
+
+2. Install filebeat with following commadn:
+
+   ```bash
+   yum install -y filebeat-oss-6.8.14-x86_64.rpm
+   ```
+
+##### Configuration
+
+Editing the file: `/etc/filebeat/filebeat.yml`:
+
+1. In section:
+
+   ```yml
+   - type: log
+   
+     # Change to true to enable this input configuration.
+     enabled: false
+   ```
+
+   change to:
+
+   ```yml
+   - type: log
+   
+     # Change to true to enable this input configuration.
+     enabled: true
+   ```
+
+   
+
+2. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 1
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 1
+   ```
+
+3. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+4. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+5. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+6. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["filebeat"]
+   ```
+
+Start Filebeat service:
+
+```bash
+systemctl start filebeat
+```
+
+You can enable, disable and list Filebeat modules using the following command:
+
+```bash
+filebeat modules list
+filebeat modules apache enable
+filebeat modules apache disable
+```
+
+Test configuration:
+
+```bash
+filebeat test config
+filebeat test output
+```
+
+#### Merticbeat
+
+##### Installation
+
+1. Copy the Merticbeatinstaller from the installation directory `install/Agents/beats/linux/metricbeat-oss-6.8.14-x86_64.rpm`
+
+2. Install Merticbeat with following command:
+
+   ```bash
+   yum install -y metricbeat-oss-6.8.14-x86_64.rpm
+   ```
+
+##### Configuration
+
+Editing the file: `/etc/metricbeat/metricbeat.yml`:
+
+1. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 1
+     index.codec: best_compression
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 1
+     #index.codec: best_compression
+   ```
+
+2. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+3. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+4. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+5. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["metricbeat"]
+   ```
+
+Start Filebeat service:
+
+```powershell
+systemctl start metricbeat
+```
+
+You can enable, disable and list Metricbeat modules using the following command:
+
+```cmd
+metricbeat modules list
+metricbeat modules apache enable
+metricbeat modules apache disable
+```
+
+Test configuration:
+
+```cmd
+metricbeat test config
+metricbeat test output
+```
+
+#### Packetbeat
+
+##### Installation
+
+1. Copy the Packetbeat installer from the installation directory `install/Agents/beats/linux/packetbeat-oss-6.8.14-x86_64.rpm`
+
+2. Install Packetbeatwith following command:
+
+   ```bash
+   yum install -y packetbeat-oss-6.8.14-x86_64.rpm
+   ```
+
+##### Configuration
+
+Editing the file: `/etc/packetbeat/packetbeat.yml`:
+
+1. In section:
+
+   ```yml
+   setup.template.settings:
+     index.number_of_shards: 3
+   ```
+
+   change to:
+
+   ```yml
+   #setup.template.settings:
+     #index.number_of_shards: 3
+   ```
+
+2. In section:
+
+   ```yml
+   setup.kibana:
+   ```
+
+   change to:
+
+   ```yml
+   #setup.kibana:
+   ```
+
+3. In section:
+
+   ```yml
+   output.elasticsearch:
+     # Array of hosts to connect to.
+     hosts: ["localhost:9200"]
+   ```
+
+   change to:
+
+   ```yml
+   #output.elasticsearch:
+     # Array of hosts to connect to.
+     #hosts: ["localhost:9200"]
+   ```
+
+4. In section:
+
+   ```yml
+   #output.logstash:
+     # The Logstash hosts
+     #hosts: ["localhost:5044"]
+   ```
+
+   change to:
+
+   ```yml
+   output.logstash:
+     # The Logstash hosts
+     hosts: ["LOGSTASH_IP:5044"]
+   ```
+
+5. In section:
+
+   ```yml
+   #tags: ["service-X", "web-tier"]
+   ```
+
+   change to:
+
+   ```yml
+   tags: ["packetbeat"]
+   ```
+
+Start Packetbeat service:
+
+```powershell
+servicectl start packetbeat
+```
+
+Test configuration:
+
+```cmd
+packetbeat test config
+packetbeat test output
+```
