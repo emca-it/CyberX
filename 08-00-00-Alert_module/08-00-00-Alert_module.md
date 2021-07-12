@@ -105,35 +105,82 @@ how many event sit found and how many times it worked.
 
 Also, on this tab, you can recover the alert dashboard, by clicking the "Recovery Alert Dashboard" button.
 
-## Alert rules ##
+## Alerts status ##
 
-The various RuleType classes, defined in CyberX. 
+In the "Alert status" tab, you can check the current alert status: if
+it activated, when it started and when it ended, how long it lasted,
+how many event sit found and how many times it worked.
+
+![](/media/media/image95.png)
+
+Also, on this tab, you can recover the alert dashboard, by clicking the "Recovery Alert Dashboard" button.
+
+## Alert Types
+
+The various Rule Type classes, defined in the CyberX.
 An instance is held in memory for each rule, passed all of the data returned by querying Elasticsearch 
 with a given filter, and generates matches based on that data.
 
-- ***Any*** - The any rule will match everything. Every hit that the query returns will generate an alert.
-- ***Blacklist*** - The blacklist rule will check a certain field against a blacklist, and match if it is in the blacklist.
-- ***Whitelist*** - Similar to blacklist, this rule will compare a certain field to a whitelist, 
-and match if the list does not contain the term.
-- ***Change*** - This rule will monitor a certain field and match if that field changes. 
-- ***Frequency*** - his rule matches when there are at least a certain number of events in a given time frame. 
-- ***Spike*** - This rule matches when the volume of events during a given time period is spike_height times 
-larger or smaller than during the previous time period.
-- ***Flatline*** - This rule matches when the total number of events is under a given threshold for a time period.
-- ***New Term*** - This rule matches when a new value appears in a field that has never been seen before.
-- ***Cardinality*** - This rule matches when a the total number of unique values for a certain field within 
+### Any
+
+The any rule will match everything. Every hit that the query returns will generate an alert.
+
+### Blacklist
+
+The blacklist rule will check a certain field against a blacklist, and match if it is in the blacklist.
+
+### Whitelist
+
+Similar to blacklist, this rule will compare a certain field to a whitelist, and match if the list does not contain the term.
+
+### Change
+
+This rule will monitor a certain field and match if that field changes.
+
+### Frequency
+
+This rule matches when there are at least a certain number of events in a given time frame.
+
+### Spike
+
+This rule matches when the volume of events during a given time period is spike_height times larger or smaller than during the previous time period.
+
+### Flatline
+
+This rule matches when the total number of events is under a given threshold for a time period.
+
+### New Term
+
+This rule matches when a new value appears in a field that has never been seen before.
+
+### Cardinality
+
+This rule matches when a the total number of unique values for a certain field within
 a time frame is higher or lower than a threshold.
-- ***Metric Aggregation*** - This rule matches when the value of a metric within the calculation window 
-is higher or lower than a threshold.
-- ***Percentage Match*** - This rule matches when the percentage of document in the match bucket within 
-  a calculation window is higher or lower than a threshold.
-- ***Unique Long Term*** - This rule matches when there are values of compare_key in each checked timeframe.
-- ***Find Match*** - Rule match when in defined period of time, two correlated documents match certain strings.
-- ***Difference*** - Rule matches for value difference between two aggregations calculated for different periods in time.
-- ***ConsecutiveGrowth*** - Rule matches for value difference between two aggregations calculated for different periods in time.
-- ***Logical*** - Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
-- ***Chain*** - Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
+
+### Metric Aggregation
+
+This rule matches when the value of a metric within the calculation window is higher or lower than a threshold.
+
+### Percentage Match
+
+This rule matches when the percentage of document in the match bucket within a calculation window is higher or lower than a threshold.
+
+### Unique Long Term
+
+This rule matches when there are values of compare_key in each checked timeframe.
+
+### Find Match
+
+Rule match when in defined period of time, two correlated documents match certain strings.
+
+### Consecutive Growth
+
+Rule matches for value difference between two aggregations calculated for different periods in time.
+
 ### Logical
+
+Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
 
 An example of using the Logical rule type.
 
@@ -149,6 +196,8 @@ If both of the above alerts are met within no more than 5 minutes and the values
 
 ### Chain
 
+Rule matches when a complex, logical criteria is met. Rule can be use for alert data correlation.
+
 An example of using the Chain rule type.
 
 ![](/media/media/image148.png)
@@ -156,7 +205,7 @@ An example of using the Chain rule type.
 Alerts that must occur for the rule to be triggered:
 
 - Linux - Login Failure - the alert must appear 10 times.
-  - AND
+- AND
 - Linux - Login Success - 1 time triggered alert.
 
 If the sequence of occurrence of the above alerts is met within 5 minutes and the values of the "username" field are related to each other, the alert rule is triggered. The order in which the component alerts occur is important.
@@ -166,36 +215,40 @@ If the sequence of occurrence of the above alerts is met within 5 minutes and th
 This rule calculates percentage difference between aggregations for two non-overlapping time windows.
 
 Let’s assume x represents the current time (i.e. when alert rule is run) then the relation between historical and present time windows is described by the inequality:
+
 ```
 <x – agg_min – delta_min; x – delta_min> <= <x – agg_min; x>; where x – delta_min <= x – agg_min => delta_min >= agg_min
 ```
+
 The percentage difference is then described by the following equation:
+
 ```
 d = | avg_now – avg_history | / max(avg_now, avg_history) * 100; for (avg_now – avg_history != 0; avg_now != 0; avg_history != 0)
 d = 0; (in other cases)
 ```
+
 `avg_now` is the arithmetic mean of `<x – agg_min; x>`
 `avg_history` is the arithmetic mean of `<x – agg_min – delta_min; x – delta_min>`
 
 Required parameters:
 
 - Enable the rule by setting type field.
-`type: difference`
+  `type: difference`
 - Based on the compare_key field aggregation is calculated.
-`compare_key: value`
+  `compare_key: value`
 - An alert is triggered when the percentage difference between aggregations is higher than the specified value.
-`threshold_pct: 10`
+  `threshold_pct: 10`
 - The difference in minutes between calculated aggregations.
-`delta_min: 3`
+  `delta_min: 3`
 - Aggregation bucket (in minutes).
-`agg_min: 1`
+  `agg_min: 1`
 
 Optional parameters:
 
 If present, for each unique `query_key` aggregation is calculated (it needs to be of type keyword).
 `query_key: hostname`
 
-## Alert Type ##
+## Alert Methods
 
 When the alert rule is fulfilled, the defined action is performed - the alert method.
 The following alert methods have been predefined in the system:
