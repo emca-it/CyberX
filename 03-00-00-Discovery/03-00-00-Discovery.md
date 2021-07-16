@@ -172,3 +172,21 @@ For a manual incident, you can save the following parameters:
 After saving the manual incident, you can go to the Incident tab in the Alert module to perform the incident handling procedure.
 
 ![](/media/media/image142.png)
+
+## Change the default width of columns
+
+To improve the readability of values in Discovery columns, you can set a minimum column width. The column width setting is in the configuration files:
+
+```bash
+/usr/share/kibana/built_assets/css/plugins/kibana/index.dark.css
+/usr/share/kibana/built_assets/css/plugins/kibana/index.light.css
+```
+
+To set the minimum width for the columns, e.g. 150px, add the following entry `min-width: 150px` in the configuration files:
+
+```css
+.kbnDocTableCell__dataField 
+   min-width: 150px;
+   white-space: pre-wrap; }
+
+```
