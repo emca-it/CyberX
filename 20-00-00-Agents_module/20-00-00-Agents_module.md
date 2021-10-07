@@ -1,6 +1,6 @@
 #  Agents module
 
-The Agents module is used for the central management of agents used in Energy Logserver such as *Filebeat*, *Winlogbeat*, *Packetbeat*, *Metricbeat*.
+The Agents module is used for the central management of agents used in Energy Logserver such as *Filebeat*, *Winlogbeat*, *Packetbeat*, *Metricbeat*, Logstash and all other configuration files.
 
 ## Component modules ##
 
