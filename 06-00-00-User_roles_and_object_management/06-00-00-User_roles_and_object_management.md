@@ -216,20 +216,26 @@ You can do this by editing the roles in the `Role List` and selecting the applic
 
 ## Manage API keys
 
-The system allows you to manage, create and delete API access keys from the level of the GUI management application. Examples of implementation:
+The system allows you to manage, create and delete API access keys from the level of the GUI management application. 
 
-1. List of active keys:
+Examples of implementation:
 
-	![](/media/media/image209.png)
+1. From the main menu select "Dev Tools" button:
 
-2. Details of a single key:
+   ![](/media/media/image213.png)
 
-	![](/media/media/image210.png)
+2. List of active keys:
 
-3. Create a new key:
+   ![](/media/media/image209.png)
 
-	![](/media/media/image211.png)
+3. Details of a single key:
 
-4. Deleting the key:
+   ![](/media/media/image210.png)
 
-	![](/media/media/image212.png)
+4. Create a new key:
+
+   ![](/media/media/image211.png)
+
+5. Deleting the key:
+
+   ![](/media/media/image212.png)
