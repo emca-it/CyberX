@@ -87,7 +87,10 @@ systemctl status kibana.service
    - Centos 7
    - Centos 8
    - Oracle Linux 8.3 - Unbreakable Enterprise Kernel (UEK)
-   - Centos Stream /SK
+   - Centos Stream
+   - SUSE
+   - Debian
+   - Ubuntu
 
 ### Run the instalation ###
 
