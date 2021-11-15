@@ -459,6 +459,85 @@ health status index       uuid                   pri rep docs.count docs.deleted
 green  open   .blacklists Mld2Qe2bSRuk2VyKm-KoGg   1   0      76549            0      4.7mb          4.7mb
 ```
 
+## Docker support
+
+To get system cluster up and running in Docker, you can use Docker Compose.
+
+Sample a `docker-compose.yml` file:
+
+```bash
+version: '7.1.0'
+services:
+  cyberx-client-node:
+    image: docker.emca.pl/cyberx-client-node:7.1.0
+    container_name: cyberx-client-node
+    environment:
+      - node.name=cyberx-client-node
+      - cluster.name=logserver
+      - discovery.seed_hosts=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - cluster.initial_master_nodes=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - logserver
+  cyberx-data-node:
+    image: docker.emca.pl/cyberx-client-node:7.1.0
+    container_name: cyberx-data-node
+    environment:
+      - node.name=cyberx-data-node
+      - cluster.name=logserver
+      - discovery.seed_hosts=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - cluster.initial_master_nodes=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - logserver
+  cyberx-collector-node:
+    image: docker.emca.pl/cyberx-collector-node:7.1.0
+    container_name: cyberx-collector-node
+    environment:
+      - node.name=cyberx-collector-node
+      - cluster.name=logserver
+      - discovery.seed_hosts=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - cluster.initial_master_nodes=cyberx-client-node,cyberx-data-node,cyberx-collector-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data03:/usr/share/elasticsearch/data
+    networks:
+      - logserver
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+  data03:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge
+```
+
 ## First login ##
 
 If you log in to CyberX for the first time, you must
