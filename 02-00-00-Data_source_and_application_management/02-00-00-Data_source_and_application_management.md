@@ -1219,4 +1219,14 @@ To set the default application for the GUI home page, please do the following:
   kibana.defaultAppId: "alerts"
   ```
   
-  
+## Custom notification on workstation
+
+The mechanism of *personalization of notification at the workstation* will be implemented by combining alerting mechanisms, triggering integrated commands and triggering interaction scripts allowing for the transfer of a personalized notification to the workstation.
+The notifications will use the specific script, which has the ability to inform all logged in users or the selected one about the detection of individual incidents.
+
+Configuration steps
+1. Create a new alert rule or edit an existing one according to the instruction: [Creating Alerts](https://CyberX.readthedocs.io/en/latest/08-00-00-Alert_module/08-00-00-Alert_module.html#creating-alerts),
+2. In `Alert Method` field select the `Command` method,
+3. Add the following scritp name to `Path to script/command` filed:
+
+   ```notifyworkstation.py```
