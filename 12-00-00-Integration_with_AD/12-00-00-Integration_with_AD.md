@@ -194,7 +194,7 @@ To do this use *pass-encrypter.sh* script that is located in the *Utils* directo
 
 1. Use *pass-encrypter*
 
-		# /usr/share/elasticsearch/pass-encrypter/pass-encrypter.sh
+		# /usr/share/elasticsearch/utils/pass-encrypter/pass-encrypter.sh
 		Enter the string for encryption :
 		new_password
 		Encrypted string : MTU1MTEwMDcxMzQzMg==1GEG8KUOgyJko0PuT2C4uw==
