@@ -1,9 +1,35 @@
 # Upgrades #
 
  You can check the current version using the API command:
+ 
 ```bash
-curl -u $USER:$PASSWORD -X GET http://localhost:9200/_license
+curl -u $USER:$PASSWORD -X GET http://localhost:9200/_logserver/license
 ```
+
+## Upgrade from version 7.0.6
+
+### **Breaking and major changes**
+
+- During the update, the "kibana" role will be removed and replaced by "gui-access", "gui-objects", "report". The three will automatically be assigned to all users that prior had the "kibana" role. If you had a custom role that allowed users to log in to the GUI this WILL STOP WORKING and you will have to manually enable the access for users.
+- The above is also true for LDAP users. If role mapping has been set for role kibana this will have to be manually updated to "gui-access" and if required "gui-objects" and "report" roles.
+- If any changes have been made to the "kibana" role paths, those will be moved to "gui-objects". GUI objects permissions also will be moved to "gui-objects" for "gui-access" cannot be used as a default role.
+- The "gui-access" is a read-only role and cannot be modified. By default, it will allow users to access all GUI apps; to constrain user access, assign user a role with limited apps permissions.
+- "small_backup.sh" script changed name to "configuration-backup.sh" - this might break existing cron jobs
+- SIEM plan is now a separate add-on package (requires an additional license)
+- Network-Probe is now a separate add-on package (requires an additional license)
+- (SIEM) Verify rpmsave files for alert and restore them if needed for following:
+  - /opt/alert/config.yaml
+  - /opt/alert/op5_auth_file.yml
+  - /opt/alert/smtp_auth_file.yml
+
+### Preferred Upgrade steps
+
+1. Run upgrade script:
+   - ./install.sh -u
+
+#### Required post upgrade
+
+- Role "wiki" has to be modified to contain only path: ".wiki" and all methods
 
 ## Upgrade from version 7.0.5
 
