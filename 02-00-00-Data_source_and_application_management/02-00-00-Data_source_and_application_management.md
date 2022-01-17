@@ -413,12 +413,11 @@ Requirements:
 - Make sure you have Logstash 6.4 or newer.
 - Enter your credentials into scripts: misp_threat_lists.sh
 
-To update bad reputation lists and to create `.blacklists` index, you have to run `badreputation_iplists.sh and misp_threat_lists.sh script (best is to put in schedule).
+To update bad reputation lists and to create `.blacklists` index, you have to run misp_threat_lists.sh script (best is to put in schedule).
 
 1. This can be done in cron (host with logstash installed) in /etc/crontab:
 
 ```bash
-0 1 * * * logstash /etc/logstash/lists/bin/badreputation_iplists.sh
 0 2 * * * logstash /etc/logstash/lists/bin/misp_threat_lists.sh
 ```
 
@@ -433,15 +432,6 @@ chmod g+w /etc/logstash/lists/
 ```
 
 - Log in to GUI and go to **Scheduler** app. Set it up with below options and push "Submit" button:
-
-```
-Name:           BadReputationList
-Cron pattern:   0 1 * * *
-Command:        lists/badreputation_iplists.sh
-Category:       logstash
-```
-
-and second:
 
 ```
 Name:           MispThreatList
