@@ -1,5 +1,167 @@
 # **CHANGELOG**
 
+## v7.1.0
+
+### NewFeatures
+
+- Added support for AlmaLinux and RockyLinux
+- Agents: Added local repository with GUI download links for agents installs
+- Archive: Added 'Run now' for scheduled archive tasks
+- Archive: Added option to enable/disable archive task
+- Archive: Added option to encrypt archived data
+- Audit:  Added report of non-admin user actions in GUI
+- Elasticsearch: Added field level security access control for documents
+- Kibana: Added support for Saved Query object in access management
+- Kibana: Added support for TLS v1.3
+- Kibana: Added new plugin Index Management - automate index retention and maintanance
+- Reports: Added new report type created from data table visualizations - allows creating a raport like table visualization including all records (pagination splitted into pages)
+- Reports: Added option to specify report task name which sets destination file name
+
+### Improvements
+
+- Security: log4j updated to address vulnerabilities: CVE-2021-44228, CVE-2021-45046, CVE-2021-45105, CVE-2021-44832, CVE-2021-4104
+- Added new directives for LDAP authenctication
+- Agents: Changed agent's action name from drop to delete
+- Archive: Improvement and optimization of "resume" feature
+- Archive: Optimised archivization proces by saving data directly to zstd file
+- Archive: Multiple 'Upload' GUI improvements
+- Archive: Improved logs verbosity
+- Audit: Added template for audit index
+- Beats: Updated to v7.12.1
+- Curator: Added curator logs for rotation
+- Elasticsearch: Extended timeout for starting service
+- Elasticsearch: Updated engine to v7.5.2
+- install.sh: Improved update section for better handling of services restart
+- Kibana: Updated engine to v7.5.2
+- Kibana: Clean SSL info in logs
+- Kibana: Improved built-in roles
+- Kibana: Disabled telemetry
+- Kibana: Set Discovery as a default app
+- Kibana: Optimized RPM
+- Kibana: Improved handling of unauthorized access in Discovery
+- Kibana: small changes in UI - Improved Application RBAC, product version
+- Kibana: Added new logos
+- Kibana: Improved login screen, unauthorized access info
+- Kibana: Restricted access to specific apps
+- Kibana: Added option to configure default app
+- Logrotate: Added Skimmer
+- Logstash: Updated to v7.12.1
+- Network visualization: UI improvements
+- Object permission: Index pattern optimizations
+- Plugins: Moved Cluster Management inoto the right top menu, Scheduler and Sync moved to the Config
+- Reports: Added report's time range info to raport details description
+- small_backup.sh: Added cerebro and alert configuration
+- Skimmer: Updated to v1.0.20
+- Skimmer: Added new metrics, pgpgin, pgpgout
+- Skimmer: Optimised duration_in_milis statistics
+- Skimmer: Added option to specify types
+- Skimmer: Added option to monitor disk usage
+- Wiki: Added support for nonstandard kibana port
+- Wiki: Several optimizations for roles
+- Wiki: Changed default search engine to elasticsearch
+- Wiki: Added support for own CAs
+- Wiki: Default authenticator improvements
+- XLSX Import: UI improvements
+
+### BugFixes
+
+- Archive: Fixed problems with task statuses
+- Archive: Fixed application crash when index name included special characters
+- Archive: Fixed 'checksum mismatch' bug
+- Archive: Fixed bug for showing unencrypted files as encrypted in upload section
+- Elasticsearch: Fixed bug when changing role caused client crash
+- Elastfilter: Fixed "_msearch" and "_mget" requests
+- Elastfilter: Fixed bug when index pattern creation as an admin caused kibana failure
+- Kibana: Fixed timeout handling
+- Kibana: Fixed a bug causing application crash when attempting to delete data without permission to it
+- Logstash: Fixed breaking geoip db when connection error occurred
+- Object permission: Fixed adding dashboard when all its related objects are already assigned
+- Reports: Added clearing .tmp files from corrupted csv exports
+- Reports: Fixed sending PDF instead of JPEG in scheduled reports
+- Reports: Fixed not working scheduled reports with domain selector enabled
+- Skimmer: Fixed expected cluster nodes calculation
+- Wiki: Added missing home page
+- Wiki: Added auto start of wiki service after installation
+- Wiki: Fixed logout behaviour
+
+### Integrations
+
+- Fixed labels in Skimmer dashboard
+- Fixed Audit dashboard fields
+- Updated Windows + AD dashboard and pipeline
+- Added Linux Mail dashboard and pipeline
+- Added Cisco ASA dashboard and pipeline
+- Added FortiGate dashboard and pipeline
+- Added Paloalto dashboard and pipeline
+- Added Oracle dashboard and pipeline
+- Added Waystream dashboard and pipeline
+- Added CEF dashboard and pipeline (CheckPoint, FireEye, Air-Watch, Infoblox, Flowmon, TrendMicro, CyberX, Juniper Networks)
+- Added monitoring of the alert module on Alert Dashboard
+
+### SIEM Plan
+
+- Updated SIEM dashboard
+- Updated QualysGuard integration
+- Updated Tenable.SC  integration
+- Alert: Updated detection rules (370+)
+- Alert: Added Cluster-Health alert rules
+- Wazuh: Updated to v3.13.3
+- Wazuh: UI improvements
+- Alert: Improved groups management
+- Alert: Multiple UI/UX tweaks
+- Alert: Revised alerts' descriptions and examples
+- Alert: Adding included fields when invert:true
+- Alert: Changed startup behaviour
+- Alert: Added field from 'include' to match_body
+- Alert: Optimised loading files with misp lists
+- Alert: Added option to set sourceRef in alert definition
+- Alert: Include & Exlcude in blacklist-ioc lists
+- Alert: Fixed several issue in chain and logical alerts
+- Alert: Fixed error when user tried to update alert from newly added group
+- Alert: Fixed top_count_keys not working with multiple query_key
+- Alert: Fixed bug when match in blacklist-ioc is breaking other rules
+- Alert: Fixed empty risk_key breaking alert rule
+- Alert: Fixed endless loop during scroll
+
+### Network-Probe
+
+- Added integration with license service
+- Changed plugin icon
+- Changed default settings
+- Changed logs mapping in logstash
+- Optimised netflow template to be more efficient
+- Updated .service files
+- Updated Network-Probe dashboard
+
+### API Changes
+
+- Elasticsearch: Updated API endpoints.
+  - Following endpoints deprecated and update with:
+    - `/_auth/account` -> `/_logserver/accounts`
+    - `/_license/reload` -> `/_logserver/license/reload`
+    - `/_role-mapping/reload` -> `/_logserver/auth/reload`
+    - `/user/updatePassword` -> `/_logserver/user/password`
+  - Following endpoint was removed and replaced with:
+    - `/_license` -> `/_logserver/license`
+
+### **Breaking changes**
+
+- During the update, the "kibana" role will be removed and replaced by "gui-access", "gui-objects", "report". The three will automatically be assigned to all users that prior had the "kibana" role. If you had a custom role that allowed users to log in to the GUI this WILL STOP WORKING and you will have to manually enable the access for users.
+- The above is also true for LDAP users. If role mapping has been set for role kibana this will have to be manually updated to "gui-access" and if required "gui-objects" and "report" roles.
+- If any changes have been made to the "kibana" role paths, those will be moved to "gui-objects". GUI objects permissions also will be moved to "gui-objects" for "gui-access" cannot be used as a default role.
+- The "gui-access" is a read-only role and cannot be modified. By default, it will allow users to access all GUI apps; to constrain user access, assign user a role with limited apps permissions.
+- "small_backup.sh" script changed name to "configuration-backup.sh" - this might break existing cron jobs
+- SIEM plan is now a separate add-on package (requires an additional license)
+- Network-Probe is now a separate add-on package (requires an additional license)
+- (SIEM) Verify rpmsave files for alert and restore them if needed for following:
+  - /opt/alert/config.yaml
+  - /opt/alert/op5_auth_file.yml
+  - /opt/alert/smtp_auth_file.yml
+
+### Required post upgrade
+
+- Role "wiki" has to be modified to contain only path: ".wiki" and all methods
+
 ## v7.0.6
 
 ### NewFeatures
@@ -154,6 +316,7 @@
 - Skimmer: Changed kafka.consumer_id to number in default mapping
 - Skimmer: Fixes in indices stats monitoring
 - Skimmer: Overwrite config files after updating, now it should create /opt/skimmer/skimmer.conf.rpmnew
+
 
 ## v7.0.4
 
