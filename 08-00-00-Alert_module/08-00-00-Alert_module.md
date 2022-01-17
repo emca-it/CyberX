@@ -908,9 +908,7 @@ Object "item" contains information about the incident that action was used on.
    ];
    incidentactions.push(...customActions);
    ```
-
    
-
 5. Execute identicly as in the last section.
 
 6. Now both actions should be present on the context menu:
@@ -942,7 +940,6 @@ Based on IoC markings, you can build alert rules or track incident behavior.
 To update bad reputation lists and to create `.blacklists` index, you have to run following scripts:
 
 ```bash
-/etc/logstash/lists/bin/badreputation_iplists.sh
 /etc/logstash/lists/bin/misp_threat_lists.sh
 ```
 
@@ -951,7 +948,6 @@ To update bad reputation lists and to create `.blacklists` index, you have to ru
 This can be done in `cron` (host with Logstash installed):
 
 ```bash
-0 1 * * * logstash /etc/logstash/lists/bin/badreputation_iplists.sh
 0 6 * * * logstash /etc/logstash/lists/bin/misp_threat_lists.sh
 ```
 
@@ -966,15 +962,6 @@ chmod g+w /etc/logstash/lists/
 ```
 
 - Log in to CyberX GUI and go to **Scheduler** app. Set it up with below options and push "Submit" button:
-
-```bash
-Name:           BadReputationList
-Cron pattern:   0 1 * * *
-Command:        lists/badreputation_iplists.sh
-Category:       logstash
-```
-
-and second:
 
 ```bash
 Name:           MispThreatList
