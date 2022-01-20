@@ -68,6 +68,29 @@ downloaded as a PDF file.
 
 ![](/media/media/image47.png)
 
+## PDF report from the table visualization
+
+Data from a table visualization can be exported as a PDF report. 
+
+To export a table visualization data, follow these steps:
+
+1. Go to the 'Report' module and then to the 'Report Export' tab,
+2. Add the new task name in 'Task Name' field,
+3. Toggle the switch 'Enable Data Table Export':
+
+   ![](/media/media/image215.png)
+   
+4. Select the table from the 'Table Visualization' list,
+5. Select the time range for which the report is to be prepared,
+6. You can select a logo from the 'Logo' list,
+7. You can add a report title using the 'Title' field,
+8. You can add a report comment using the 'Comments' field,
+9. Select the 'Submit' button to start creating the report,
+10. You can follow the progress in the 'Task List' tab,
+11. After completing the task, the status will change to 'Complete' and you can download the PDF report via 'Action' -> 'Download':
+
+    ![](/media/media/image216.png)
+
 ## Scheduler Report (Schedule Export Dashboard) ##
 
 
