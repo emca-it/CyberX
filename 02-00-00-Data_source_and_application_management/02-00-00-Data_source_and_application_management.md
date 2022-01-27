@@ -1114,9 +1114,26 @@ openssl pkcs12 -export -in /etc/elasticsearch/ssl/${DOMAIN}.crt -inkey /etc/elas
 # Configure /opt/ai/bin/conf.cfg
 https_keystore=/path/to/pk12/loganalytics-node.test.p12
 https_truststore=/path/to/root.jks
-https_keystore_pass=bla123
-https_truststore_pass=bla123
+https_keystore_pass=password
+https_truststore_pass=password
 ```
+
+6. Set `https: ture` in configuration file for the License server:
+
+```bash
+vi /opt/license-service/license-service.conf
+```
+
+```bash
+elasticsearch_connection:
+  hosts: ["els_host_IP:9200"]
+
+  username: logserver
+  password: "logserver_password"
+
+  https: true
+```
+
 ### Logstash/Beats
 
 You can eather install CA to allow Logstash and Beats traffic or you can supply required certificates in config:
