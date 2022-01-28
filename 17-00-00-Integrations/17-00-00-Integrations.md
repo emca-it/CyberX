@@ -666,188 +666,113 @@ However, if it is to be run with encryption, you also need to change `proxy_pass
 
 In the browser enter the address pointing to the server with the CyberX installation
 
-## Cerebro - Elasticsearch web admin tool
+## Cerebro - elasticsearch web admin tool
 
-### Software Requirements
-1. Cerebro v0.8.4
+Cerebro is the Elasticsearch administration tool that allows you to perform the following tasks:
 
-   ```bash
-   wget 'https://github.com/lmenezes/cerebro/releases/download/v0.8.4/cerebro-0.8.4.tgz'
-   ```
+- monitoring and management of indexing nodes, indexes and shards:
 
-   
+![](/media/media/image217.PNG)
 
-2. Java 11+ [for basic-auth setup]
+- monitoring and management of index shapshoots :
 
-   ```bash
-   yum install java-11-openjdk-headless.x86_64
-   ```
+![](/media/media/image220.PNG)
 
-   
+- informing about problems with indexes and shards:
 
-3. Java 1.8.0 [without authorization
-
-   ```bash
-   yum install java-1.8.0-openjdk-headless
-   ```
-
-   
-
-### Firewall Configuration
-
-```bash
-firewall-cmd --permanent --add-port=5602/tcp
-firewall-cmd --reload
-```
+![](/media/media/image219.PNG)
 
 ### Cerebro Configuration
 
-1. Extract archive & move directory
+Configuration file: `/opt/cerebro/conf/application.conf`
+
+- Authentication
 
    ```bash
-   tar -xvf cerebro-0.8.4.tgz -C /opt/
-   mv /opt/cerebro-0.8.4/ /opt/cerebro
+
+			auth = {
+			  type: basic
+			    settings: {
+			      username = "logserver"
+			      password = "logserver"
+			    }
+			}
    ```
 
-   
-
-2. Add Cerebro service user
+- A list of known Elasticsearch hosts
 
    ```bash
-   useradd -M -d /opt/cerebro -s /sbin/nologin cerebro
+			hosts = [
+			  {
+			    host = "https://192.168.3.11:9200"
+			    name = "energy-logserver"
+			    auth = {
+			      username = "logserver"
+			      password = "logserver"
+			    }
+			  }
+			]
+
+			play.ws.ssl {
+			  trustManager = {
+			    stores = [
+			      { type = "PEM", path = "/etc/elasticsearch/ssl/rootCA.crt" }
+			    ]
+			  }
+			} 
+			play.ws.ssl.loose.acceptAnyCertificate=true
    ```
-
-   
-
-3. Change Cerbero permissions
-
-   ```bash
-   chown -R cerebro:cerebro /opt/cerebro && chmod -R 700 /opt/cerebro
-   ```
-
-   
-
-4. Install Cerbero service ([cerebro.service](/files/cerebro.service)):
-
-   ```bash
-   [Unit]
-   Description=Cerebro
-   
-   [Service]
-   Type=simple
-   User=cerebro
-   Group=cerebro
-   ExecStart=/opt/cerebro/bin/cerebro "-Dconfig.file=/opt/cerebro/conf/application.conf"
-   Restart=always
-   WorkingDirectory=/opt/cerebro
-   
-   [Install]
-   WantedBy=multi-user.target
-   ```
-
-   ```bash
-   cp cerebro.service /usr/lib/systemd/system/
-   systemctl daemon-reload
-   systemctl enable cerebro
-   ```
-
-5. Customize configuration file: [/opt/cerebro/conf/application.conf](/files/application.conf)
-
-   ```bash
-   - Authentication
-   auth = {
-     type: basic
-      settings: {
-         username = "user"
-         password = "password"
-       }
-   }
-   ```
-
-   - A list of known Elasticsearch hosts
-
-     ```bash
-     hosts = [
-       {
-         host = "http://localhost:9200"
-         name = "user"
-         auth = {
-           username = "username"
-           password = "password"
-         }
-       }
-     ]
-     ```
-
-If needed uses secure connection (SSL) with Elasticsearch, set the following section that contains path to certificate. And change the host definition from `http` to `https`:
-
-```bash
-play.ws.ssl {
-  trustManager = {
-    stores = [
-      { type = "PEM", path = "/etc/elasticsearch/ssl/rootCA.crt" }
-    ]
-  }
-} 
-play.ws.ssl.loose.acceptAnyCertificate=true
-````
 
 - SSL access to cerebro
 
-    ```bash
-    http = {
-      port = "disabled"
-    }
-    https = {
-      port = "5602"
-    }
-    #SSL access to cerebro - no self signed certificates
-    #play.server.https {
-    #  keyStore = {
-    #    path = "keystore.jks",
-    #    password = "SuperSecretKeystorePassword"
-    #  }
-    #}
-    
-    #play.ws.ssl {
-    #  trustManager = {
-    #    stores = [
-    #      { type = "JKS", path = "truststore.jks", password = "SuperSecretTruststorePassword"  }
-    #    ]
-    #  }
-    #}
-    ```
-
-6. Start the service
-
    ```bash
-   systemctl start cerebro
-   goto: https://127.0.0.1:5602
+      http = {
+        port = "disabled"
+      }
+      https = {
+        port = "5602"
+      }
+      
+      # SSL access to cerebro - no self signed certificates
+      #play.server.https {
+      #  keyStore = {
+      #    path = "keystore.jks",
+      #    password = "SuperSecretKeystorePassword"
+      #  }
+      #}
+      
+      #play.ws.ssl {
+      #  trustManager = {
+      #    stores = [
+      #      { type = "JKS", path = "truststore.jks", password =       SuperSecretTruststorePassword"  }
+      #    ]
+      #  }
+      #}
    ```
 
-   
-
-### Optional configuration
-
-1. Register backup/snapshot repository for Elasticsearch
+- service restart
 
    ```bash
-   		curl -k -XPUT "https://127.0.0.1:9200/_snapshot/backup?pretty" -H 'Content-Type: application/json' -d'
-   		{
-   		  "type": "fs",
-   		  "settings": {
-   		    "location": "/var/lib/elasticsearch/backup/"
-   		  }
-   		}' -u user:password
+   	systemctl start cerebro
    ```
 
-   
-
-2. Login using curl/kibana
+- register backup/snapshot repository for Elasticsearch
 
    ```bash
-   curl -k -XPOST 'https://127.0.0.1:5602/auth/login' -H 'mimeType: application/x-www-form-urlencoded' -d 'user=user&password=passwrd' -c cookie.txt
-   curl -k -XGET 'https://127.0.0.1:5602' -b cookie.txt
+      curl -k -XPUT "https://127.0.0.1:9200/_snapshot/backup?pretty" -H 'Content-Type: plication/      json' -d'
+      {
+        "type": "fs",
+        "settings": {
+          "location": "/var/lib/elasticsearch/backup/"
+        }
+      }' -u logserver:logserver
+   ```
+
+- login using curl/kibana
+
+   ```bash
+      curl -k -XPOST 'https://192.168.3.11:5602/auth/login' -H 'mimeType: application/      -www-form-urlencoded' -d 'user=logserver&password=logserver' -c cookie.txt
+      curl -k -XGET 'https://192.168.3.11:5602' -b cookie.txt
    ```
 
 ## Elasticdump
