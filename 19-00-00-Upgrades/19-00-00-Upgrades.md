@@ -30,7 +30,27 @@ curl -u $USER:$PASSWORD -X GET http://localhost:9200/_logserver/license
 #### Required post upgrade
 
 - Role "wiki" has to be modified to contain only path: ".wiki" and all methods
+- Configure the License Service and set the following parameters in the configuration file:
 
+
+   - hosts - Elasticsearch cluster hosts IP,
+   - password - password for Logserver  user,
+   - https - true or false.
+
+    ```bash
+    vi /opt/license-service/license-service.conf
+    ```
+
+    ```bash
+    elasticsearch_connection:
+      hosts: ["els_host_IP:9200"]
+    
+      username: logserver
+      password: "logserver_password"
+    
+      https: true
+    ```
+    
 ## Upgrade from version 7.0.5
 
 ### General note
