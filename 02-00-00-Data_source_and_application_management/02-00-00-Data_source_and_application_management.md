@@ -308,6 +308,27 @@ The CyberX installer is delivered as:
 
 #### Post installation steps
 
+- configure the License Service and set the following parameters in the configuration file:
+
+   - hosts - Elasticsearch cluster hosts IP,
+   - password - password for Logserver  user,
+   - https - true or false.
+
+
+    ```bash
+    vi /opt/license-service/license-service.conf
+    ```
+
+    ```bash
+    elasticsearch_connection:
+      hosts: ["els_host_IP:9200"]
+    
+      username: logserver
+      password: "logserver_password"
+    
+      https: true
+    ```
+
 - copy license files to Elasticsearch directory
 
   ```bash
